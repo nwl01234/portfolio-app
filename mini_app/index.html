@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dev Portfolio</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="hero">
+        <div class="avatar-container">
+            <i class="fa-solid fa-robot robot-icon"></i>
+            <div class="glow-effect"></div>
+        </div>
+        <h1>Next-Gen <span class="gradient-text">Telegram Bots</span></h1>
+        <p class="subtitle">Python • Aiogram • WebApps • Payments</p>
+        
+        <div class="stats-row">
+            <div class="badge"><i class="fa-solid fa-bolt"></i> Fast</div>
+            <div class="badge"><i class="fa-solid fa-shield-halved"></i> Secure</div>
+            <div class="badge"><i class="fa-solid fa-clock"></i> 24/7</div>
+        </div>
+    </header>
+
+    <section class="demos">
+        <h2>Interactive Demos</h2>
+        <div class="card-grid">
+            
+            <div class="card" onclick="openDemo('shop')">
+                <div class="icon-box color-1">
+                    <i class="fa-solid fa-shop"></i>
+                </div>
+                <h3>Shop UI</h3>
+                <p>Full e-commerce inside Telegram.</p>
+                <button class="btn-sm">Launch Demo</button>
+            </div>
+
+            <div class="card" onclick="openDemo('analytics')">
+                <div class="icon-box color-2">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <h3>Analytics</h3>
+                <p>Data visualization & dashboards.</p>
+                <button class="btn-sm">View Graph</button>
+            </div>
+
+            <div class="card" onclick="openDemo('ai')">
+                <div class="icon-box color-3">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <h3>AI Assistant</h3>
+                <p>GPT-4 integration examples.</p>
+                <button class="btn-sm">Test AI</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-container">
+        <div class="cta-box">
+            <h2>Ready to scale?</h2>
+            <p>Let's discuss your project today.</p>
+            <div class="btn-row">
+                <button class="btn-main" onclick="openContact()">Message Me</button>
+                <button class="btn-sec" onclick="openPricing()">Pricing</button>
+            </div>
+        </div>
+    </section>
+
+    <div id="demoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Demo</h2>
+            <div id="modalBody">
+                </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
