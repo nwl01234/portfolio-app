@@ -2,312 +2,128 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Premium Telegram Solutions | Enterprise Bot Development</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>High-End Automation | Telegram Solutions</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="particles-container"></div>
-    
-    <!-- Floating Elements -->
-    <div class="floating-elements">
-        <div class="float-circle ai"></div>
-        <div class="float-circle ecom"></div>
-        <div class="float-circle premium"></div>
-    </div>
 
-    <!-- Header -->
-    <header class="hero animate__animated animate__fadeIn">
-        <div class="hero-content">
-            <div class="badge premium-badge">
-                <i class="fas fa-crown"></i> TOP 1% TELEGRAM DEVELOPER
-            </div>
-            
-            <div class="avatar-container">
-                <div class="avatar-gradient"></div>
-                <div class="avatar-icon">
-                    <i class="fas fa-bolt"></i>
-                </div>
-                <div class="avatar-ring"></div>
-            </div>
-            
-            <h1 class="hero-title">
-                <span class="title-line">Enterprise-Grade</span>
-                <span class="title-line gradient-text">Telegram Solutions</span>
-            </h1>
-            
-            <p class="hero-subtitle">
-                Premium bots that drive revenue & automate growth
-                for US businesses since 2022
-            </p>
-            
-            <div class="hero-stats">
-                <div class="stat">
-                    <div class="stat-number">50+</div>
-                    <div class="stat-label">Clients</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">$2M+</div>
-                    <div class="stat-label">Revenue Generated</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">99.9%</div>
-                    <div class="stat-label">Uptime</div>
-                </div>
-            </div>
+    <div class="bg-gradient"></div>
+    <div class="particles-container" id="particles-js"></div>
+
+    <header class="hero">
+        <div class="profile-badge">
+            <i class="fas fa-check-circle"></i> VERIFIED DEVELOPER
         </div>
         
-        <div class="scroll-indicator">
-            <div class="mouse">
-                <div class="wheel"></div>
+        <h1 class="hero-title">
+            Turn Telegram into a<br>
+            <span class="gradient-text">Revenue Machine</span>
+        </h1>
+        
+        <p class="hero-desc">
+            Stop wasting time on manual tasks. I build high-load bots and AI agents that work 24/7 so you don't have to.
+        </p>
+
+        <div class="trust-metrics">
+            <div class="metric">
+                <span class="val">100%</span>
+                <span class="lbl">Reliability</span>
             </div>
-            <span>Explore Premium Demos</span>
+            <div class="metric">
+                <span class="val">Tier-1</span>
+                <span class="lbl">Code Quality</span>
+            </div>
+            <div class="metric">
+                <span class="val">US</span>
+                <span class="lbl">Market Focus</span>
+            </div>
         </div>
     </header>
 
-    <!-- Navigation -->
-    <nav class="sticky-nav">
-        <div class="nav-container">
-            <div class="nav-category" onclick="scrollToSection('ai')">
-                <i class="fas fa-robot"></i> AI Solutions
-            </div>
-            <div class="nav-category" onclick="scrollToSection('ecommerce')">
-                <i class="fas fa-shopping-cart"></i> E-commerce
-            </div>
-            <div class="nav-category" onclick="scrollToSection('premium')">
-                <i class="fas fa-gem"></i> Premium
-            </div>
-        </div>
-    </nav>
-
-    <!-- Solutions Grid -->
-    <main class="solutions-grid">
-        <!-- AI Customer Support -->
-        <section id="ai" class="solution-section">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <span class="solution-badge ai">AI-Powered</span>
-                    Customer Support Automation
-                </h2>
-                <p class="section-subtitle">24/7 intelligent support with GPT-4 integration</p>
-            </div>
-            
-            <div class="demo-cards">
-                <!-- Basic Version -->
-                <div class="demo-card basic">
-                    <div class="card-header">
-                        <span class="version-tag basic">Quick Start</span>
-                        <div class="price">$499</div>
-                    </div>
-                    
-                    <div class="demo-preview ai-demo">
-                        <div class="chat-container">
-                            <div class="chat-message user">
-                                My order #4562 hasn't arrived
-                            </div>
-                            <div class="chat-message bot">
-                                Checking your order status... ✅ Shipped on Dec 10<br>
-                                Estimated delivery: Today<br>
-                                <button class="chat-btn">Track Package</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="features-list">
-                        <div class="feature">
-                            <i class="fas fa-check-circle"></i> Automated ticket routing
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-check-circle"></i> FAQ database
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-check-circle"></i> Basic GPT responses
-                        </div>
-                    </div>
-                    
-                    <button class="card-btn" onclick="launchAIDemo('basic')">
-                        <i class="fas fa-play"></i> Try Basic Demo
-                    </button>
-                </div>
-                
-                <!-- Premium Version -->
-                <div class="demo-card premium">
-                    <div class="card-header">
-                        <span class="version-tag premium">Enterprise</span>
-                        <div class="price">$1,999+</div>
-                    </div>
-                    
-                    <div class="demo-preview ai-demo">
-                        <div class="chat-container">
-                            <div class="chat-message user">
-                                Analyze our support metrics and suggest improvements
-                            </div>
-                            <div class="chat-message bot">
-                                <div class="ai-analysis">
-                                    <div class="metric">
-                                        <div class="metric-label">Response Time</div>
-                                        <div class="metric-value">4.2s <span class="trend up">↓12%</span></div>
-                                    </div>
-                                    <div class="metric">
-                                        <div class="metric-label">Satisfaction</div>
-                                        <div class="metric-value">94% <span class="trend up">↑8%</span></div>
-                                    </div>
-                                    <div class="recommendation">
-                                        <strong>Recommendation:</strong> Add Spanish support to capture 15% more users
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="features-list">
-                        <div class="feature">
-                            <i class="fas fa-star"></i> Sentiment analysis
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-star"></i> Multi-language support
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-star"></i> Analytics dashboard
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-star"></i> Custom training
-                        </div>
-                    </div>
-                    
-                    <button class="card-btn premium" onclick="launchAIDemo('premium')">
-                        <i class="fas fa-rocket"></i> Launch Premium Demo
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- E-commerce Store -->
-        <section id="ecommerce" class="solution-section">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <span class="solution-badge ecom">Revenue-Ready</span>
-                    E-commerce Storefront
-                </h2>
-                <p class="section-subtitle">Complete shopping experience inside Telegram</p>
-            </div>
-            
-            <div class="demo-cards">
-                <div class="demo-card basic">
-                    <div class="card-header">
-                        <span class="version-tag basic">Starter</span>
-                        <div class="price">$799</div>
-                    </div>
-                    
-                    <div class="demo-preview ecom-demo">
-                        <div class="product-grid">
-                            <div class="product-card">
-                                <div class="product-image" style="background: #4ECDC4;"></div>
-                                <div class="product-name">Premium Course</div>
-                                <div class="product-price">$97</div>
-                                <button class="product-btn">Add to Cart</button>
-                            </div>
-                            <div class="product-card">
-                                <div class="product-image" style="background: #FF6B6B;"></div>
-                                <div class="product-name">Digital Template</div>
-                                <div class="product-price">$29</div>
-                                <button class="product-btn">Add to Cart</button>
-                            </div>
-                        </div>
-                        <div class="cart-summary">
-                            <div class="cart-total">Cart: 2 items • $126</div>
-                            <button class="checkout-btn">Proceed to Checkout</button>
-                        </div>
-                    </div>
-                    
-                    <button class="card-btn" onclick="launchEcomDemo('basic')">
-                        <i class="fas fa-shopping-bag"></i> Shop Demo
-                    </button>
-                </div>
-                
-                <div class="demo-card premium">
-                    <div class="card-header">
-                        <span class="version-tag premium">Advanced</span>
-                        <div class="price">$2,500+</div>
-                    </div>
-                    
-                    <div class="demo-preview ecom-demo">
-                        <div class="advanced-features">
-                            <div class="feature-bubble">
-                                <i class="fas fa-bolt"></i> 1-Click Upsell
-                            </div>
-                            <div class="feature-bubble">
-                                <i class="fas fa-chart-line"></i> Dynamic Pricing
-                            </div>
-                            <div class="feature-bubble">
-                                <i class="fas fa-sync"></i> Abandoned Cart Recovery
-                            </div>
-                            <div class="feature-bubble">
-                                <i class="fas fa-gift"></i> Loyalty Program
-                            </div>
-                        </div>
-                        <div class="live-analytics">
-                            <div class="analytics-title">Live Sales</div>
-                            <div class="analytics-value">$2,847 <span class="today">today</span></div>
-                            <div class="analytics-graph">
-                                <div class="bar" style="height: 80%"></div>
-                                <div class="bar" style="height: 60%"></div>
-                                <div class="bar" style="height: 90%"></div>
-                                <div class="bar" style="height: 70%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button class="card-btn premium" onclick="launchEcomDemo('premium')">
-                        <i class="fas fa-crown"></i> Advanced Demo
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Booking System -->
-        <section class="solution-section">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <span class="solution-badge booking">Automated</span>
-                    Appointment Booking
-                </h2>
-                <p class="section-subtitle">Smart scheduling with calendar sync</p>
-            </div>
-            
-            <!-- More sections will be added here -->
-        </section>
-    </main>
-
-    <!-- Contact CTA -->
-    <div class="contact-cta">
-        <div class="cta-content">
-            <h2>Ready to Build Your Solution?</h2>
-            <p>Book a free 30-minute strategy call</p>
-            
-            <div class="cta-buttons">
-                <button class="whatsapp-btn" onclick="contactWhatsApp()">
-                    <i class="fab fa-whatsapp"></i> WhatsApp
-                </button>
-                <button class="telegram-btn" onclick="contactTelegram()">
-                    <i class="fab fa-telegram"></i> Telegram
-                </button>
-                <button class="calendly-btn" onclick="bookCall()">
-                    <i class="fas fa-calendar"></i> Book Call
-                </button>
-            </div>
-        </div>
+    <div class="nav-scroll">
+        <button class="nav-btn active" onclick="scrollToId('ai-agents')">🤖 AI Agents</button>
+        <button class="nav-btn" onclick="scrollToId('scrapers')">📊 Data Mining</button>
+        <button class="nav-btn" onclick="scrollToId('community')">💎 Community</button>
     </div>
 
-    <!-- Scripts -->
-    <script src="app.js"></script>
+    <main class="content">
+        
+        <section id="ai-agents" class="service-card">
+            <div class="card-icon ai"><i class="fas fa-brain"></i></div>
+            <h2>AI Support & Sales</h2>
+            <p class="service-desc">Replace your Tier-1 support with intelligent agents.</p>
+
+            <div class="tier-box basic">
+                <div class="tier-header">
+                    <h3>⚡ Essentials</h3>
+                    <span class="price">$300</span>
+                </div>
+                <ul class="features">
+                    <li><i class="fas fa-check"></i> Button-based Menu (FAQ)</li>
+                    <li><i class="fas fa-check"></i> Instant Auto-Replies</li>
+                    <li><i class="fas fa-check"></i> Admin Panel for Content</li>
+                    <li><i class="fas fa-clock"></i> Delivery: 3 Days</li>
+                </ul>
+                <button class="action-btn outline" onclick="openChat('I need a Basic AI Bot')">Order Basic</button>
+            </div>
+
+            <div class="tier-box premium">
+                <div class="badge-pop">MOST POPULAR</div>
+                <div class="tier-header">
+                    <h3>🚀 Enterprise AI</h3>
+                    <span class="price">$1,200+</span>
+                </div>
+                <ul class="features">
+                    <li><i class="fas fa-star"></i> <strong>ChatGPT-4 Integration</strong></li>
+                    <li><i class="fas fa-star"></i> Learns from your documents</li>
+                    <li><i class="fas fa-star"></i> Human Handoff System</li>
+                    <li><i class="fas fa-star"></i> Analytics Dashboard</li>
+                    <li><i class="fas fa-clock"></i> Delivery: 7-10 Days</li>
+                </ul>
+                <div class="hourly-note">+ Maintenance options available</div>
+                <button class="action-btn solid" onclick="openChat('I need a Premium AI Solution')">Discuss Premium</button>
+            </div>
+        </section>
+
+        <section id="scrapers" class="service-card">
+            <div class="card-icon data"><i class="fas fa-database"></i></div>
+            <h2>Scrapers & Monitoring</h2>
+            <p class="service-desc">Get data from any website instantly.</p>
+
+            <div class="comparison-grid">
+                <div class="col">
+                    <h4>Basic Scraper</h4>
+                    <div class="price-sm">$250</div>
+                    <p>One-time extraction to Excel/CSV. Perfect for lead lists.</p>
+                </div>
+                <div class="col premium-border">
+                    <h4>Real-Time Monitor</h4>
+                    <div class="price-sm">$900+</div>
+                    <p>24/7 Monitoring. Instant alerts on Telegram when price changes or new item appears.</p>
+                </div>
+            </div>
+            <button class="action-btn solid" onclick="openChat('I need Data Scraping')">Get Data Now</button>
+        </section>
+
+        <section class="contact-section">
+            <h2>Ready to Automate?</h2>
+            <p>I don't just write code. I build assets for your business.</p>
+            <div class="btn-group">
+                <button class="cta-main" onclick="openChat('Hi, I want to discuss a project')">
+                    <i class="fab fa-telegram-plane"></i> Send Message
+                </button>
+            </div>
+        </section>
+
+    </main>
+
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
