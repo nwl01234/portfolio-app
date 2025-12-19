@@ -3,124 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NextGen Automation</title>
+    <title>NWL Dev Portfolio</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="particles-js"></div>
-    <div class="glow-overlay"></div>
-
     <nav class="navbar">
-        <div class="brand">NWL<span class="highlight">.DEV</span></div>
-        <div class="cart-icon" onclick="toggleCart()">
-            <i class="fas fa-shopping-bag"></i>
-            <span id="cart-badge" class="badge">0</span>
+        <div class="logo">NWL<span class="dot">.</span>DEV</div>
+        <div class="cart-trigger" onclick="toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count">0</span>
         </div>
     </nav>
 
-    <div id="view-home" class="view active">
-        <header class="hero">
-            <h1>AUTOMATE <br><span class="gradient-text">EVERYTHING</span></h1>
-            <p>Premium Telegram Solutions for US Market</p>
-        </header>
-
-        <div class="services-container">
-            <div class="service-card" onclick="openService('ai')">
-                <div class="icon-box ai"><i class="fas fa-brain"></i></div>
-                <div class="card-text">
-                    <h3>AI Agents</h3>
-                    <p>Support & Sales Bots</p>
-                </div>
-                <div class="arrow"><i class="fas fa-chevron-right"></i></div>
-            </div>
-
-            <div class="service-card" onclick="openService('scraper')">
-                <div class="icon-box data"><i class="fas fa-database"></i></div>
-                <div class="card-text">
-                    <h3>Data Scrapers</h3>
-                    <p>Monitoring & Parsing</p>
-                </div>
-                <div class="arrow"><i class="fas fa-chevron-right"></i></div>
-            </div>
-
-            <div class="service-card" onclick="openService('community')">
-                <div class="icon-box comm"><i class="fas fa-users"></i></div>
-                <div class="card-text">
-                    <h3>Community</h3>
-                    <p>Management & Paywalls</p>
-                </div>
-                <div class="arrow"><i class="fas fa-chevron-right"></i></div>
-            </div>
-        </div>
+    <div class="main-container">
         
-        <button class="support-btn" onclick="tg.close()">
-            <i class="fas fa-comment-dots"></i> Chat with Me
-        </button>
-    </div>
+        <div class="tabs-menu">
+            <button class="tab-btn active" onclick="switchTab('ai')">🤖 AI Bots</button>
+            <button class="tab-btn" onclick="switchTab('scraper')">📊 Data</button>
+            <button class="tab-btn" onclick="switchTab('community')">💎 Comm</button>
+        </div>
 
-    <div id="view-details" class="view">
-        <button class="back-btn" onclick="goHome()"><i class="fas fa-arrow-left"></i> Back</button>
-        <h2 id="detail-title">Service Name</h2>
-        
-        <div class="tier-card basic">
-            <div class="tier-header">
-                <h4>STARTER</h4>
-                <div class="price" id="price-basic">$300</div>
+        <div id="tab-ai" class="tab-content active">
+            <div class="tool-demo-box">
+                <div class="demo-label">LIVE DEMO: SALES AGENT</div>
+                <div class="chat-window" id="ai-chat-window">
+                    <div class="msg bot">Hello! I'm the AI Agent. I can close deals 24/7. Try asking me about prices.</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="ai-input" placeholder="Type message...">
+                    <button onclick="sendAiMessage()"><i class="fas fa-paper-plane"></i></button>
+                </div>
             </div>
-            <ul class="features-list" id="features-basic"></ul>
-            <div class="btn-row">
-                <button class="demo-btn outline" onclick="runDemo('basic')"><i class="fas fa-play"></i> See Demo</button>
-                <button class="buy-btn" onclick="addToCart('basic')">Add Basic</button>
+            
+            <div class="pricing-row">
+                <div class="product-card">
+                    <h3>Basic Bot</h3>
+                    <div class="price">$300</div>
+                    <p>Menu, FAQ, Auto-reply.</p>
+                    <button class="add-btn" onclick="addToCart('Basic AI Bot', 300)">Add to Cart</button>
+                </div>
+                <div class="product-card premium">
+                    <h3>AI Sales Pro</h3>
+                    <div class="price">$1200</div>
+                    <p>ChatGPT-4, CRM Sync, Context.</p>
+                    <button class="add-btn" onclick="addToCart('Premium AI Agent', 1200)">Add to Cart</button>
+                </div>
             </div>
         </div>
 
-        <div class="tier-card premium">
-            <div class="best-value">BEST CHOICE</div>
-            <div class="tier-header">
-                <h4>ENTERPRISE</h4>
-                <div class="price" id="price-premium">$1200</div>
+        <div id="tab-scraper" class="tab-content">
+            <div class="tool-demo-box">
+                <div class="demo-label">REAL TOOL: LINK ANALYZER</div>
+                <div class="scraper-interface">
+                    <input type="text" id="scraper-input" placeholder="Enter any URL (e.g., google.com)">
+                    <button class="scan-btn" onclick="runScraper()">SCAN URL</button>
+                </div>
+                <div class="scraper-console" id="scraper-console">
+                    <span class="blink">> Ready to scan...</span>
+                </div>
             </div>
-            <ul class="features-list" id="features-premium"></ul>
-            <div class="btn-row">
-                <button class="demo-btn outline" onclick="runDemo('premium')"><i class="fas fa-play"></i> See Demo</button>
-                <button class="buy-btn" onclick="addToCart('premium')">Add Premium</button>
-            </div>
-        </div>
-    </div>
 
-    <div id="view-demo" class="view overlay-mode">
-        <div class="demo-topbar">
-            <span>Live Simulation</span>
-            <button onclick="closeDemo()"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="demo-screen" id="demo-screen">
+            <div class="pricing-row">
+                <div class="product-card">
+                    <h3>Simple Parser</h3>
+                    <div class="price">$250</div>
+                    <p>Excel/CSV Export.</p>
+                    <button class="add-btn" onclick="addToCart('Simple Scraper', 250)">Add to Cart</button>
+                </div>
+                <div class="product-card premium">
+                    <h3>Live Monitor</h3>
+                    <div class="price">$900</div>
+                    <p>24/7 Tracking, Instant Alerts.</p>
+                    <button class="add-btn" onclick="addToCart('Live Monitor System', 900)">Add to Cart</button>
+                </div>
             </div>
+        </div>
+
+        <div id="tab-community" class="tab-content">
+            <div class="tool-demo-box">
+                <div class="demo-label">DASHBOARD: GROUP MANAGER</div>
+                <div class="comm-dashboard">
+                    <div class="stat-box">
+                        <span>Members</span>
+                        <strong>14,203</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span>Spam Blocked</span>
+                        <strong style="color: #ff4757">128</strong>
+                    </div>
+                    <div class="control-row">
+                        <span>Lockdown Mode</span>
+                        <label class="switch">
+                            <input type="checkbox" onchange="toggleLock(this)">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div id="lock-status" style="font-size: 0.8rem; color: #555; margin-top:5px;">System Normal</div>
+                </div>
+            </div>
+
+            <div class="pricing-row">
+                <div class="product-card">
+                    <h3>Moderator</h3>
+                    <div class="price">$200</div>
+                    <p>Anti-spam, Greetings.</p>
+                    <button class="add-btn" onclick="addToCart('Moderator Bot', 200)">Add to Cart</button>
+                </div>
+                <div class="product-card premium">
+                    <h3>Crypto Club</h3>
+                    <div class="price">$800</div>
+                    <p>Subscription via USDT, Kick ban.</p>
+                    <button class="add-btn" onclick="addToCart('Crypto Community Bot', 800)">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div id="cart-modal" class="modal">
         <div class="modal-content">
-            <h3>Your Cart</h3>
-            <div id="cart-items"></div>
-            <div class="cart-total">Total: <span id="cart-total">$0</span></div>
+            <div class="modal-header">
+                <h2>Your Cart</h2>
+                <button onclick="toggleCart()"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="cart-items-list">
+                </div>
+            <div class="cart-total">
+                Total: <span id="total-amount">$0</span>
+            </div>
             
-            <div class="payment-methods">
-                <p>Select Payment Method:</p>
-                <div class="pay-selector">
-                    <button class="pay-btn active" onclick="selectPay('crypto')"><i class="fab fa-bitcoin"></i> Crypto (USDT)</button>
-                    <button class="pay-btn" onclick="selectPay('wallet')"><i class="fas fa-wallet"></i> Wallet</button>
+            <div class="payment-options">
+                <p>Payment Method:</p>
+                <div class="pay-btn-group">
+                    <button class="p-btn active" onclick="setPayment('crypto')"><i class="fab fa-bitcoin"></i> USDT (TRC20)</button>
+                    <button class="p-btn" onclick="setPayment('card')"><i class="fas fa-credit-card"></i> Card/Wallet</button>
                 </div>
             </div>
 
-            <button class="checkout-btn" onclick="checkout()">CONFIRM ORDER</button>
-            <button class="close-btn" onclick="toggleCart()">Close</button>
+            <button class="checkout-btn" onclick="checkout()">PLACE ORDER</button>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
