@@ -1,14 +1,26 @@
 import os
 from dotenv import load_dotenv
 
-# Загружаем переменные из .env
 load_dotenv()
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+# Основные настройки
+BOT_TOKEN = os.getenv("TOKEN")
+ADMIN_ID = os.getenv("ADMIN_ID")
+APP_URL = os.getenv("WEBAPP_URL")
 
-# ВАЖНО: Сюда мы вставим ссылку ПОСЛЕ того, как загрузим mini_app на GitHub
-# Пока оставь пустой или поставь заглушку
-APP_URL = "https://nwl01234.github.io/portfolio-app/" 
+# Крипто-кошельки
+USDT_WALLET = os.getenv("USDT_WALLET", "ВАШ_USDT_АДРЕС_ЗДЕСЬ")
+BTC_WALLET = os.getenv("BTC_WALLET", "ВАШ_BTC_АДРЕС_ЗДЕСЬ")
+
+# Проверка загрузки
+print("=== CONFIG LOADED ===")
+print(f"BOT_TOKEN loaded: {'✅' if BOT_TOKEN else '❌'}")
+print(f"ADMIN_ID loaded: {'✅' if ADMIN_ID else '❌'}")
+print(f"APP_URL loaded: {'✅' if APP_URL else '❌'}")
+print(f"USDT_WALLET: {USDT_WALLET}")
+print(f"BTC_WALLET: {BTC_WALLET}")
+print("=====================")
 
 if not BOT_TOKEN:
-    exit("Error: BOT_TOKEN not found in .env file")
+    print("❌ CRITICAL: BOT_TOKEN not found in .env!")
+    exit(1)
