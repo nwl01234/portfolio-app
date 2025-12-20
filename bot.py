@@ -1,149 +1,103 @@
 import os
 import json
-import logging
 import asyncio
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
-from aiogram.types import WebAppInfo, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import WebAppInfo, ReplyKeyboardMarkup, KeyboardButton
 
-# Загрузка конфига
 load_dotenv()
-TOKEN = os.getenv("TOKEN")
-ADMIN_ID = os.getenv("ADMIN_ID")
-USDT_WALLET = os.getenv("USDT_WALLET")
-WEBAPP_URL = os.getenv("WEBAPP_URL")
 
-# Проверка настроек
-if not TOKEN or not ADMIN_ID:
-    print("❌ ОШИБКА: Не заполнен .env файл (TOKEN или ADMIN_ID)")
-    exit()
+# --- КОНФИГ ---
+TOKEN = os.getenv("TOKEN")
+ADMIN_ID = os.getenv("ADMIN_ID") # Твой цифровой ID
+USDT_WALLET = os.getenv("USDT_WALLET") # Твой адрес кошелька Tjx...
+WEBAPP_URL = os.getenv("WEBAPP_URL") # Ссылка на GitHub Pages
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
-logging.basicConfig(level=logging.INFO)
 
-# --- ГЛАВНОЕ МЕНЮ ---
-def main_kb():
+# --- МЕНЮ ---
+def main_menu():
     return ReplyKeyboardMarkup(keyboard=[
-        [KeyboardButton(text="📱 Открыть Портфолио и Услуги", web_app=WebAppInfo(url=WEBAPP_URL))],
-        [KeyboardButton(text="💬 Написать разработчику")]
+        [KeyboardButton(text="⚡ OPEN APP", web_app=WebAppInfo(url=WEBAPP_URL))],
+        [KeyboardButton(text="💬 Support Chat")]
     ], resize_keyboard=True)
 
 @dp.message(Command("start"))
-async def cmd_start(message: types.Message):
+async def start(message: types.Message):
     await message.answer(
-        "👋 **Привет! Это бот студии автоматизации.**\n\n"
-        "Здесь ты можешь:\n"
-        "1. Попробовать наши инструменты в реальном времени.\n"
-        "2. Заказать разработку (AI, Парсеры, Комьюнити).\n"
-        "3. Написать напрямую разработчику.\n\n"
-        "Нажми кнопку ниже ⬇️",
-        reply_markup=main_kb(),
+        "⬛ **NWL PREMIUM DEV**\n\n"
+        "Welcome. Use the App to view services and live demos.\n"
+        "Use the Support Chat to contact me directly.",
+        reply_markup=main_menu(),
         parse_mode="Markdown"
     )
 
-# --- ОБРАБОТКА ЗАКАЗА ИЗ WEBAPP ---
+# --- ОБРАБОТКА ЗАКАЗА ИЗ ПРИЛОЖЕНИЯ ---
 @dp.message(F.content_type == "web_app_data")
-async def handle_order(message: types.Message):
-    try:
-        data = json.loads(message.web_app_data.data)
-        if data['type'] == 'order':
-            # 1. Формируем чек для клиента
-            total = data['total']
-            items_text = "\n".join([f"▫️ {item['name']} — ${item['price']}" for item in data['items']])
-            
-            response_text = (
-                f"✅ **Заказ принят!**\n\n"
-                f"{items_text}\n"
-                f"💰 **Итого к оплате: ${total}**\n\n"
-            )
-
-            # Логика оплаты
-            if data['method'] == 'crypto':
-                response_text += (
-                    f"💳 **Оплата USDT (TRC20):**\n"
-                    f"`{USDT_WALLET}`\n\n"
-                    f"⚠️ После перевода нажмите кнопку 'Я оплатил' или отправьте скриншот."
-                )
-            else:
-                response_text += "💳 Для оплаты картой/Telegram Stars дождитесь счета от администратора."
-
-            await message.answer(response_text, parse_mode="Markdown")
-
-            # 2. Уведомление АДМИНУ
-            admin_text = (
-                f"🚨 **НОВЫЙ ЗАКАЗ!**\n"
-                f"👤 Клиент: {message.from_user.full_name} (@{message.from_user.username})\n"
-                f"🆔 ID: `{message.from_user.id}`\n\n"
-                f"{items_text}\n"
-                f"💵 Сумма: ${total}\n"
-                f"Способ: {data['method']}"
-            )
-            await bot.send_message(ADMIN_ID, admin_text, parse_mode="Markdown")
-
-    except Exception as e:
-        await message.answer("Ошибка обработки заказа. Напишите в поддержку.")
-        logging.error(f"Order error: {e}")
-
-# --- МЕССЕНДЖЕР (СВЯЗЬ С КЛИЕНТОМ) ---
-
-# 1. Клиент нажал "Написать разработчику"
-@dp.message(F.text == "💬 Написать разработчику")
-async def msg_mode(message: types.Message):
-    await message.answer("✍️ Пишите ваш вопрос прямо сюда. Я отвечу в ближайшее время.")
-
-# 2. Пересылка сообщения от КЛИЕНТА -> АДМИНУ
-@dp.message(F.from_user.id != int(ADMIN_ID))
-async def forward_to_admin(message: types.Message):
-    # Игнорируем сервисные сообщения
-    if message.web_app_data: return 
+async def process_order(message: types.Message):
+    data = json.loads(message.web_app_data.data)
     
-    forward_text = (
-        f"📩 **Сообщение от клиента**\n"
-        f"От: {message.from_user.full_name} (@{message.from_user.username})\n"
-        f"ID: `{message.from_user.id}`\n\n"
-        f"{message.text or '[Вложение]'}"
-    )
-    # Пересылаем само сообщение (чтобы видеть фото/файлы) и текст с ID
-    await bot.send_message(ADMIN_ID, forward_text, parse_mode="Markdown")
-    try:
-        await message.forward(ADMIN_ID)
-    except:
-        pass
+    if data['type'] == 'order':
+        items_list = "\n".join([f"▫️ {i['name']} - ${i['price']}" for i in data['cart']])
+        
+        # 1. Ответ клиенту
+        pay_info = ""
+        if data['method'] == 'usdt':
+            pay_info = f"💎 **USDT (TRC20) PAYMENT:**\n`{USDT_WALLET}`\n\nSend screenshot after payment."
+        else:
+            pay_info = "👛 **WALLET PAYMENT:**\nI will send you a @wallet invoice shortly."
 
-# 3. Ответ АДМИНА -> КЛИЕНТУ (через Reply)
-@dp.message(F.from_user.id == int(ADMIN_ID))
-async def admin_reply(message: types.Message):
-    # Если админ отвечает на пересланное сообщение или сообщение бота с ID
-    if message.reply_to_message:
-        try:
-            # Вариант А: Ответ на форвард
-            if message.reply_to_message.forward_from:
-                user_id = message.reply_to_message.forward_from.id
-            # Вариант Б: Ответ на текст бота, где есть "ID: 12345"
-            else:
-                lines = message.reply_to_message.text.split('\n')
-                user_id_line = next((line for line in lines if "ID: " in line), None)
-                if user_id_line:
-                    user_id = int(user_id_line.split("`")[1]) # Вытаскиваем цифры из ID: `123`
-                else:
-                    await message.answer("❌ Не могу найти ID пользователя в этом сообщении.")
-                    return
+        await message.answer(
+            f"✅ **ORDER CONFIRMED**\n\n{items_list}\n\n"
+            f"💰 TOTAL: **{data['total']}**\n\n"
+            f"{pay_info}",
+            parse_mode="Markdown"
+        )
+        
+        # 2. Ответ Админу
+        await bot.send_message(
+            ADMIN_ID,
+            f"🚨 **NEW SALE!**\n"
+            f"👤 {message.from_user.full_name} (@{message.from_user.username})\n"
+            f"🆔 `{message.from_user.id}`\n\n"
+            f"{items_list}\n"
+            f"💰 {data['total']} ({data['method']})"
+        )
 
-            # Отправка
-            await bot.copy_message(chat_id=user_id, from_chat_id=message.chat.id, message_id=message.message_id)
-            await message.answer("✅ Отправлено.")
-            
-        except Exception as e:
-            await message.answer(f"❌ Ошибка отправки: {e}")
+# --- МЕССЕНДЖЕР (КЛИЕНТ <-> АДМИН) ---
+
+# Если клиент нажал кнопку или пишет текст
+@dp.message(F.text)
+async def chat_handler(message: types.Message):
+    # Если пишет АДМИН (это ответ клиенту)
+    if str(message.from_user.id) == str(ADMIN_ID):
+        if message.reply_to_message:
+            # Пытаемся достать ID из текста сообщения (если бот переслал)
+            try:
+                # Ищем строку "ID: 12345"
+                txt = message.reply_to_message.text
+                user_id = txt.split("🆔 `")[1].split("`")[0]
+                await bot.send_message(user_id, f"👨‍💻 **DEV:** {message.text}")
+                await message.answer("✅ Sent.")
+            except:
+                await message.answer("⚠️ Reply to a message containing the User ID.")
+        return
+
+    # Если пишет КЛИЕНТ -> Пересылаем Админу
+    if message.text == "💬 Support Chat":
+        await message.answer("🟢 **Support Online.** Write your message:")
     else:
-        # Если админ пишет просто так, можно добавить команду рассылки, но пока просто игнорим
-        pass
+        await bot.send_message(
+            ADMIN_ID,
+            f"📩 **MSG FROM CLIENT**\n"
+            f"👤 @{message.from_user.username}\n"
+            f"🆔 `{message.from_user.id}`\n\n"
+            f"{message.text}"
+        )
 
-# Запуск
 async def main():
-    print("🤖 Бот запущен...")
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 

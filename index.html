@@ -3,151 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NWL Dev Portfolio</title>
+    <title>NWL Premium Solutions</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo">NWL<span class="dot">.</span>DEV</div>
-        <div class="cart-trigger" onclick="toggleCart()">
-            <i class="fas fa-shopping-cart"></i>
-            <span id="cart-count">0</span>
+    <div id="loader">
+        <div class="loader-content">
+            <div class="logo-glitch">NWL_DEV</div>
+            <div class="loading-bar"><div class="bar-fill"></div></div>
+        </div>
+    </div>
+
+    <div id="particles-js"></div>
+    <div class="vignette"></div>
+
+    <nav class="glass-nav">
+        <div class="nav-logo">NWL<span class="dot">.</span></div>
+        <div class="cart-btn" onclick="openCart()">
+            <i class="fas fa-shopping-bag"></i>
+            <span id="cart-badge" class="badge hidden">0</span>
         </div>
     </nav>
 
-    <div class="main-container">
+    <main class="container">
         
-        <div class="tabs-menu">
-            <button class="tab-btn active" onclick="switchTab('ai')">🤖 AI Bots</button>
-            <button class="tab-btn" onclick="switchTab('scraper')">📊 Data</button>
-            <button class="tab-btn" onclick="switchTab('community')">💎 Comm</button>
+        <section class="hero">
+            <h1>ELITE <span class="gradient-text">AUTOMATION</span></h1>
+            <p>US Market Standard • High-Load Systems • Python</p>
+        </section>
+
+        <div class="tabs-container">
+            <button class="tab active" onclick="setTab('ai')"><i class="fas fa-robot"></i> AI</button>
+            <button class="tab" onclick="setTab('data')"><i class="fas fa-network-wired"></i> Data</button>
+            <button class="tab" onclick="setTab('comm')"><i class="fas fa-users"></i> Comm</button>
         </div>
 
         <div id="tab-ai" class="tab-content active">
-            <div class="tool-demo-box">
-                <div class="demo-label">LIVE DEMO: SALES AGENT</div>
-                <div class="chat-window" id="ai-chat-window">
-                    <div class="msg bot">Hello! I'm the AI Agent. I can close deals 24/7. Try asking me about prices.</div>
+            <div class="tool-interface">
+                <div class="tool-header"><i class="fas fa-circle-notch fa-spin"></i> LIVE AGENT PREVIEW</div>
+                <div class="chat-viewport" id="ai-chat">
+                    <div class="msg bot">System online. I am the Sales AI. Ask me about pricing or capabilities.</div>
                 </div>
-                <div class="chat-input-area">
-                    <input type="text" id="ai-input" placeholder="Type message...">
-                    <button onclick="sendAiMessage()"><i class="fas fa-paper-plane"></i></button>
+                <div class="chat-input">
+                    <input type="text" id="ai-input" placeholder="Type here..." onkeypress="handleEnter(event)">
+                    <button onclick="sendAi()"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
-            
-            <div class="pricing-row">
-                <div class="product-card">
-                    <h3>Basic Bot</h3>
-                    <div class="price">$300</div>
-                    <p>Menu, FAQ, Auto-reply.</p>
-                    <button class="add-btn" onclick="addToCart('Basic AI Bot', 300)">Add to Cart</button>
+
+            <div class="tier-grid">
+                <div class="tier-card">
+                    <div class="tier-name">CORE AI</div>
+                    <div class="tier-price">$300</div>
+                    <ul class="specs">
+                        <li>Reliable Auto-Reply</li>
+                        <li>FAQ Menu System</li>
+                        <li>3 Days Delivery</li>
+                    </ul>
+                    <button class="add-btn" onclick="addToCart('Core AI Bot', 300)">ADD TO CART</button>
                 </div>
-                <div class="product-card premium">
-                    <h3>AI Sales Pro</h3>
-                    <div class="price">$1200</div>
-                    <p>ChatGPT-4, CRM Sync, Context.</p>
-                    <button class="add-btn" onclick="addToCart('Premium AI Agent', 1200)">Add to Cart</button>
+                <div class="tier-card premium">
+                    <div class="glow-border"></div>
+                    <div class="tier-name">INTELLIGENT AGENT</div>
+                    <div class="tier-price">$1,200</div>
+                    <ul class="specs">
+                        <li>GPT-4 Integration</li>
+                        <li>Context Aware</li>
+                        <li>Human Handoff</li>
+                    </ul>
+                    <button class="add-btn" onclick="addToCart('Premium AI Agent', 1200)">ADD TO CART</button>
                 </div>
             </div>
         </div>
 
-        <div id="tab-scraper" class="tab-content">
-            <div class="tool-demo-box">
-                <div class="demo-label">REAL TOOL: LINK ANALYZER</div>
-                <div class="scraper-interface">
-                    <input type="text" id="scraper-input" placeholder="Enter any URL (e.g., google.com)">
-                    <button class="scan-btn" onclick="runScraper()">SCAN URL</button>
+        <div id="tab-data" class="tab-content">
+            <div class="tool-interface terminal-style">
+                <div class="tool-header">⚡ DATA TERMINAL</div>
+                <div class="terminal-screen" id="term-screen">
+                    <div class="line">user@nwl:~$ waiting for target url...</div>
                 </div>
-                <div class="scraper-console" id="scraper-console">
-                    <span class="blink">> Ready to scan...</span>
-                </div>
-            </div>
-
-            <div class="pricing-row">
-                <div class="product-card">
-                    <h3>Simple Parser</h3>
-                    <div class="price">$250</div>
-                    <p>Excel/CSV Export.</p>
-                    <button class="add-btn" onclick="addToCart('Simple Scraper', 250)">Add to Cart</button>
-                </div>
-                <div class="product-card premium">
-                    <h3>Live Monitor</h3>
-                    <div class="price">$900</div>
-                    <p>24/7 Tracking, Instant Alerts.</p>
-                    <button class="add-btn" onclick="addToCart('Live Monitor System', 900)">Add to Cart</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-community" class="tab-content">
-            <div class="tool-demo-box">
-                <div class="demo-label">DASHBOARD: GROUP MANAGER</div>
-                <div class="comm-dashboard">
-                    <div class="stat-box">
-                        <span>Members</span>
-                        <strong>14,203</strong>
-                    </div>
-                    <div class="stat-box">
-                        <span>Spam Blocked</span>
-                        <strong style="color: #ff4757">128</strong>
-                    </div>
-                    <div class="control-row">
-                        <span>Lockdown Mode</span>
-                        <label class="switch">
-                            <input type="checkbox" onchange="toggleLock(this)">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                    <div id="lock-status" style="font-size: 0.8rem; color: #555; margin-top:5px;">System Normal</div>
+                <div class="chat-input">
+                    <input type="text" id="scraper-input" placeholder="https://example.com" style="font-family: 'JetBrains Mono'">
+                    <button onclick="runScrape()"><i class="fas fa-play"></i></button>
                 </div>
             </div>
 
-            <div class="pricing-row">
-                <div class="product-card">
-                    <h3>Moderator</h3>
-                    <div class="price">$200</div>
-                    <p>Anti-spam, Greetings.</p>
-                    <button class="add-btn" onclick="addToCart('Moderator Bot', 200)">Add to Cart</button>
+            <div class="tier-grid">
+                <div class="tier-card">
+                    <div class="tier-name">BASIC PARSER</div>
+                    <div class="tier-price">$250</div>
+                    <ul class="specs">
+                        <li>Excel/CSV Export</li>
+                        <li>Single Site</li>
+                        <li>No IP Ban Protection</li>
+                    </ul>
+                    <button class="add-btn" onclick="addToCart('Basic Scraper', 250)">ADD TO CART</button>
                 </div>
-                <div class="product-card premium">
-                    <h3>Crypto Club</h3>
-                    <div class="price">$800</div>
-                    <p>Subscription via USDT, Kick ban.</p>
-                    <button class="add-btn" onclick="addToCart('Crypto Community Bot', 800)">Add to Cart</button>
+                <div class="tier-card premium">
+                    <div class="glow-border"></div>
+                    <div class="tier-name">MONITOR SYSTEM</div>
+                    <div class="tier-price">$900</div>
+                    <ul class="specs">
+                        <li>24/7 Price Tracking</li>
+                        <li>Telegram Alerts</li>
+                        <li>Anti-Detect Proxies</li>
+                    </ul>
+                    <button class="add-btn" onclick="addToCart('Monitor System', 900)">ADD TO CART</button>
                 </div>
             </div>
         </div>
 
+        <div id="tab-comm" class="tab-content">
+            <div class="tool-interface">
+                <div class="tool-header">🛡️ ADMIN DASHBOARD</div>
+                <div class="dashboard-ui">
+                    <div class="stat-row">
+                        <div class="stat"><span>Members</span><b>12.5k</b></div>
+                        <div class="stat"><span>Active</span><b>4.2k</b></div>
+                    </div>
+                    <div class="control-panel">
+                        <div class="switch-row">
+                            <span>Anti-Spam Shield</span>
+                            <label class="toggle"><input type="checkbox" checked onchange="toggleNotify('Anti-Spam')"><span class="slider"></span></label>
+                        </div>
+                        <div class="switch-row">
+                            <span>Paid Entry (USDT)</span>
+                            <label class="toggle"><input type="checkbox" onchange="toggleNotify('Paywall')"><span class="slider"></span></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tier-grid">
+                <div class="tier-card">
+                    <div class="tier-name">MODERATOR</div>
+                    <div class="tier-price">$200</div>
+                    <ul class="specs">
+                        <li>Welcome Messages</li>
+                        <li>Link Removal</li>
+                        <li>Blacklist Words</li>
+                    </ul>
+                    <button class="add-btn" onclick="addToCart('Moderator Bot', 200)">ADD TO CART</button>
+                </div>
+                <div class="tier-card premium">
+                    <div class="glow-border"></div>
+                    <div class="tier-name">CRYPTO CLUB</div>
+                    <div class="tier-price">$800</div>
+                    <ul class="specs">
+                        <li>Subscription Mgmt</li>
+                        <li>Wallet Verification</li>
+                        <li>Private Invite Links</li>
+                    </ul>
+                    <button class="add-btn" onclick="addToCart('Crypto Community Bot', 800)">ADD TO CART</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="floating-chat" onclick="openMessenger()">
+        <i class="fas fa-comment-dots"></i>
+        <span>Chat with Dev</span>
     </div>
 
-    <div id="cart-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Your Cart</h2>
-                <button onclick="toggleCart()"><i class="fas fa-times"></i></button>
+    <div id="cart-overlay" class="overlay">
+        <div class="drawer">
+            <div class="drawer-header">
+                <h2>YOUR ORDER</h2>
+                <i class="fas fa-times" onclick="closeCart()"></i>
             </div>
-            <div id="cart-items-list">
+            <div id="cart-list" class="cart-list"></div>
+            <div class="cart-footer">
+                <div class="total-row"><span>Total:</span> <span id="total-price">$0</span></div>
+                
+                <div class="payment-title">PAYMENT METHOD</div>
+                <div class="payment-grid">
+                    <div class="pay-option active" onclick="setPay('usdt')">
+                        <i class="fas fa-coins"></i> USDT (TRC20)
+                    </div>
+                    <div class="pay-option" onclick="setPay('wallet')">
+                        <i class="fas fa-wallet"></i> TG Wallet
+                    </div>
                 </div>
-            <div class="cart-total">
-                Total: <span id="total-amount">$0</span>
-            </div>
-            
-            <div class="payment-options">
-                <p>Payment Method:</p>
-                <div class="pay-btn-group">
-                    <button class="p-btn active" onclick="setPayment('crypto')"><i class="fab fa-bitcoin"></i> USDT (TRC20)</button>
-                    <button class="p-btn" onclick="setPayment('card')"><i class="fas fa-credit-card"></i> Card/Wallet</button>
-                </div>
-            </div>
 
-            <button class="checkout-btn" onclick="checkout()">PLACE ORDER</button>
+                <button class="checkout-btn" onclick="checkout()">
+                    CONFIRM & PAY <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
