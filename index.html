@@ -3,464 +3,512 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NOVA Systems</title>
+    <title>NOVA SYSTEMS</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg: #050505;
-            --card: rgba(20, 20, 25, 0.7);
-            --border: rgba(255, 255, 255, 0.08);
-            --accent: #3b82f6; /* Blue for Trust */
-            --accent-glow: rgba(59, 130, 246, 0.4);
-            --pro: #f59e0b; /* Gold for Premium */
-            --text: #ffffff;
-            --text-sec: #9ca3af;
+            --bg: #030304;
+            --card-bg: #111115;
+            --accent: #007AFF; /* System Blue - Trust */
+            --accent-glow: rgba(0, 122, 255, 0.3);
+            --pro: #FFD60A; /* System Yellow - Premium */
+            --pro-glow: rgba(255, 214, 10, 0.2);
+            --success: #30D158;
+            --text: #FFFFFF;
+            --text-sec: #8E8E93;
             --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); font-family: var(--font); padding-bottom: 100px; overflow-x: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font); padding-bottom: 120px; overflow-x: hidden; }
 
-        /* BACKGROUND EFFECTS */
-        .bg-glow { position: fixed; width: 300px; height: 300px; background: var(--accent); filter: blur(150px); opacity: 0.15; z-index: -1; }
-        .glow-1 { top: -100px; left: -100px; }
-        .glow-2 { bottom: -100px; right: -100px; background: purple; }
-
-        /* HEADER */
+        /* HEADER & STATUS */
         .header {
-            position: sticky; top: 0; z-index: 50;
-            background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(20px);
-            padding: 15px 20px; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100; background: rgba(3,3,4,0.95);
+            backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
         }
-        .logo { font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
+        .logo { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; }
         .logo span { color: var(--accent); }
-        .lang-btn { font-size: 12px; border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; color: var(--text-sec); background: rgba(255,255,255,0.05); }
+        .status-badge { font-size: 10px; background: rgba(48, 209, 88, 0.15); color: var(--success); padding: 4px 8px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        .status-dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; box-shadow: 0 0 5px var(--success); }
 
-        /* TABS */
-        .tabs { display: flex; gap: 8px; padding: 15px 20px; overflow-x: auto; scrollbar-width: none; }
-        .tab {
-            white-space: nowrap; padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 500;
-            background: var(--card); border: 1px solid var(--border); color: var(--text-sec); transition: 0.3s;
+        /* HERO STATS */
+        .trust-row { display: flex; justify-content: space-around; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .stat-item { text-align: center; }
+        .stat-val { font-size: 16px; font-weight: 800; display: block; margin-bottom: 2px; }
+        .stat-lbl { font-size: 10px; color: var(--text-sec); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* NAVIGATION */
+        .nav-scroll { padding: 15px 0 5px 20px; overflow-x: auto; display: flex; gap: 10px; scrollbar-width: none; }
+        .nav-btn {
+            padding: 8px 16px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px; font-size: 13px; color: var(--text-sec); white-space: nowrap; transition: 0.3s;
         }
-        .tab.active { background: var(--text); color: #000; border-color: var(--text); }
+        .nav-btn.active { background: var(--text); color: black; border-color: white; font-weight: 600; }
 
         /* SECTIONS */
-        .section { display: none; padding: 0 20px; animation: fadeIn 0.4s ease; }
+        .section { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        h1 { font-size: 26px; font-weight: 700; margin-bottom: 5px; line-height: 1.2; }
-        p.subtitle { color: var(--text-sec); font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        h1 { font-size: 28px; font-weight: 800; margin-bottom: 5px; }
+        .subtitle { color: var(--text-sec); font-size: 14px; margin-bottom: 20px; line-height: 1.4; }
 
-        /* DEMO BOX */
-        .demo-box {
-            background: #000; border: 1px solid var(--border); border-radius: 16px;
-            padding: 15px; margin-bottom: 25px; position: relative; overflow: hidden;
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        /* LIVE DEMOS */
+        .demo-container {
+            background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+            overflow: hidden; margin-bottom: 25px; position: relative;
         }
-        .demo-tag { position: absolute; top: 10px; right: 10px; font-size: 9px; background: var(--accent); padding: 3px 6px; border-radius: 4px; font-weight: 700; color: white; }
-
-        /* CHAT DEMO */
-        .chat-area { height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
-        .msg { padding: 8px 12px; border-radius: 10px; font-size: 13px; max-width: 85%; }
-        .msg.bot { background: #1f2937; color: #e5e7eb; align-self: flex-start; border-left: 2px solid var(--accent); }
+        .demo-header {
+            background: #1C1C1E; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .demo-title { font-size: 11px; font-weight: 700; color: var(--text-sec); text-transform: uppercase; }
+        
+        /* AI CHAT DEMO */
+        .chat-window { height: 200px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px 14px; border-radius: 12px; font-size: 13px; max-width: 85%; line-height: 1.4; }
+        .msg.bot { background: #1C1C1E; color: #E5E5EA; align-self: flex-start; border-left: 2px solid var(--accent); }
         .msg.user { background: var(--accent); color: white; align-self: flex-end; }
-        .input-row { display: flex; gap: 10px; }
-        .input-row input { flex: 1; background: #111; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 8px; font-size: 13px; }
+        .chat-input-area { padding: 10px; display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .chat-input { flex: 1; background: #1C1C1E; border: none; padding: 10px; border-radius: 8px; color: white; font-size: 13px; }
+        .send-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        /* TERMINAL DEMO */
-        .terminal { font-family: 'Courier New', monospace; font-size: 11px; height: 180px; color: #10b981; overflow-y: hidden; }
+        /* SCRAPER TERMINAL */
+        .terminal { background: #080808; padding: 15px; height: 180px; font-family: 'Courier New', monospace; font-size: 11px; color: var(--success); overflow-y: hidden; }
+        .term-controls { display: flex; gap: 5px; padding: 10px; background: #111; overflow-x: auto; }
+        .term-btn { padding: 4px 8px; border-radius: 4px; border: 1px solid #333; color: #888; background: transparent; font-size: 10px; cursor: pointer; }
+        .term-btn.active { border-color: var(--success); color: var(--success); background: rgba(48,209,88,0.1); }
 
-        /* PRODUCT CARD */
-        .product-card {
-            background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 15px;
-            transition: 0.3s;
-        }
-        .product-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-        .badge { font-size: 10px; padding: 4px 8px; border-radius: 20px; text-transform: uppercase; font-weight: 700; }
-        .badge.core { background: rgba(255,255,255,0.1); color: var(--text-sec); }
-        .badge.pro { background: rgba(245, 158, 11, 0.2); color: var(--pro); border: 1px solid rgba(245, 158, 11, 0.3); }
+        /* COMMUNITY LOGS */
+        .activity-log { height: 180px; padding: 15px; overflow-y: auto; }
+        .log-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 12px; }
+        .log-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+        .log-icon.join { background: rgba(0,122,255,0.2); color: var(--accent); }
+        .log-icon.pay { background: rgba(48,209,88,0.2); color: var(--success); }
+        .log-icon.ban { background: rgba(255,59,48,0.2); color: #FF3B30; }
+        .log-text { color: #ccc; }
+        .log-time { margin-left: auto; color: #555; font-size: 10px; }
+
+        /* PRODUCT CARDS & PRICING */
+        .pricing-card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
         
-        .price-block { text-align: right; }
-        .price { font-size: 22px; font-weight: 800; display: block; }
-        .sub-price { font-size: 11px; color: var(--text-sec); }
+        .toggle-container { background: rgba(0,0,0,0.4); padding: 4px; border-radius: 10px; display: flex; margin-bottom: 20px; }
+        .toggle-btn { flex: 1; text-align: center; padding: 10px; font-size: 12px; font-weight: 700; color: #666; border-radius: 8px; transition: 0.3s; cursor: pointer; }
+        .toggle-btn.core-active { background: #333; color: white; }
+        .toggle-btn.pro-active { background: var(--pro); color: black; box-shadow: 0 0 15px var(--pro-glow); }
 
-        .features { list-style: none; margin: 15px 0; }
-        .features li { font-size: 13px; color: #d1d5db; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        .features li i { color: var(--accent); font-size: 12px; }
-        
-        .toggle-version {
-            display: flex; background: rgba(0,0,0,0.3); padding: 4px; border-radius: 10px; margin-bottom: 15px;
-        }
-        .ver-btn { flex: 1; padding: 8px; text-align: center; font-size: 12px; border-radius: 8px; color: var(--text-sec); font-weight: 600; }
-        .ver-btn.active { background: var(--text); color: black; }
+        .price-display { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; }
+        .main-price { font-size: 32px; font-weight: 800; color: white; }
+        .price-label { font-size: 12px; color: var(--text-sec); text-align: right; }
 
-        .btn-buy {
-            width: 100%; padding: 14px; background: var(--text); color: black; border: none; border-radius: 12px;
-            font-weight: 700; font-size: 14px; cursor: pointer; display: flex; justify-content: center; gap: 10px;
-        }
-        .btn-buy:active { transform: scale(0.98); }
+        .comparison-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .comparison-table td { padding: 8px 0; font-size: 13px; color: var(--text-sec); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .comparison-table td:last-child { text-align: right; color: white; font-weight: 500; }
+        .comparison-table i { color: var(--accent); margin-right: 6px; }
 
-        /* CART & MODAL */
-        .float-cart {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--accent); color: white; padding: 12px 25px; border-radius: 30px;
-            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.4); display: none; align-items: center; gap: 10px; font-weight: 700; z-index: 100;
+        .buy-btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.2s; }
+        .buy-btn.core { background: white; color: black; }
+        .buy-btn.pro { background: var(--pro); color: black; box-shadow: 0 5px 20px rgba(255, 214, 10, 0.2); }
+        .buy-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+        /* FLOATING ACTIONS */
+        .bottom-bar {
+            position: fixed; bottom: 20px; left: 20px; right: 20px;
+            display: flex; gap: 10px; z-index: 1000;
         }
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8);
-            z-index: 200; display: none; justify-content: center; align-items: flex-end;
+        .contact-float {
+            width: 50px; height: 50px; background: #333; border-radius: 25px;
+            display: flex; align-items: center; justify-content: center; color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5); cursor: pointer;
         }
-        .modal {
-            background: #111; width: 100%; border-radius: 20px 20px 0 0; padding: 25px; border-top: 1px solid #333;
-            animation: slideUp 0.3s;
+        .cart-float {
+            flex: 1; background: var(--accent); border-radius: 25px;
+            display: none; align-items: center; justify-content: center; gap: 10px;
+            color: white; font-weight: 700; box-shadow: 0 5px 20px var(--accent-glow); cursor: pointer;
         }
+
+        /* MODAL */
+        .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; display: none; align-items: flex-end; }
+        .modal-content { background: #1C1C1E; width: 100%; padding: 25px; border-radius: 25px 25px 0 0; animation: slideUp 0.3s ease; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        .hourly-note { font-size: 11px; color: var(--text-sec); text-align: center; margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow glow-1"></div>
-    <div class="bg-glow glow-2"></div>
-
     <div class="header">
         <div class="logo">NOVA <span>SYSTEMS</span></div>
-        <div class="lang-btn" onclick="toggleLang()" id="lang-display">EN</div>
+        <div class="status-badge"><div class="status-dot"></div> OPEN FOR WORK</div>
     </div>
 
-    <div class="tabs">
-        <div class="tab active" onclick="setTab('ai')" data-i18n="tab_ai">AI Agents</div>
-        <div class="tab" onclick="setTab('data')" data-i18n="tab_data">Scrapers</div>
-        <div class="tab" onclick="setTab('comm')" data-i18n="tab_comm">Community</div>
+    <div class="trust-row">
+        <div class="stat-item">
+            <span class="stat-val">300+</span>
+            <span class="stat-lbl">Projects</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-val">99.9%</span>
+            <span class="stat-lbl">Uptime</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-val">24/7</span>
+            <span class="stat-lbl">Support</span>
+        </div>
+    </div>
+
+    <div class="nav-scroll">
+        <div class="nav-btn active" onclick="setTab('ai', this)">AI Agents</div>
+        <div class="nav-btn" onclick="setTab('scraper', this)">Scrapers</div>
+        <div class="nav-btn" onclick="setTab('comm', this)">Community</div>
     </div>
 
     <div id="ai" class="section active">
-        <h1 data-i18n="ai_title">AI Integration</h1>
-        <p class="subtitle" data-i18n="ai_desc">Autonomous support agents for 24/7 sales.</p>
+        <h1>Intelligent Agents</h1>
+        <p class="subtitle">Automated sales & support staff. They don't sleep, don't ask for raises, and handle thousands of clients simultaneously.</p>
 
-        <div class="demo-box">
-            <div class="demo-tag">LIVE AGENT</div>
-            <div class="chat-area" id="ai-chat">
-                <div class="msg bot" data-i18n="ai_hello">Hello. I am the Nova Agent. How can I help?</div>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">LIVE PREVIEW (GPT-4 ENGINE)</span>
+                <i class="fas fa-robot" style="color:#666"></i>
             </div>
-            <div class="input-row">
-                <input type="text" id="ai-input" placeholder="..." onkeypress="handleEnter(event)">
-                <div onclick="sendAi()" style="background:var(--accent); width:40px; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="fas fa-paper-plane"></i></div>
+            <div class="chat-window" id="ai-chat">
+                <div class="msg bot">Nexus Core initialized. I can answer questions, sell products, and schedule appointments. Try me.</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" id="ai-input" placeholder="Ask about price, services..." onkeypress="handleEnter(event)">
+                <div class="send-icon" onclick="sendAi()"><i class="fas fa-arrow-up" style="color:white"></i></div>
             </div>
         </div>
 
-        <div class="product-card" id="card-ai">
-            <div class="toggle-version">
-                <div class="ver-btn active" onclick="setVersion('ai', 'core')" data-i18n="ver_core">CORE</div>
-                <div class="ver-btn" onclick="setVersion('ai', 'pro')" data-i18n="ver_pro">PRO</div>
+        <div class="pricing-card" id="card-ai">
+            <div class="toggle-container">
+                <div class="toggle-btn core-active" onclick="setTier('ai', 'core')" id="btn-ai-core">CORE</div>
+                <div class="toggle-btn" onclick="setTier('ai', 'pro')" id="btn-ai-pro">PRO ⚡</div>
             </div>
-            <div class="product-top">
-                <h3 id="name-ai">Support Bot</h3>
-                <div class="price-block">
-                    <span class="price" id="price-ai">$250</span>
-                    <span class="sub-price" data-i18n="fix_price">Fixed Price</span>
-                </div>
+            
+            <div class="price-display">
+                <div class="main-price" id="price-ai">$290</div>
+                <div class="price-label">One-time payment<br>Lifetime License</div>
             </div>
-            <ul class="features" id="feat-ai">
-                </ul>
-            <button class="btn-buy" onclick="addCurrent('ai')" data-i18n="btn_add">ADD TO PROJECT</button>
+
+            <table class="comparison-table" id="table-ai">
+                </table>
+
+            <button class="buy-btn core" id="buy-ai" onclick="addToCart('ai')">ADD TO CART</button>
         </div>
     </div>
 
-    <div id="data" class="section">
-        <h1 data-i18n="data_title">Data Systems</h1>
-        <p class="subtitle" data-i18n="data_desc">High-speed scrapers and monitoring tools.</p>
+    <div id="scraper" class="section">
+        <h1>Data Extraction</h1>
+        <p class="subtitle">Get instant Telegram alerts when prices change, stocks drop, or competitors update their inventory. Stay ahead of the market.</p>
 
-        <div class="demo-box">
-            <div class="demo-tag">TERMINAL</div>
-            <div class="terminal" id="terminal">
-                root@nova:~# waiting for target...<br>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">REAL-TIME MONITOR</span>
+                <i class="fas fa-network-wired" style="color:#666"></i>
             </div>
-            <button onclick="runScraper()" style="margin-top:10px; background:#10b981; border:none; padding:5px 10px; border-radius:4px; font-size:10px; font-weight:bold;">RUN TEST</button>
+            <div class="term-controls">
+                <button class="term-btn active" onclick="setScrapeMode('amazon', this)">Amazon</button>
+                <button class="term-btn" onclick="setScrapeMode('crypto', this)">Binance</button>
+                <button class="term-btn" onclick="setScrapeMode('ig', this)">Instagram</button>
+                <button class="term-btn" onclick="setScrapeMode('upwork', this)">Upwork</button>
+                <button class="term-btn" onclick="setScrapeMode('stocks', this)">Stocks</button>
+            </div>
+            <div class="terminal" id="terminal">
+                <span style="opacity:0.5">Select a target source above to start monitoring...</span>
+            </div>
         </div>
 
-        <div class="product-card" id="card-data">
-            <div class="toggle-version">
-                <div class="ver-btn active" onclick="setVersion('data', 'core')" data-i18n="ver_core">CORE</div>
-                <div class="ver-btn" onclick="setVersion('data', 'pro')" data-i18n="ver_pro">PRO</div>
+        <div class="pricing-card" id="card-scraper">
+            <div class="toggle-container">
+                <div class="toggle-btn core-active" onclick="setTier('scraper', 'core')" id="btn-scraper-core">CORE</div>
+                <div class="toggle-btn" onclick="setTier('scraper', 'pro')" id="btn-scraper-pro">PRO ⚡</div>
             </div>
-            <div class="product-top">
-                <h3 id="name-data">Web Scraper</h3>
-                <div class="price-block">
-                    <span class="price" id="price-data">$200</span>
-                    <span class="sub-price" data-i18n="fix_price">Fixed Price</span>
-                </div>
+            
+            <div class="price-display">
+                <div class="main-price" id="price-scraper">$250</div>
+                <div class="price-label">One-time payment<br>Full Source Code</div>
             </div>
-            <ul class="features" id="feat-data"></ul>
-            <button class="btn-buy" onclick="addCurrent('data')" data-i18n="btn_add">ADD TO PROJECT</button>
+
+            <table class="comparison-table" id="table-scraper"></table>
+
+            <button class="buy-btn core" id="buy-scraper" onclick="addToCart('scraper')">ADD TO CART</button>
         </div>
     </div>
 
     <div id="comm" class="section">
-        <h1 data-i18n="comm_title">Community Hub</h1>
-        <p class="subtitle" data-i18n="comm_desc">Automation for private groups & channels.</p>
+        <h1>Community Empire</h1>
+        <p class="subtitle">Monetize your audience. Automatically manage paid subscriptions, kick non-payers, and protect your content.</p>
 
-        <div class="product-card" id="card-comm">
-            <div class="toggle-version">
-                <div class="ver-btn active" onclick="setVersion('comm', 'core')" data-i18n="ver_core">CORE</div>
-                <div class="ver-btn" onclick="setVersion('comm', 'pro')" data-i18n="ver_pro">PRO</div>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">GROUP ACTIVITY LOG</span>
+                <i class="fas fa-users" style="color:#666"></i>
             </div>
-            <div class="product-top">
-                <h3 id="name-comm">Manager Bot</h3>
-                <div class="price-block">
-                    <span class="price" id="price-comm">$150</span>
-                    <span class="sub-price" data-i18n="fix_price">Fixed Price</span>
+            <div class="activity-log" id="comm-log">
                 </div>
+        </div>
+
+        <div class="pricing-card" id="card-comm">
+            <div class="toggle-container">
+                <div class="toggle-btn core-active" onclick="setTier('comm', 'core')" id="btn-comm-core">CORE</div>
+                <div class="toggle-btn" onclick="setTier('comm', 'pro')" id="btn-comm-pro">PRO ⚡</div>
             </div>
-            <ul class="features" id="feat-comm"></ul>
-            <button class="btn-buy" onclick="addCurrent('comm')" data-i18n="btn_add">ADD TO PROJECT</button>
+            
+            <div class="price-display">
+                <div class="main-price" id="price-comm">$190</div>
+                <div class="price-label">One-time payment<br>Plugin & Play</div>
+            </div>
+
+            <table class="comparison-table" id="table-comm"></table>
+
+            <button class="buy-btn core" id="buy-comm" onclick="addToCart('comm')">ADD TO CART</button>
         </div>
     </div>
 
-    <div class="float-cart" id="cart-btn" onclick="openModal()">
-        <i class="fas fa-briefcase"></i>
-        <span id="cart-total">$0</span>
+    <div class="bottom-bar">
+        <div class="contact-float" onclick="contactDev()">
+            <i class="fas fa-comment-dots"></i>
+        </div>
+        <div class="cart-float" id="cart-float" onclick="openCheckout()">
+            <i class="fas fa-shopping-bag"></i>
+            <span id="cart-total">$0</span>
+        </div>
     </div>
 
-    <div class="modal-overlay" id="modal">
-        <div class="modal">
-            <h2 style="margin-bottom:15px;" data-i18n="checkout_title">Project Summary</h2>
-            <div id="cart-list" style="margin-bottom:20px; font-size:14px; color: #ccc;"></div>
+    <div class="modal-bg" id="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom:15px; font-weight:800;">Order Summary</h2>
+            <div id="order-items" style="margin-bottom:20px; color:#aaa; font-size:14px; line-height:1.6;"></div>
             
-            <p style="margin-bottom:5px; font-size:12px; color:var(--text-sec);" data-i18n="pay_via">Payment Method:</p>
-            <div style="background:#222; padding:15px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <span style="font-weight:bold;">USDT (TRC20)</span>
-                <i class="fas fa-check-circle" style="color:var(--accent)"></i>
+            <div style="background:#111; padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid #333;">
+                <div style="color:#666; font-size:12px; margin-bottom:5px;">Estimated Delivery</div>
+                <div style="color:white; font-weight:bold;">2-4 Business Days</div>
             </div>
-            
-            <button class="btn-buy" onclick="sendOrder()" data-i18n="btn_confirm">CONFIRM REQUEST</button>
-            <button class="btn-buy" onclick="closeModal()" style="background:transparent; color:#666; margin-top:5px;" data-i18n="btn_close">Close</button>
-            
-            <div class="hourly-note" data-i18n="hourly_note">
-                * Additional custom modifications are billed at $35/hour.
-            </div>
+
+            <button class="buy-btn pro" onclick="submitOrder()">CONFIRM & PAY</button>
+            <div style="text-align:center; margin-top:15px; color:#666; font-size:12px;" onclick="closeModal()">Close Window</div>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.ready(); tg.expand(); tg.setHeaderColor('#050505');
+        tg.ready(); tg.expand(); tg.setHeaderColor('#030304');
 
-        // --- DATA & TRANSLATIONS ---
-        const langData = {
-            en: {
-                tab_ai: "AI Agents", tab_data: "Scrapers", tab_comm: "Community",
-                ai_title: "AI Integration", ai_desc: "Autonomous agents for support & sales.",
-                data_title: "Data Systems", data_desc: "High-speed parsing & monitoring.",
-                comm_title: "Community Hub", comm_desc: "Manage & Monetize private groups.",
-                ver_core: "CORE", ver_pro: "PRO",
-                fix_price: "Fixed Price", btn_add: "ADD TO PROJECT",
-                checkout_title: "Project Summary", pay_via: "Payment via:",
-                btn_confirm: "CONFIRM REQUEST", btn_close: "Close",
-                hourly_note: "* Custom modifications billed at $35/hour.",
-                ai_hello: "Hello. I am Nova Agent. How can I help?",
-                // Dynamic Products
-                p_ai_core: "Support Bot", p_ai_pro: "Neural Sales Agent",
-                p_data_core: "Web Scraper", p_data_pro: "Live Monitor System",
-                p_comm_core: "Manager Bot", p_comm_pro: "Subscription Empire"
-            },
-            ru: {
-                tab_ai: "AI Агенты", tab_data: "Парсеры", tab_comm: "Комьюнити",
-                ai_title: "AI Интеграция", ai_desc: "Автономные агенты для поддержки.",
-                data_title: "Сбор Данных", data_desc: "Быстрый парсинг и мониторинг.",
-                comm_title: "Управление Группой", comm_desc: "Монетизация каналов и чатов.",
-                ver_core: "БАЗА", ver_pro: "PRO",
-                fix_price: "Фикс. цена", btn_add: "ДОБАВИТЬ",
-                checkout_title: "Ваш Проект", pay_via: "Оплата через:",
-                btn_confirm: "ОТПРАВИТЬ ЗАЯВКУ", btn_close: "Закрыть",
-                hourly_note: "* Доп. модификации оплачиваются отдельно: $35/час.",
-                ai_hello: "Привет. Я Nova Agent. Чем могу помочь?",
-                // Dynamic Products
-                p_ai_core: "Бот Поддержки", p_ai_pro: "Нейро-Продавец",
-                p_data_core: "Веб Парсер", p_data_pro: "Live Мониторинг",
-                p_comm_core: "Модератор", p_comm_pro: "Империя Подписок"
-            }
-        };
-
+        // --- PRODUCT DATA ---
         const products = {
             ai: {
-                core: { price: 250, feats_en: ["Auto-Reply FAQ", "Button Menu", "Admin Panel"], feats_ru: ["Авто-ответы FAQ", "Меню кнопок", "Админ панель"] },
-                pro:  { price: 800, feats_en: ["GPT-4 Vision Integration", "Context Memory", "CRM Sync"], feats_ru: ["Интеграция GPT-4 Vision", "Память контекста", "Связка с CRM"] }
+                core: { price: 290, name: "AI Support Core", features: [["Smart Auto-Reply", "Yes"], ["Admin Panel", "No"], ["Context Memory", "Short"], ["Languages", "EN only"]] },
+                pro: { price: 890, name: "AI Sales Agent PRO", features: [["Smart Auto-Reply", "GPT-4 Turbo"], ["Admin Panel", "Full Dashboard"], ["Context Memory", "Infinite"], ["Languages", "Multi-Lang + Voice"]] }
             },
-            data: {
-                core: { price: 200, feats_en: ["Single Site Parsing", "Excel Export", "No Captcha"], feats_ru: ["Парсинг 1 сайта", "Экспорт в Excel", "Без капчи"] },
-                pro:  { price: 600, feats_en: ["Multi-Site Monitor", "Proxy Rotation", "Instant Alerts"], feats_ru: ["Мониторинг сайтов", "Ротация прокси", "Мгновенные алерты"] }
+            scraper: {
+                core: { price: 250, name: "Scraper Basic", features: [["Target Site", "1 Source"], ["Speed", "Standard"], ["Export", "CSV/Excel"], ["Alerts", "Email"]] },
+                pro: { price: 750, name: "Data Miner PRO", features: [["Target Site", "Up to 5"], ["Speed", "Real-time"], ["Export", "API / Webhook"], ["Alerts", "Telegram Instant"]] }
             },
             comm: {
-                core: { price: 150, feats_en: ["Anti-Spam Filter", "Welcome Message", "Commands"], feats_ru: ["Анти-спам фильтр", "Приветствия", "Команды"] },
-                pro:  { price: 450, feats_en: ["Paid Subscriptions", "USDT Auto-Pay", "Expiring Links"], feats_ru: ["Платные подписки", "USDT Авто-оплата", "Временные ссылки"] }
+                core: { price: 190, name: "Group Manager", features: [["Anti-Spam", "Basic Filter"], ["Welcome Msg", "Text only"], ["Payments", "Manual Verify"], ["Recurring Bill", "No"]] },
+                pro: { price: 590, name: "Subscription Empire", features: [["Anti-Spam", "AI Filter"], ["Welcome Msg", "Custom Media"], ["Payments", "Auto USDT/TON"], ["Recurring Bill", "Auto-Kick"]] }
             }
         };
 
-        // --- STATE ---
-        let curLang = 'en';
-        let selections = { ai: 'core', data: 'core', comm: 'core' };
+        let activeTiers = { ai: 'core', scraper: 'core', comm: 'core' };
         let cart = [];
 
-        // --- FUNCTIONS ---
-        function init() {
-            renderAll();
-        }
-
-        function toggleLang() {
-            curLang = curLang === 'en' ? 'ru' : 'en';
-            document.getElementById('lang-display').innerText = curLang.toUpperCase();
-            renderText();
-            renderAll(); // Re-render products
-            tg.HapticFeedback.selectionChanged();
-        }
-
-        function renderText() {
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const k = el.dataset.i18n;
-                if(langData[curLang][k]) el.innerText = langData[curLang][k];
-            });
-        }
-
-        function setTab(id) {
-            document.querySelectorAll('.section').forEach(e => e.classList.remove('active'));
+        // --- NAVIGATION ---
+        function setTab(id, btn) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
-            event.target.classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
             tg.HapticFeedback.impactOccurred('light');
         }
 
-        function setVersion(cat, ver) {
-            selections[cat] = ver;
-            // Update UI buttons
+        // --- PRICING LOGIC ---
+        function setTier(cat, tier) {
+            activeTiers[cat] = tier;
+            const data = products[cat][tier];
+            
+            // UI Toggle
             const card = document.getElementById('card-'+cat);
-            card.querySelectorAll('.ver-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            renderProduct(cat);
+            card.querySelectorAll('.toggle-btn').forEach(b => {
+                b.classList.remove('core-active', 'pro-active');
+            });
+            document.getElementById(`btn-${cat}-${tier}`).classList.add(tier + '-active');
+
+            // Price Update
+            const priceEl = document.getElementById(`price-${cat}`);
+            priceEl.innerText = '$' + data.price;
+            priceEl.style.color = tier === 'pro' ? 'var(--pro)' : 'white';
+
+            // Button Update
+            const btn = document.getElementById(`buy-${cat}`);
+            btn.className = `buy-btn ${tier}`;
+            btn.innerText = tier === 'pro' ? "GET PRO VERSION" : "ADD TO CART";
+
+            // Table Update
+            const table = document.getElementById(`table-${cat}`);
+            table.innerHTML = data.features.map(f => `<tr><td><i class="fas fa-check-circle"></i> ${f[0]}</td><td>${f[1]}</td></tr>`).join('');
+            
             tg.HapticFeedback.selectionChanged();
         }
 
-        function renderProduct(cat) {
-            const ver = selections[cat];
-            const data = products[cat][ver];
-            
-            // Name & Price
-            const nameKey = `p_${cat}_${ver}`;
-            document.getElementById(`name-${cat}`).innerText = langData[curLang][nameKey];
-            document.getElementById(`price-${cat}`).innerText = `$${data.price}`;
-            document.getElementById(`price-${cat}`).style.color = ver === 'pro' ? 'var(--pro)' : 'white';
-
-            // Features
-            const list = document.getElementById(`feat-${cat}`);
-            list.innerHTML = '';
-            const feats = curLang === 'en' ? data.feats_en : data.feats_ru;
-            feats.forEach(f => {
-                list.innerHTML += `<li><i class="fas fa-check"></i> ${f}</li>`;
-            });
-        }
-
-        function renderAll() {
-            renderText();
-            ['ai', 'data', 'comm'].forEach(renderProduct);
-        }
-
-        // --- CART ---
-        function addCurrent(cat) {
-            const ver = selections[cat];
-            const data = products[cat][ver];
-            const nameKey = `p_${cat}_${ver}`;
-            const name = langData[curLang][nameKey];
-            
-            cart.push({ name, price: data.price, ver: ver.toUpperCase() });
-            updateCart();
+        // --- CART SYSTEM ---
+        function addToCart(cat) {
+            const tier = activeTiers[cat];
+            const item = products[cat][tier];
+            cart.push({ ...item, tier });
+            updateCartUI();
             tg.HapticFeedback.notificationOccurred('success');
+        }
+
+        function updateCartUI() {
+            const total = cart.reduce((sum, i) => sum + i.price, 0);
+            const float = document.getElementById('cart-float');
+            if(total > 0) {
+                float.style.display = 'flex';
+                document.getElementById('cart-total').innerText = '$' + total;
+            }
+        }
+
+        function openCheckout() {
+            const list = document.getElementById('order-items');
+            list.innerHTML = cart.map(i => `
+                <div style="display:flex; justify-content:space-between; padding:5px 0;">
+                    <span>${i.name}</span>
+                    <span style="color:white; font-weight:bold;">$${i.price}</span>
+                </div>
+            `).join('');
             
-            // Visual feedback on button
-            const btn = document.querySelector(`#card-${cat} .btn-buy`);
-            const oldText = btn.innerText;
-            btn.innerText = "✓ ADDED";
-            btn.style.background = "#10b981";
-            setTimeout(() => { 
-                btn.innerText = oldText; 
-                btn.style.background = "var(--text)";
-            }, 1000);
-        }
-
-        function updateCart() {
-            const total = cart.reduce((a,b) => a + b.price, 0);
-            document.getElementById('cart-total').innerText = `$${total}`;
-            document.getElementById('cart-btn').style.display = total > 0 ? 'flex' : 'none';
-        }
-
-        function openModal() {
-            if(cart.length === 0) return;
-            const con = document.getElementById('cart-list');
-            con.innerHTML = '';
-            cart.forEach(i => {
-                con.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                    <span>${i.name} <span style="font-size:10px; border:1px solid #555; padding:0 4px; border-radius:4px;">${i.ver}</span></span>
-                    <span>$${i.price}</span>
+            // Add hourly rate note if PRO is selected
+            if(cart.some(i => i.tier === 'pro')) {
+                list.innerHTML += `<div style="margin-top:10px; padding-top:10px; border-top:1px dashed #333; font-size:11px; color:var(--pro);">
+                    * PRO includes architecture for scale. Custom modifications billed at $40/hour.
                 </div>`;
-            });
+            }
+
             document.getElementById('modal').style.display = 'flex';
         }
 
         function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
-        function sendOrder() {
-            const total = cart.reduce((a,b) => a + b.price, 0);
+        function submitOrder() {
+            const total = cart.reduce((sum, i) => sum + i.price, 0);
             tg.sendData(JSON.stringify({ type: 'order', cart, total }));
         }
 
+        function contactDev() {
+            // Close webview and signal bot to start chat
+            tg.sendData(JSON.stringify({ type: 'contact' }));
+        }
+
         // --- DEMOS ---
-        function handleEnter(e) { if(e.key === 'Enter') sendAi(); }
         
+        // 1. AI CHAT (Smarter)
+        const aiKnowledge = [
+            { k: ['price', 'cost', 'pay'], a: "Pricing depends on the tier. Core starts at $190. Pro versions include advanced scalability." },
+            { k: ['hello', 'hi', 'start'], a: "Systems online. I am ready to optimize your workflow. What solution do you need?" },
+            { k: ['scra', 'data', 'pars'], a: "My scraping modules can process 50+ pages per second with anti-detect technology." },
+            { k: ['comm', 'group', 'user'], a: "I can manage groups of 100k+ users, handling bans and payments automatically." },
+            { k: ['support', 'help'], a: "We provide 30 days of free technical support for all deployments." }
+        ];
+
+        function handleEnter(e) { if(e.key==='Enter') sendAi(); }
         function sendAi() {
             const inp = document.getElementById('ai-input');
-            const txt = inp.value.trim();
+            const txt = inp.value.trim().toLowerCase();
             if(!txt) return;
             
             const chat = document.getElementById('ai-chat');
-            chat.innerHTML += `<div class="msg user">${txt}</div>`;
+            chat.innerHTML += `<div class="msg user">${inp.value}</div>`;
             inp.value = '';
             chat.scrollTop = chat.scrollHeight;
 
-            // Simple Language Detection
-            const isRu = /[а-яА-ЯЁё]/.test(txt);
+            let ans = "I can build a custom module for that. Please select the PRO tier to discuss specific requirements.";
             
+            // Fuzzy-ish matching
+            for(let item of aiKnowledge) {
+                if(item.k.some(key => txt.includes(key))) {
+                    ans = item.a;
+                    break;
+                }
+            }
+
             setTimeout(() => {
-                let ans = isRu 
-                    ? "Я могу разработать систему под эту задачу. Добавьте тариф PRO в корзину для обсуждения деталей." 
-                    : "I can engineer a system for this task. Please add the PRO tier to cart to discuss details.";
-                
                 chat.innerHTML += `<div class="msg bot">${ans}</div>`;
                 chat.scrollTop = chat.scrollHeight;
                 tg.HapticFeedback.impactOccurred('medium');
-            }, 600);
+            }, 700);
         }
 
-        function runScraper() {
+        // 2. SCRAPER (5 Sources)
+        let scrapeInt;
+        const scenarios = {
+            amazon: { cmd: "amazon_monitor.py", logs: ["Checking ASIN: B08X...", "Price: $99.00 (No Change)", "Price: $85.00 (DROP DETECTED!)", "Sending Alert to Telegram..."] },
+            crypto: { cmd: "binance_ws.py", logs: ["Connecting to WebSocket...", "BTC/USDT: 64200", "BTC/USDT: 64205", "VOLUME SPIKE DETECTED", "Signal Sent."] },
+            ig: { cmd: "insta_leads.py", logs: ["Target: @competitor", "Parsing followers...", "Extracted: 50 usernames", "Extracted: 100 usernames", "Saving to leads.csv..."] },
+            upwork: { cmd: "job_feed.py", logs: ["Filter: 'Python Bot'", "New Job Found: 'Build me a scraper'", "Budget: $500", "Auto-Applying...", "Proposal Sent."] },
+            stocks: { cmd: "tesla_stock.py", logs: ["Market: OPEN", "TSLA: $240.50", "TSLA: $241.00", "Moving Avg Crossover", "BUY Signal Generated"] }
+        };
+
+        function setScrapeMode(mode, btn) {
+            clearInterval(scrapeInt);
+            document.querySelectorAll('.term-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
             const term = document.getElementById('terminal');
-            term.innerHTML = "root@nova:~# initiating sequence...<br>";
-            const lines = [
-                "Target: E-commerce API", "Proxy: Rotating (Residental)", "Bypassing Cloudflare... [OK]",
-                "Status: 200 OK", "Extracted: 1,402 items", "Exporting to JSON... Done."
-            ];
+            const scen = scenarios[mode];
+            term.innerHTML = `<div style='color:#fff'>root@nova:~# python3 ${scen.cmd}</div>`;
+            
             let i = 0;
-            let int = setInterval(() => {
-                if(i >= lines.length) clearInterval(int);
+            scrapeInt = setInterval(() => {
+                if(i >= scen.logs.length) clearInterval(scrapeInt);
                 else {
-                    term.innerHTML += `<span style="opacity:0.8">> ${lines[i]}</span><br>`;
+                    const color = scen.logs[i].includes("Sent") || scen.logs[i].includes("Saving") ? 'var(--pro)' : 'var(--success)';
+                    term.innerHTML += `<div style='color:${color}; margin-top:2px'>> ${scen.logs[i]}</div>`;
+                    term.scrollTop = term.scrollHeight;
                     i++;
                 }
-            }, 600);
+            }, 800);
         }
 
-        init();
+        // 3. COMMUNITY LOGS
+        function startCommLog() {
+            const logBox = document.getElementById('comm-log');
+            const actions = [
+                { i: 'join', t: '@alex_cr joined group' },
+                { i: 'pay', t: 'Incoming +50 USDT (TRC20)' },
+                { i: 'pay', t: 'Access Granted: 30 Days' },
+                { i: 'ban', t: 'Spam detected: @spambot' },
+                { i: 'ban', t: 'User banned' }
+            ];
+            
+            let idx = 0;
+            setInterval(() => {
+                const act = actions[idx % actions.length];
+                const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const html = `
+                    <div class="log-item animate__animated animate__fadeIn">
+                        <div class="log-icon ${act.i}"><i class="fas fa-${act.i === 'pay' ? 'wallet' : act.i === 'join' ? 'user-plus' : 'ban'}"></i></div>
+                        <div class="log-text">${act.t}</div>
+                        <div class="log-time">${time}</div>
+                    </div>`;
+                logBox.insertAdjacentHTML('afterbegin', html);
+                if(logBox.children.length > 6) logBox.lastElementChild.remove();
+                idx++;
+            }, 2000);
+        }
+
+        // INITIALIZE
+        (function init() {
+            // Render initial tables
+            ['ai', 'scraper', 'comm'].forEach(c => setTier(c, 'core'));
+            startCommLog();
+            setScrapeMode('amazon', document.querySelector('.term-btn'));
+        })();
+
     </script>
 </body>
 </html>
