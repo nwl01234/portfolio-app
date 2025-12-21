@@ -8,328 +8,507 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg: #000000;
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --accent: #0A84FF; /* iOS Blue */
-            --accent-glow: rgba(10, 132, 255, 0.5);
-            --pro: #FFD60A;
+            --bg: #030304;
+            --card-bg: #111115;
+            --accent: #007AFF; /* System Blue - Trust */
+            --accent-glow: rgba(0, 122, 255, 0.3);
+            --pro: #FFD60A; /* System Yellow - Premium */
+            --pro-glow: rgba(255, 214, 10, 0.2);
+            --success: #30D158;
             --text: #FFFFFF;
-            --text-sec: #86868b;
-            --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --text-sec: #8E8E93;
+            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { 
-            background: var(--bg); color: var(--text); font-family: var(--font); 
-            padding-bottom: 120px; overflow-x: hidden; 
-        }
+        body { background: var(--bg); color: var(--text); font-family: var(--font); padding-bottom: 120px; overflow-x: hidden; }
 
-        /* BACKGROUND BLOBS */
-        .blob { position: fixed; filter: blur(80px); z-index: -1; opacity: 0.4; animation: float 10s infinite alternate; }
-        .blob-1 { top: -10%; left: -10%; width: 300px; height: 300px; background: var(--accent); }
-        .blob-2 { bottom: -10%; right: -10%; width: 250px; height: 250px; background: #5E5CE6; animation-delay: -5s; }
-        @keyframes float { 0% { transform: translate(0,0); } 100% { transform: translate(30px, 50px); } }
-
-        /* HEADER */
+        /* HEADER & STATUS */
         .header {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 100; background: rgba(3,3,4,0.95);
+            backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.08);
             padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
         }
-        .logo { font-weight: 700; font-size: 20px; letter-spacing: -0.5px; }
-        .logo span { background: linear-gradient(90deg, var(--accent), #5E5CE6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* STATUS */
-        .status-pill {
-            background: rgba(48, 209, 88, 0.1); border: 1px solid rgba(48, 209, 88, 0.2);
-            color: #30d158; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
-            display: flex; align-items: center; gap: 6px; backdrop-filter: blur(5px);
-        }
-        .dot { width: 6px; height: 6px; background: #30d158; border-radius: 50%; box-shadow: 0 0 8px #30d158; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .logo { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; }
+        .logo span { color: var(--accent); }
+        .status-badge { font-size: 10px; background: rgba(48, 209, 88, 0.15); color: var(--success); padding: 4px 8px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        .status-dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; box-shadow: 0 0 5px var(--success); }
 
-        /* NAV */
-        .nav-wrapper {
-            padding: 20px 0; overflow-x: auto; display: flex; gap: 12px; padding-left: 20px; scrollbar-width: none;
+        /* HERO STATS */
+        .trust-row { display: flex; justify-content: space-around; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .stat-item { text-align: center; }
+        .stat-val { font-size: 16px; font-weight: 800; display: block; margin-bottom: 2px; }
+        .stat-lbl { font-size: 10px; color: var(--text-sec); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* NAVIGATION */
+        .nav-scroll { padding: 15px 0 5px 20px; overflow-x: auto; display: flex; gap: 10px; scrollbar-width: none; }
+        .nav-btn {
+            padding: 8px 16px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px; font-size: 13px; color: var(--text-sec); white-space: nowrap; transition: 0.3s;
         }
-        .nav-card {
-            min-width: 100px; padding: 12px; background: var(--glass); border: 1px solid var(--glass-border);
-            border-radius: 16px; text-align: center; transition: 0.3s; cursor: pointer;
-        }
-        .nav-card.active { background: rgba(255, 255, 255, 0.1); border-color: var(--accent); transform: scale(1.05); }
-        .nav-icon { font-size: 20px; margin-bottom: 8px; color: var(--text-sec); }
-        .nav-card.active .nav-icon { color: var(--accent); }
-        .nav-text { font-size: 12px; font-weight: 500; }
+        .nav-btn.active { background: var(--text); color: black; border-color: white; font-weight: 600; }
 
         /* SECTIONS */
-        .section { display: none; padding: 0 20px; animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .section { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
         .section.active { display: block; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        h1 { font-size: 32px; font-weight: 800; margin-bottom: 10px; background: linear-gradient(180deg, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .subtitle { color: var(--text-sec); font-size: 15px; margin-bottom: 25px; line-height: 1.5; }
+        h1 { font-size: 28px; font-weight: 800; margin-bottom: 5px; }
+        .subtitle { color: var(--text-sec); font-size: 14px; margin-bottom: 20px; line-height: 1.4; }
 
-        /* GLASS CARD (Products) */
-        .glass-card {
-            background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px;
-            margin-bottom: 20px; position: relative; overflow: hidden;
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+        /* LIVE DEMOS */
+        .demo-container {
+            background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+            overflow: hidden; margin-bottom: 25px; position: relative;
         }
+        .demo-header {
+            background: #1C1C1E; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .demo-title { font-size: 11px; font-weight: 700; color: var(--text-sec); text-transform: uppercase; }
         
-        .toggle-row {
-            display: flex; background: rgba(0,0,0,0.3); padding: 4px; border-radius: 12px; margin-bottom: 20px;
-        }
-        .t-btn { flex: 1; padding: 10px; text-align: center; font-size: 13px; color: var(--text-sec); border-radius: 10px; transition: 0.3s; font-weight: 600; }
-        .t-btn.active { background: rgba(255,255,255,0.15); color: white; shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .t-btn.pro-active { background: var(--pro); color: black; box-shadow: 0 0 15px rgba(255, 214, 10, 0.4); }
+        /* AI CHAT DEMO */
+        .chat-window { height: 200px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px 14px; border-radius: 12px; font-size: 13px; max-width: 85%; line-height: 1.4; }
+        .msg.bot { background: #1C1C1E; color: #E5E5EA; align-self: flex-start; border-left: 2px solid var(--accent); }
+        .msg.user { background: var(--accent); color: white; align-self: flex-end; }
+        .chat-input-area { padding: 10px; display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .chat-input { flex: 1; background: #1C1C1E; border: none; padding: 10px; border-radius: 8px; color: white; font-size: 13px; }
+        .send-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        .price-big { font-size: 36px; font-weight: 800; margin-bottom: 5px; letter-spacing: -1px; }
-        .price-sub { font-size: 13px; color: var(--text-sec); display: block; margin-bottom: 20px; }
+        /* SCRAPER TERMINAL */
+        .terminal { background: #080808; padding: 15px; height: 180px; font-family: 'Courier New', monospace; font-size: 11px; color: var(--success); overflow-y: hidden; }
+        .term-controls { display: flex; gap: 5px; padding: 10px; background: #111; overflow-x: auto; }
+        .term-btn { padding: 4px 8px; border-radius: 4px; border: 1px solid #333; color: #888; background: transparent; font-size: 10px; cursor: pointer; }
+        .term-btn.active { border-color: var(--success); color: var(--success); background: rgba(48,209,88,0.1); }
 
-        .feature-list li {
-            list-style: none; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 14px; display: flex; align-items: center; gap: 10px; color: #ddd;
-        }
-        .feature-list li i { color: var(--accent); }
-        .feature-list li:last-child { border: none; }
+        /* COMMUNITY LOGS */
+        .activity-log { height: 180px; padding: 15px; overflow-y: auto; }
+        .log-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 12px; }
+        .log-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+        .log-icon.join { background: rgba(0,122,255,0.2); color: var(--accent); }
+        .log-icon.pay { background: rgba(48,209,88,0.2); color: var(--success); }
+        .log-icon.ban { background: rgba(255,59,48,0.2); color: #FF3B30; }
+        .log-text { color: #ccc; }
+        .log-time { margin-left: auto; color: #555; font-size: 10px; }
 
-        .btn-main {
-            width: 100%; padding: 16px; border-radius: 16px; border: none; font-size: 16px; font-weight: 700;
-            margin-top: 15px; cursor: pointer; transition: 0.2s;
-        }
-        .btn-core { background: white; color: black; }
-        .btn-pro { background: var(--pro); color: black; box-shadow: 0 5px 20px rgba(255, 214, 10, 0.3); }
-        .btn-main:active { transform: scale(0.96); }
-
-        /* TERMINAL DEMO */
-        .terminal-window {
-            background: rgba(10, 10, 12, 0.9); border: 1px solid var(--glass-border);
-            border-radius: 16px; padding: 15px; font-family: 'SF Mono', monospace; font-size: 11px;
-            height: 160px; overflow: hidden; position: relative; margin-bottom: 20px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-        }
-        .typing::after { content: '▋'; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        /* FLOATING CART */
-        .float-bar {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: rgba(20, 20, 20, 0.9); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); padding: 12px 25px; border-radius: 40px;
-            display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            z-index: 200; transition: 0.3s; opacity: 0; pointer-events: none;
-        }
-        .float-bar.visible { bottom: 30px; opacity: 1; pointer-events: all; }
+        /* PRODUCT CARDS & PRICING */
+        .pricing-card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
         
-        .icon-btn { width: 40px; height: 40px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .toggle-container { background: rgba(0,0,0,0.4); padding: 4px; border-radius: 10px; display: flex; margin-bottom: 20px; }
+        .toggle-btn { flex: 1; text-align: center; padding: 10px; font-size: 12px; font-weight: 700; color: #666; border-radius: 8px; transition: 0.3s; cursor: pointer; }
+        .toggle-btn.core-active { background: #333; color: white; }
+        .toggle-btn.pro-active { background: var(--pro); color: black; box-shadow: 0 0 15px var(--pro-glow); }
+
+        .price-display { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; }
+        .main-price { font-size: 32px; font-weight: 800; color: white; }
+        .price-label { font-size: 12px; color: var(--text-sec); text-align: right; }
+
+        .comparison-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .comparison-table td { padding: 8px 0; font-size: 13px; color: var(--text-sec); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .comparison-table td:last-child { text-align: right; color: white; font-weight: 500; }
+        .comparison-table i { color: var(--accent); margin-right: 6px; }
+
+        .buy-btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.2s; }
+        .buy-btn.core { background: white; color: black; }
+        .buy-btn.pro { background: var(--pro); color: black; box-shadow: 0 5px 20px rgba(255, 214, 10, 0.2); }
+        .buy-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+        /* FLOATING ACTIONS */
+        .bottom-bar {
+            position: fixed; bottom: 20px; left: 20px; right: 20px;
+            display: flex; gap: 10px; z-index: 1000;
+        }
+        .contact-float {
+            width: 50px; height: 50px; background: #333; border-radius: 25px;
+            display: flex; align-items: center; justify-content: center; color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5); cursor: pointer;
+        }
+        .cart-float {
+            flex: 1; background: var(--accent); border-radius: 25px;
+            display: none; align-items: center; justify-content: center; gap: 10px;
+            color: white; font-weight: 700; box-shadow: 0 5px 20px var(--accent-glow); cursor: pointer;
+        }
+
+        /* MODAL */
+        .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; display: none; align-items: flex-end; }
+        .modal-content { background: #1C1C1E; width: 100%; padding: 25px; border-radius: 25px 25px 0 0; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
     </style>
 </head>
 <body>
 
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-
     <div class="header">
         <div class="logo">NOVA <span>SYSTEMS</span></div>
-        <div class="status-pill"><div class="dot"></div> ONLINE</div>
+        <div class="status-badge"><div class="status-dot"></div> OPEN FOR WORK</div>
     </div>
 
-    <div class="nav-wrapper">
-        <div class="nav-card active" onclick="switchTab('ai', this)">
-            <i class="fas fa-brain nav-icon"></i>
-            <div class="nav-text">AI Agents</div>
+    <div class="trust-row">
+        <div class="stat-item">
+            <span class="stat-val">300+</span>
+            <span class="stat-lbl">Projects</span>
         </div>
-        <div class="nav-card" onclick="switchTab('data', this)">
-            <i class="fas fa-bolt nav-icon"></i>
-            <div class="nav-text">Scrapers</div>
+        <div class="stat-item">
+            <span class="stat-val">99.9%</span>
+            <span class="stat-lbl">Uptime</span>
         </div>
-        <div class="nav-card" onclick="switchTab('comm', this)">
-            <i class="fas fa-users nav-icon"></i>
-            <div class="nav-text">Community</div>
+        <div class="stat-item">
+            <span class="stat-val">24/7</span>
+            <span class="stat-lbl">Support</span>
         </div>
+    </div>
+
+    <div class="nav-scroll">
+        <div class="nav-btn active" onclick="setTab('ai', this)">AI Agents</div>
+        <div class="nav-btn" onclick="setTab('scraper', this)">Scrapers</div>
+        <div class="nav-btn" onclick="setTab('comm', this)">Community</div>
     </div>
 
     <div id="ai" class="section active">
-        <h1>Neural Sales</h1>
-        <p class="subtitle">Replace your support team with autonomous agents that never sleep. Powered by custom logic.</p>
+        <h1>Intelligent Agents</h1>
+        <p class="subtitle">Automated sales & support staff. They don't sleep, don't ask for raises, and handle thousands of clients simultaneously.</p>
 
-        <div class="glass-card" id="card-ai">
-            <div class="toggle-row">
-                <div class="t-btn active" onclick="setTier('ai', 'core')">CORE</div>
-                <div class="t-btn" onclick="setTier('ai', 'pro')">PRO</div>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">LIVE PREVIEW (GPT-4 ENGINE)</span>
+                <i class="fas fa-robot" style="color:#666"></i>
+            </div>
+            <div class="chat-window" id="ai-chat">
+                <div class="msg bot">Nexus Core initialized. I can answer questions, sell products, and schedule appointments. Try me.</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" id="ai-input" placeholder="Ask about price, services..." onkeypress="handleEnter(event)">
+                <div class="send-icon" onclick="sendAi()"><i class="fas fa-arrow-up" style="color:white"></i></div>
+            </div>
+        </div>
+
+        <div class="pricing-card" id="card-ai">
+            <div class="toggle-container">
+                <div class="toggle-btn core-active" onclick="setTier('ai', 'core')" id="btn-ai-core">CORE</div>
+                <div class="toggle-btn" onclick="setTier('ai', 'pro')" id="btn-ai-pro">PRO ⚡</div>
             </div>
             
-            <div id="price-ai" class="price-big">$290</div>
-            <span class="price-sub">Lifetime License • No Monthly Fees</span>
+            <div class="price-display">
+                <div class="main-price" id="price-ai">$290</div>
+                <div class="price-label">One-time payment<br>Lifetime License</div>
+            </div>
 
-            <ul class="feature-list" id="feat-ai">
-                </ul>
-            
-            <button class="btn-main btn-core" id="btn-ai" onclick="addToCart('ai')">ADD TO PROJECT</button>
+            <table class="comparison-table" id="table-ai">
+                </table>
+
+            <button class="buy-btn core" id="buy-ai" onclick="addToCart('ai')">ADD TO CART</button>
         </div>
     </div>
 
-    <div id="data" class="section">
+    <div id="scraper" class="section">
         <h1>Data Extraction</h1>
-        <p class="subtitle">High-speed monitoring for crypto, e-commerce, and jobs. Be the first to know.</p>
+        <p class="subtitle">Get instant Telegram alerts when prices change, stocks drop, or competitors update their inventory. Stay ahead of the market.</p>
 
-        <div class="terminal-window" id="term-box">
-            <div style="color:#5E5CE6; margin-bottom:5px;">root@nova:~# initiating scraper...</div>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">REAL-TIME MONITOR</span>
+                <i class="fas fa-network-wired" style="color:#666"></i>
+            </div>
+            <div class="term-controls">
+                <button class="term-btn active" onclick="setScrapeMode('amazon', this)">Amazon</button>
+                <button class="term-btn" onclick="setScrapeMode('crypto', this)">Binance</button>
+                <button class="term-btn" onclick="setScrapeMode('ig', this)">Instagram</button>
+                <button class="term-btn" onclick="setScrapeMode('upwork', this)">Upwork</button>
+                <button class="term-btn" onclick="setScrapeMode('stocks', this)">Stocks</button>
+            </div>
+            <div class="terminal" id="terminal">
+                <span style="opacity:0.5">Select a target source above to start monitoring...</span>
+            </div>
         </div>
 
-        <div class="glass-card" id="card-data">
-            <div class="toggle-row">
-                <div class="t-btn active" onclick="setTier('data', 'core')">CORE</div>
-                <div class="t-btn" onclick="setTier('data', 'pro')">PRO</div>
+        <div class="pricing-card" id="card-scraper">
+            <div class="toggle-container">
+                <div class="toggle-btn core-active" onclick="setTier('scraper', 'core')" id="btn-scraper-core">CORE</div>
+                <div class="toggle-btn" onclick="setTier('scraper', 'pro')" id="btn-scraper-pro">PRO ⚡</div>
             </div>
-            <div id="price-data" class="price-big">$250</div>
-            <span class="price-sub">Full Source Code Included</span>
-            <ul class="feature-list" id="feat-data"></ul>
-            <button class="btn-main btn-core" id="btn-data" onclick="addToCart('data')">ADD TO PROJECT</button>
+            
+            <div class="price-display">
+                <div class="main-price" id="price-scraper">$250</div>
+                <div class="price-label">One-time payment<br>Full Source Code</div>
+            </div>
+
+            <table class="comparison-table" id="table-scraper"></table>
+
+            <button class="buy-btn core" id="buy-scraper" onclick="addToCart('scraper')">ADD TO CART</button>
         </div>
     </div>
 
     <div id="comm" class="section">
         <h1>Community Empire</h1>
-        <p class="subtitle">Monetize your Telegram audience. Auto-kick, auto-pay, subscription management.</p>
+        <p class="subtitle">Monetize your audience. Automatically manage paid subscriptions, kick non-payers, and protect your content.</p>
 
-        <div class="glass-card" id="card-comm">
-            <div class="toggle-row">
-                <div class="t-btn active" onclick="setTier('comm', 'core')">CORE</div>
-                <div class="t-btn" onclick="setTier('comm', 'pro')">PRO</div>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">GROUP ACTIVITY LOG</span>
+                <i class="fas fa-users" style="color:#666"></i>
             </div>
-            <div id="price-comm" class="price-big">$190</div>
-            <span class="price-sub">Turnkey Solution</span>
-            <ul class="feature-list" id="feat-comm"></ul>
-            <button class="btn-main btn-core" id="btn-comm" onclick="addToCart('comm')">ADD TO PROJECT</button>
+            <div class="activity-log" id="comm-log">
+                </div>
+        </div>
+
+        <div class="pricing-card" id="card-comm">
+            <div class="toggle-container">
+                <div class="toggle-btn core-active" onclick="setTier('comm', 'core')" id="btn-comm-core">CORE</div>
+                <div class="toggle-btn" onclick="setTier('comm', 'pro')" id="btn-comm-pro">PRO ⚡</div>
+            </div>
+            
+            <div class="price-display">
+                <div class="main-price" id="price-comm">$190</div>
+                <div class="price-label">One-time payment<br>Plugin & Play</div>
+            </div>
+
+            <table class="comparison-table" id="table-comm"></table>
+
+            <button class="buy-btn core" id="buy-comm" onclick="addToCart('comm')">ADD TO CART</button>
         </div>
     </div>
 
-    <div class="float-bar" id="float-bar">
-        <div onclick="contactDev()" style="font-size:12px; font-weight:600; color:white; display:flex; align-items:center; gap:10px;">
-            <div class="icon-btn"><i class="fas fa-comment"></i></div>
-            <span>Contact Dev</span>
+    <div class="bottom-bar">
+        <div class="contact-float" onclick="contactDev()">
+            <i class="fas fa-comment-dots"></i>
         </div>
-        <div style="width:1px; height:20px; background:rgba(255,255,255,0.2)"></div>
-        <div onclick="checkout()" style="font-size:12px; font-weight:600; color:var(--accent); display:flex; align-items:center; gap:10px;">
-            <span><span id="cart-count">0</span> Items</span>
-            <div class="icon-btn" style="background:var(--accent); color:white"><i class="fas fa-arrow-right"></i></div>
+        <div class="cart-float" id="cart-float" onclick="openCheckout()">
+            <i class="fas fa-shopping-bag"></i>
+            <span id="cart-total">$0</span>
+        </div>
+    </div>
+
+    <div class="modal-bg" id="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom:15px; font-weight:800;">Order Summary</h2>
+            <div id="order-items" style="margin-bottom:20px; color:#aaa; font-size:14px; line-height:1.6;"></div>
+            
+            <div style="background:#111; padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid #333;">
+                <div style="color:#666; font-size:12px; margin-bottom:5px;">Estimated Delivery</div>
+                <div style="color:white; font-weight:bold;">2-4 Business Days</div>
+            </div>
+
+            <button class="buy-btn pro" onclick="submitOrder()">CONFIRM & PAY</button>
+            <div style="text-align:center; margin-top:15px; color:#666; font-size:12px;" onclick="closeModal()">Close Window</div>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.ready(); tg.expand(); 
-        tg.setHeaderColor('#000000'); 
-        tg.setBackgroundColor('#000000');
+        tg.ready(); tg.expand(); tg.setHeaderColor('#030304');
 
-        // DATA
+        // --- PRODUCT DATA ---
         const products = {
             ai: {
-                core: { p: 290, f: ["Smart Auto-Reply", "Menu System", "Standard Speed"], name: "AI Core" },
-                pro: { p: 890, f: ["Fuzzy Logic Engine", "Admin Dashboard", "Analytics", "Priority Support"], name: "AI PRO" }
+                core: { price: 290, name: "AI Support Core", features: [["Smart Auto-Reply", "Yes"], ["Admin Panel", "No"], ["Context Memory", "Short"], ["Languages", "EN only"]] },
+                pro: { price: 890, name: "AI Sales Agent PRO", features: [["Smart Auto-Reply", "GPT-4 Turbo"], ["Admin Panel", "Full Dashboard"], ["Context Memory", "Infinite"], ["Languages", "Multi-Lang + Voice"]] }
             },
-            data: {
-                core: { p: 250, f: ["Single Source", "CSV Export", "15min Interval"], name: "Scraper Core" },
-                pro: { p: 750, f: ["Multi-Source (5)", "Real-time Alerts", "API Access", "Proxy Rotation"], name: "Scraper PRO" }
+            scraper: {
+                core: { price: 250, name: "Scraper Basic", features: [["Target Site", "1 Source"], ["Speed", "Standard"], ["Export", "CSV/Excel"], ["Alerts", "Email"]] },
+                pro: { price: 750, name: "Data Miner PRO", features: [["Target Site", "Up to 5"], ["Speed", "Real-time"], ["Export", "API / Webhook"], ["Alerts", "Telegram Instant"]] }
             },
             comm: {
-                core: { p: 190, f: ["Welcome Bot", "Anti-Spam", "Manual Approve"], name: "Manager Core" },
-                pro: { p: 590, f: ["Paid Subscriptions", "USDT Auto-Pay", "Auto-Kick", "Expiring Links"], name: "Empire PRO" }
+                core: { price: 190, name: "Group Manager", features: [["Anti-Spam", "Basic Filter"], ["Welcome Msg", "Text only"], ["Payments", "Manual Verify"], ["Recurring Bill", "No"]] },
+                pro: { price: 590, name: "Subscription Empire", features: [["Anti-Spam", "AI Filter"], ["Welcome Msg", "Custom Media"], ["Payments", "Auto USDT/TON"], ["Recurring Bill", "Auto-Kick"]] }
             }
         };
 
+        let activeTiers = { ai: 'core', scraper: 'core', comm: 'core' };
         let cart = [];
-        let selection = { ai:'core', data:'core', comm:'core' };
 
-        // LOGIC
-        function switchTab(id, el) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        // --- NAVIGATION ---
+        function setTab(id, btn) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        // --- PRICING LOGIC ---
+        function setTier(cat, tier) {
+            activeTiers[cat] = tier;
+            const data = products[cat][tier];
             
-            document.querySelectorAll('.nav-card').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
+            // UI Toggle
+            const card = document.getElementById('card-'+cat);
+            card.querySelectorAll('.toggle-btn').forEach(b => {
+                b.classList.remove('core-active', 'pro-active');
+            });
+            document.getElementById(`btn-${cat}-${tier}`).classList.add(tier + '-active');
+
+            // Price Update
+            const priceEl = document.getElementById(`price-${cat}`);
+            priceEl.innerText = '$' + data.price;
+            priceEl.style.color = tier === 'pro' ? 'var(--pro)' : 'white';
+
+            // Button Update
+            const btn = document.getElementById(`buy-${cat}`);
+            btn.className = `buy-btn ${tier}`;
+            btn.innerText = tier === 'pro' ? "GET PRO VERSION" : "ADD TO CART";
+
+            // Table Update
+            const table = document.getElementById(`table-${cat}`);
+            table.innerHTML = data.features.map(f => `<tr><td><i class="fas fa-check-circle"></i> ${f[0]}</td><td>${f[1]}</td></tr>`).join('');
             
-            if(id === 'data') startTerminal();
             tg.HapticFeedback.selectionChanged();
         }
 
-        function setTier(cat, tier) {
-            selection[cat] = tier;
-            const data = products[cat][tier];
-            
-            // Render Price
-            const priceEl = document.getElementById(`price-${cat}`);
-            priceEl.innerText = `$${data.p}`;
-            priceEl.style.color = tier === 'pro' ? 'var(--pro)' : 'white';
-
-            // Render Features
-            const list = document.getElementById(`feat-${cat}`);
-            list.innerHTML = data.f.map(i => `<li><i class="fas fa-check-circle"></i> ${i}</li>`).join('');
-
-            // Update Buttons
-            const card = document.getElementById(`card-${cat}`);
-            card.querySelectorAll('.t-btn').forEach(b => {
-                b.classList.remove('active', 'pro-active');
-                if(b.innerText.toLowerCase() === tier) {
-                    b.classList.add(tier === 'pro' ? 'pro-active' : 'active');
-                }
-            });
-
-            const btn = document.getElementById(`btn-${cat}`);
-            btn.className = `btn-main ${tier === 'pro' ? 'btn-pro' : 'btn-core'}`;
-            btn.innerText = tier === 'pro' ? "GET PRO SYSTEM" : "ADD TO PROJECT";
-        }
-
+        // --- CART SYSTEM ---
         function addToCart(cat) {
-            const tier = selection[cat];
+            const tier = activeTiers[cat];
             const item = products[cat][tier];
-            cart.push(item);
-            
-            document.getElementById('float-bar').classList.add('visible');
-            document.getElementById('cart-count').innerText = cart.length;
-            
-            const btn = document.getElementById(`btn-${cat}`);
-            const oldText = btn.innerText;
-            btn.innerText = "✓ ADDED";
-            setTimeout(() => btn.innerText = oldText, 1000);
-            
+            cart.push({ ...item, tier });
+            updateCartUI();
             tg.HapticFeedback.notificationOccurred('success');
         }
 
-        function checkout() {
-            const total = cart.reduce((a,b) => a+b.p, 0);
+        function updateCartUI() {
+            const total = cart.reduce((sum, i) => sum + i.price, 0);
+            const float = document.getElementById('cart-float');
+            if(total > 0) {
+                float.style.display = 'flex';
+                document.getElementById('cart-total').innerText = '$' + total;
+            }
+        }
+
+        function openCheckout() {
+            const list = document.getElementById('order-items');
+            list.innerHTML = cart.map(i => `
+                <div style="display:flex; justify-content:space-between; padding:5px 0;">
+                    <span>${i.name}</span>
+                    <span style="color:white; font-weight:bold;">$${i.price}</span>
+                </div>
+            `).join('');
+            
+            // Add hourly rate note if PRO is selected
+            if(cart.some(i => i.tier === 'pro')) {
+                list.innerHTML += `<div style="margin-top:10px; padding-top:10px; border-top:1px dashed #333; font-size:11px; color:var(--pro);">
+                    * PRO includes architecture for scale. Custom modifications billed at $40/hour.
+                </div>`;
+            }
+
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+        function submitOrder() {
+            const total = cart.reduce((sum, i) => sum + i.price, 0);
             tg.sendData(JSON.stringify({ type: 'order', cart, total }));
         }
 
         function contactDev() {
+            // Close webview and signal bot to start chat
             tg.sendData(JSON.stringify({ type: 'contact' }));
         }
 
-        // TERMINAL ANIMATION
-        function startTerminal() {
-            const term = document.getElementById('term-box');
-            term.innerHTML = `<div style="color:#5E5CE6">root@nova:~# initiating scraper...</div>`;
-            const logs = [
-                "Connecting to Target [OK]", "Bypassing Cloudflare...", "Proxy: 192.168.x.x (Residential)",
-                "Found 142 items.", "Price Drop Detected: Item #42", "Sending Alert to Telegram..."
-            ];
-            let i = 0;
-            let interval = setInterval(() => {
-                if(i >= logs.length) clearInterval(interval);
-                else {
-                    term.innerHTML += `<div style="color:${i%2==0 ? '#fff' : '#30d158'}">> ${logs[i]}</div>`;
-                    i++;
+        // --- DEMOS ---
+        
+        // 1. AI CHAT (Smarter)
+        const aiKnowledge = [
+            { k: ['price', 'cost', 'pay'], a: "Pricing depends on the tier. Core starts at $190. Pro versions include advanced scalability." },
+            { k: ['hello', 'hi', 'start'], a: "Systems online. I am ready to optimize your workflow. What solution do you need?" },
+            { k: ['scra', 'data', 'pars'], a: "My scraping modules can process 50+ pages per second with anti-detect technology." },
+            { k: ['comm', 'group', 'user'], a: "I can manage groups of 100k+ users, handling bans and payments automatically." },
+            { k: ['support', 'help'], a: "We provide 30 days of free technical support for all deployments." }
+        ];
+
+        function handleEnter(e) { if(e.key==='Enter') sendAi(); }
+        function sendAi() {
+            const inp = document.getElementById('ai-input');
+            const txt = inp.value.trim().toLowerCase();
+            if(!txt) return;
+            
+            const chat = document.getElementById('ai-chat');
+            chat.innerHTML += `<div class="msg user">${inp.value}</div>`;
+            inp.value = '';
+            chat.scrollTop = chat.scrollHeight;
+
+            let ans = "I can build a custom module for that. Please select the PRO tier to discuss specific requirements.";
+            
+            // Fuzzy-ish matching
+            for(let item of aiKnowledge) {
+                if(item.k.some(key => txt.includes(key))) {
+                    ans = item.a;
+                    break;
                 }
-            }, 600);
+            }
+
+            setTimeout(() => {
+                chat.innerHTML += `<div class="msg bot">${ans}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+                tg.HapticFeedback.impactOccurred('medium');
+            }, 700);
         }
 
-        // INIT
-        ['ai', 'data', 'comm'].forEach(c => setTier(c, 'core'));
+        // 2. SCRAPER (5 Sources)
+        let scrapeInt;
+        const scenarios = {
+            amazon: { cmd: "amazon_monitor.py", logs: ["Checking ASIN: B08X...", "Price: $99.00 (No Change)", "Price: $85.00 (DROP DETECTED!)", "Sending Alert to Telegram..."] },
+            crypto: { cmd: "binance_ws.py", logs: ["Connecting to WebSocket...", "BTC/USDT: 64200", "BTC/USDT: 64205", "VOLUME SPIKE DETECTED", "Signal Sent."] },
+            ig: { cmd: "insta_leads.py", logs: ["Target: @competitor", "Parsing followers...", "Extracted: 50 usernames", "Extracted: 100 usernames", "Saving to leads.csv..."] },
+            upwork: { cmd: "job_feed.py", logs: ["Filter: 'Python Bot'", "New Job Found: 'Build me a scraper'", "Budget: $500", "Auto-Applying...", "Proposal Sent."] },
+            stocks: { cmd: "tesla_stock.py", logs: ["Market: OPEN", "TSLA: $240.50", "TSLA: $241.00", "Moving Avg Crossover", "BUY Signal Generated"] }
+        };
+
+        function setScrapeMode(mode, btn) {
+            clearInterval(scrapeInt);
+            document.querySelectorAll('.term-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const term = document.getElementById('terminal');
+            const scen = scenarios[mode];
+            term.innerHTML = `<div style='color:#fff'>root@nova:~# python3 ${scen.cmd}</div>`;
+            
+            let i = 0;
+            scrapeInt = setInterval(() => {
+                if(i >= scen.logs.length) clearInterval(scrapeInt);
+                else {
+                    const color = scen.logs[i].includes("Sent") || scen.logs[i].includes("Saving") ? 'var(--pro)' : 'var(--success)';
+                    term.innerHTML += `<div style='color:${color}; margin-top:2px'>> ${scen.logs[i]}</div>`;
+                    term.scrollTop = term.scrollHeight;
+                    i++;
+                }
+            }, 800);
+        }
+
+        // 3. COMMUNITY LOGS
+        function startCommLog() {
+            const logBox = document.getElementById('comm-log');
+            const actions = [
+                { i: 'join', t: '@alex_cr joined group' },
+                { i: 'pay', t: 'Incoming +50 USDT (TRC20)' },
+                { i: 'pay', t: 'Access Granted: 30 Days' },
+                { i: 'ban', t: 'Spam detected: @spambot' },
+                { i: 'ban', t: 'User banned' }
+            ];
+            
+            let idx = 0;
+            setInterval(() => {
+                const act = actions[idx % actions.length];
+                const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const html = `
+                    <div class="log-item animate__animated animate__fadeIn">
+                        <div class="log-icon ${act.i}"><i class="fas fa-${act.i === 'pay' ? 'wallet' : act.i === 'join' ? 'user-plus' : 'ban'}"></i></div>
+                        <div class="log-text">${act.t}</div>
+                        <div class="log-time">${time}</div>
+                    </div>`;
+                logBox.insertAdjacentHTML('afterbegin', html);
+                if(logBox.children.length > 6) logBox.lastElementChild.remove();
+                idx++;
+            }, 2000);
+        }
+
+        // INITIALIZE
+        (function init() {
+            // Render initial tables
+            ['ai', 'scraper', 'comm'].forEach(c => setTier(c, 'core'));
+            startCommLog();
+            setScrapeMode('amazon', document.querySelector('.term-btn'));
+        })();
+
     </script>
 </body>
 </html>
