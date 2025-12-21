@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEXUS PREMIUM</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --card: #0f0f12;
+            --accent: #00ff9d; /* Neon Green/Cyan */
+            --accent-glow: rgba(0, 255, 157, 0.4);
+            --text: #ffffff;
+            --text-gray: #888888;
+            --danger: #ff3b30;
+            --font: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font); overflow-x: hidden; padding-bottom: 90px; }
+
+        /* HEADER */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 15px 20px; background: rgba(5, 5, 5, 0.9);
+            backdrop-filter: blur(10px); z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .logo { font-weight: 900; font-size: 20px; letter-spacing: 1px; }
+        .logo span { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .lang-switch { font-size: 12px; font-weight: bold; color: var(--text-gray); cursor: pointer; border: 1px solid #333; padding: 4px 8px; border-radius: 6px; }
+
+        /* TABS */
+        .tabs {
+            margin-top: 70px; display: flex; justify-content: center; gap: 10px; padding: 0 15px;
+        }
+        .tab {
+            padding: 10px 20px; background: #1a1a1a; border-radius: 12px;
+            font-size: 13px; color: var(--text-gray); border: 1px solid transparent;
+            transition: 0.3s; cursor: pointer; flex: 1; text-align: center;
+        }
+        .tab.active {
+            background: rgba(0, 255, 157, 0.1); color: var(--accent); border-color: var(--accent-glow);
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.1);
+        }
+
+        /* CONTENT */
+        .section { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1 { font-size: 28px; font-weight: 800; margin-bottom: 5px; }
+        p.subtitle { color: var(--text-gray); font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+
+        /* DEMO BOXES (THE REAL PORTFOLIO) */
+        .demo-container {
+            background: #000; border: 1px solid #222; border-radius: 16px;
+            padding: 15px; margin-bottom: 25px; position: relative; overflow: hidden;
+        }
+        .demo-label {
+            position: absolute; top: 10px; right: 10px; font-size: 10px;
+            background: var(--accent); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 900;
+        }
+
+        /* AI CHAT STYLES */
+        .chat-box { height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px; }
+        .msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.4; }
+        .msg.bot { background: #111; color: #ccc; border-left: 2px solid var(--accent); align-self: flex-start; }
+        .msg.user { background: var(--accent); color: #000; align-self: flex-end; font-weight: 600; }
+        .input-group { display: flex; gap: 10px; margin-top: 10px; }
+        .input-group input { flex: 1; background: #111; border: 1px solid #333; color: white; padding: 12px; border-radius: 8px; }
+        .send-btn { background: var(--accent); border: none; width: 40px; border-radius: 8px; color: #000; cursor: pointer; }
+
+        /* TERMINAL STYLES */
+        .terminal { font-family: 'Courier New', monospace; font-size: 12px; color: var(--accent); height: 180px; overflow-y: auto; }
+        .log { margin-bottom: 4px; }
+        .log span { color: #fff; }
+
+        /* PRODUCT CARDS */
+        .product-card {
+            background: var(--card); padding: 20px; border-radius: 16px; margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.05); position: relative;
+        }
+        .product-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .price { font-size: 20px; font-weight: 800; color: white; }
+        .features { list-style: none; margin-bottom: 20px; }
+        .features li { font-size: 13px; color: var(--text-gray); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .features li i { color: var(--accent); font-size: 10px; }
+        
+        .buy-btn {
+            width: 100%; padding: 14px; background: white; color: black; font-weight: 800;
+            border: none; border-radius: 10px; font-size: 14px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .buy-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+        /* CART & MODAL */
+        .cart-float {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: #000; padding: 15px 30px;
+            border-radius: 30px; font-weight: 800; box-shadow: 0 10px 30px rgba(0,255,157,0.3);
+            display: none; align-items: center; gap: 10px; cursor: pointer; z-index: 1000;
+        }
+        
+        .modal-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 2000; display: none;
+            justify-content: center; align-items: flex-end;
+        }
+        .modal {
+            background: #111; width: 100%; border-radius: 20px 20px 0 0;
+            padding: 25px; border-top: 1px solid #333; animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .copy-box {
+            background: #222; padding: 15px; border-radius: 10px; margin: 15px 0;
+            word-break: break-all; font-family: monospace; font-size: 12px; color: var(--accent);
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">NEXUS<span>.AI</span></div>
+        <div class="lang-switch" onclick="switchLang()">EN / RU</div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="setTab('ai')">AI AGENT</div>
+        <div class="tab" onclick="setTab('scraper')">SCRAPER</div>
+        <div class="tab" onclick="setTab('crypto')">CRYPTO</div>
+    </div>
+
+    <div id="ai" class="section active">
+        <h1>Intelligent Agents</h1>
+        <p class="subtitle" id="txt-ai-sub">Context-aware support bots that replace humans.</p>
+
+        <div class="demo-container">
+            <div class="demo-label">LIVE PREVIEW v2.0</div>
+            <div class="chat-box" id="ai-chat-box">
+                <div class="msg bot">System Online. I am Nexus Core. Ask me about integration, pricing, or capabilities.</div>
+            </div>
+            <div class="input-group">
+                <input type="text" id="ai-input" placeholder="Type here..." onkeypress="handleEnter(event)">
+                <button class="send-btn" onclick="sendAiMessage()"><i class="fas fa-arrow-up"></i></button>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-header">
+                <h3>Support Bot</h3>
+                <div class="price">$200</div>
+            </div>
+            <ul class="features">
+                <li><i class="fas fa-check"></i> 24/7 Auto-Reply</li>
+                <li><i class="fas fa-check"></i> Custom Knowledge Base</li>
+                <li><i class="fas fa-check"></i> No API Costs</li>
+            </ul>
+            <button class="buy-btn" onclick="addToCart('AI Support Bot', 200)">ADD TO CART</button>
+        </div>
+    </div>
+
+    <div id="scraper" class="section">
+        <h1>Data Extraction</h1>
+        <p class="subtitle" id="txt-data-sub">High-speed parsers. Bypasses Cloudflare & Captcha.</p>
+
+        <div class="demo-container">
+            <div class="demo-label">TERMINAL ACCESS</div>
+            <div class="terminal" id="terminal-screen">
+                <div class="log"><span>root@nexus:~#</span> waiting for input...</div>
+            </div>
+            <div class="input-group">
+                <input type="text" id="scraper-input" placeholder="Enter URL (e.g. amazon.com)..." value="amazon.com/iphone15">
+                <button class="send-btn" onclick="runScraper()"><i class="fas fa-play"></i></button>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-header">
+                <h3>Web Scraper Pro</h3>
+                <div class="price">$180</div>
+            </div>
+            <ul class="features">
+                <li><i class="fas fa-check"></i> Excel / JSON Export</li>
+                <li><i class="fas fa-check"></i> Anti-Detect Browsers</li>
+                <li><i class="fas fa-check"></i> 99.9% Uptime</li>
+            </ul>
+            <button class="buy-btn" onclick="addToCart('Web Scraper Pro', 180)">ADD TO CART</button>
+        </div>
+    </div>
+
+    <div id="crypto" class="section">
+        <h1>Crypto Community</h1>
+        <p class="subtitle" id="txt-crypto-sub">Manage private groups & verify USDT payments automatically.</p>
+
+        <div class="product-card">
+            <div class="product-header">
+                <h3>Community Manager</h3>
+                <div class="price">$300</div>
+            </div>
+            <ul class="features">
+                <li><i class="fas fa-check"></i> Auto-Kick Spammers</li>
+                <li><i class="fas fa-check"></i> USDT Payment Gate</li>
+                <li><i class="fas fa-check"></i> Subscription Timer</li>
+            </ul>
+            <button class="buy-btn" onclick="addToCart('Crypto Manager', 300)">ADD TO CART</button>
+        </div>
+    </div>
+
+    <div class="cart-float" id="cart-btn" onclick="openModal()">
+        <i class="fas fa-shopping-bag"></i>
+        <span id="cart-total">$0</span>
+    </div>
+
+    <div class="modal-bg" id="payment-modal">
+        <div class="modal">
+            <h2 style="margin-bottom: 20px;">Checkout</h2>
+            <div id="order-list" style="margin-bottom: 20px; color: #888; font-size: 14px;"></div>
+            
+            <p style="color: white; font-weight: bold;">Payment via USDT (TRC20)</p>
+            <div class="copy-box" onclick="copyAddress()">
+                <span id="wallet-address">TjxYourRealWalletAddressHere...</span>
+                <i class="fas fa-copy" style="color: white;"></i>
+            </div>
+            <p style="font-size: 12px; color: #666; margin-bottom: 20px;">Tap address to copy. Send exact amount.</p>
+
+            <button class="buy-btn" style="background: var(--accent);" onclick="confirmOrder()">I HAVE PAID</button>
+            <button class="buy-btn" style="background: transparent; color: #666; margin-top: 10px;" onclick="closeModal()">CANCEL</button>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+        tg.setHeaderColor('#050505');
+
+        // --- SMART AI LOGIC (No API, but Smart) ---
+        const aiKnowledge = [
+            { triggers: ['hello', 'hi', 'start'], answer: "Greetings. I am ready to optimize your workflow. What system do you need?" },
+            { triggers: ['price', 'cost', 'much'], answer: "Basic bots start at $200. Complex ecosystems with GPT-4 integration range from $800 to $1500." },
+            { triggers: ['api', 'integration'], answer: "I can integrate with OpenAI, Telegram API, Notion, and any REST endpoint." },
+            { triggers: ['time', 'long', 'deadline'], answer: "Standard delivery is 3 days. Express delivery (24h) is available for +30%." },
+            { triggers: ['portfolio', 'example', 'work'], answer: "You are looking at it. This entire app is a demonstration of my frontend and logic capabilities." },
+            { triggers: ['guarantee', 'support'], answer: "1 month of free support is included. Bug fixes are free forever." }
+        ];
+
+        function handleEnter(e) { if(e.key === 'Enter') sendAiMessage(); }
+
+        function sendAiMessage() {
+            const input = document.getElementById('ai-input');
+            const text = input.value.trim().toLowerCase();
+            if(!text) return;
+
+            const chat = document.getElementById('ai-chat-box');
+            // User msg
+            chat.innerHTML += `<div class="msg user">${input.value}</div>`;
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+
+            // Smart Logic
+            let response = "I can build a custom solution for that specific requirement. Please add a product to cart to discuss details.";
+            
+            // Search for keywords
+            for(let item of aiKnowledge) {
+                if(item.triggers.some(t => text.includes(t))) {
+                    response = item.answer;
+                    break;
+                }
+            }
+
+            // Typing delay simulation
+            setTimeout(() => {
+                chat.innerHTML += `<div class="msg bot">${response}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+                tg.HapticFeedback.impactOccurred('light');
+            }, 600);
+        }
+
+        // --- SCRAPER LOGIC ---
+        function runScraper() {
+            const term = document.getElementById('terminal-screen');
+            const url = document.getElementById('scraper-input').value;
+            term.innerHTML = `<div class="log"><span>root@nexus:~#</span> init sequence ${url}</div>`;
+            
+            const steps = [
+                `> Resolving host... [OK]`,
+                `> Rotating Proxy (US_East)... [CONNECTED]`,
+                `> Bypassing Cloudflare Shield...`,
+                `> [SUCCESS] 200 OK Received`,
+                `> Parsing DOM elements...`,
+                `> Extracted: Title, Price, Rating, Image_URL`,
+                `<span style="color:var(--accent)">> JOB COMPLETE. Data JSON ready.</span>`
+            ];
+
+            let i = 0;
+            const interval = setInterval(() => {
+                if(i >= steps.length) clearInterval(interval);
+                else {
+                    term.innerHTML += `<div class="log">${steps[i]}</div>`;
+                    term.scrollTop = term.scrollHeight;
+                    tg.HapticFeedback.selectionChanged();
+                    i++;
+                }
+            }, 800);
+        }
+
+        // --- APP LOGIC ---
+        let cart = [];
+        let total = 0;
+
+        function setTab(tabId) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+            tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        function addToCart(name, price) {
+            cart.push({name, price});
+            total += price;
+            updateCartUI();
+            tg.HapticFeedback.notificationOccurred('success');
+        }
+
+        function updateCartUI() {
+            const btn = document.getElementById('cart-btn');
+            if(cart.length > 0) {
+                btn.style.display = 'flex';
+                document.getElementById('cart-total').innerText = '$' + total;
+            }
+        }
+
+        function openModal() {
+            document.getElementById('payment-modal').style.display = 'flex';
+            const list = document.getElementById('order-list');
+            list.innerHTML = cart.map(i => `<div>${i.name} - $${i.price}</div>`).join('');
+        }
+
+        function closeModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+        }
+
+        function copyAddress() {
+            const addr = document.getElementById('wallet-address').innerText;
+            navigator.clipboard.writeText(addr);
+            tg.showAlert("Wallet address copied!");
+        }
+
+        function confirmOrder() {
+            const data = {
+                type: 'order',
+                cart: cart,
+                total: total
+            };
+            tg.sendData(JSON.stringify(data));
+            tg.close();
+        }
+
+        function switchLang() {
+            // Placeholder for lang switch to keep code clean
+            tg.showAlert("Language switch demo active");
+        }
+    </script>
+</body>
+</html>
