@@ -3,2979 +3,575 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NWL - Telegram Automation Expert</title>
+    <title>Dev Portfolio</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* RESET & VARIABLES */
-        /* ═══════════════════════════════════════════════════════════════ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
+        /* --- VARIABLES & THEMES --- */
         :root {
             --bg: #0a0a0f;
-            --surface: #12121a;
-            --surface-light: #f8f9fa;
-            --border: rgba(255,255,255,0.08);
-            --border-light: rgba(0,0,0,0.08);
+            --surface: #13131f;
+            --surface-2: #1c1c2e;
             --text: #ffffff;
-            --text-dark: #1a1a1a;
-            --text-dim: #a1a1aa;
-            --text-dim-light: #666666;
-            --primary: #00d4ff;
-            --primary-dark: #0099cc;
-            --secondary: #7c3aed;
-            --gold: #fbbf24;
+            --text-sec: #8e8e93;
+            --accent: #3b82f6;
+            --premium: #fbbf24;
             --success: #10b981;
             --danger: #ef4444;
-            --warning: #f59e0b;
-            --info: #3b82f6;
+            --border: rgba(255,255,255,0.08);
+            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            overflow-x: hidden;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        body.light-mode {
-            --bg: #f8f9fa;
+
+        [data-theme="light"] {
+            --bg: #f2f2f7;
             --surface: #ffffff;
-            --surface-light: #f1f3f5;
-            --border: rgba(0,0,0,0.08);
-            --border-light: rgba(0,0,0,0.12);
-            --text: #1a1a1a;
-            --text-dim: #666666;
-            --text-dim-light: #888888;
-            background: var(--bg);
-            color: var(--text);
+            --surface-2: #e5e5ea;
+            --text: #000000;
+            --text-sec: #636366;
+            --border: rgba(0,0,0,0.1);
         }
+
+        /* --- RESET & BASE --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font); overflow-x: hidden; transition: 0.3s; padding-bottom: 80px; }
         
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* LOADER */
-        /* ═══════════════════════════════════════════════════════════════ */
-        #loader {
-            position: fixed;
-            inset: 0;
-            background: var(--bg);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 30px;
-            transition: opacity 0.5s;
-        }
-        
-        .logo-anim {
-            font-size: 3rem;
-            font-weight: 900;
-            letter-spacing: -2px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .loading-bar {
-            width: 200px;
-            height: 3px;
-            background: var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
-        .bar-fill {
-            height: 100%;
-            width: 0;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            animation: load 2s ease-in-out forwards;
-        }
-        
-        @keyframes load {
-            to { width: 100%; }
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* BACKGROUND EFFECTS */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .bg-grid {
-            position: fixed;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        body.light-mode .bg-grid {
-            background-image: 
-                linear-gradient(rgba(0,212,255,0.01) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,212,255,0.01) 1px, transparent 1px);
-        }
-        
-        .gradient-orb {
-            position: fixed;
-            width: 500px;
-            height: 500px;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.3;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .orb-1 { background: var(--primary); top: -100px; right: -100px; }
-        .orb-2 { background: var(--secondary); bottom: -100px; left: -100px; }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* NAVIGATION */
-        /* ═══════════════════════════════════════════════════════════════ */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 15px 20px;
-            background: rgba(10, 10, 15, 0.8);
-            backdrop-filter: blur(20px);
+        /* --- UI COMPONENTS --- */
+        .header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(10,10,15,0.9); backdrop-filter: blur(10px);
+            padding: 15px; display: flex; justify-content: space-between; align-items: center;
             border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
         }
+        [data-theme="light"] .header { background: rgba(255,255,255,0.9); }
+
+        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px; }
+        .logo span { color: var(--accent); }
         
-        body.light-mode nav {
-            background: rgba(248, 249, 250, 0.8);
-            border-bottom: 1px solid var(--border-light);
+        .nav-actions { display: flex; gap: 15px; align-items: center; }
+        .icon-btn { font-size: 1.2rem; position: relative; cursor: pointer; color: var(--text); }
+        
+        .lang-select {
+            background: var(--surface-2); border: none; color: var(--text);
+            padding: 5px 10px; border-radius: 8px; font-size: 0.8rem;
         }
-        
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .logo {
-            font-size: 24px;
-            font-weight: 900;
-            letter-spacing: -1px;
-        }
-        
-        .logo span {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .nav-btn {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--text);
-        }
-        
-        body.light-mode .nav-btn {
-            background: var(--surface);
-            border: 1px solid var(--border-light);
-            color: var(--text);
-        }
-        
-        .nav-btn:active { transform: scale(0.95); }
-        
-        .nav-btn i {
-            font-size: 16px;
-        }
-        
-        .cart-btn {
-            position: relative;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 10px 16px;
-            border-radius: 12px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        body.light-mode .cart-btn {
-            background: var(--surface);
-            border: 1px solid var(--border-light);
-        }
-        
-        .cart-btn:active { transform: scale(0.95); }
-        
+
         .badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--primary);
-            color: #000;
-            font-size: 11px;
-            font-weight: 800;
-            padding: 3px 7px;
-            border-radius: 10px;
-            min-width: 20px;
-            text-align: center;
+            position: absolute; top: -5px; right: -5px;
+            background: var(--accent); color: white;
+            font-size: 0.6rem; padding: 2px 5px; border-radius: 10px;
+            display: none;
         }
-        
-        .hidden { display: none !important; }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* CONTAINER */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .container {
-            padding: 80px 20px 120px;
-            max-width: 600px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* HERO SECTION */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .hero {
-            text-align: center;
-            margin-bottom: 50px;
-            padding: 40px 0;
-        }
-        
-        .hero h1 {
-            font-size: 2.5rem;
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 15px;
-            letter-spacing: -2px;
-        }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .hero p {
-            color: var(--text-dim);
-            font-size: 15px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* TABS */
-        /* ═══════════════════════════════════════════════════════════════ */
+
+        /* --- TABS --- */
         .tabs {
-            display: flex;
-            gap: 10px;
-            padding: 6px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            margin-bottom: 40px;
-        }
-        
-        body.light-mode .tabs {
-            border: 1px solid var(--border-light);
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 12px;
-            background: none;
-            border: none;
-            color: var(--text-dim);
-            font-weight: 600;
-            font-size: 14px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .tab.active {
-            background: rgba(0,212,255,0.1);
-            color: var(--primary);
-            box-shadow: 0 0 20px rgba(0,212,255,0.2);
-        }
-        
-        body.light-mode .tab.active {
-            background: rgba(0,212,255,0.15);
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* TAB CONTENT */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* DEMO CARDS */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .demo-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-        
-        body.light-mode .demo-card {
-            border: 1px solid var(--border-light);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-        }
-        
-        .demo-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        body.light-mode .demo-header {
-            border-bottom: 1px solid var(--border-light);
-        }
-        
-        .demo-header .icon {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--success);
-            box-shadow: 0 0 10px var(--success);
-            animation: blink 2s infinite;
-        }
-        
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        
-        .demo-header h3 {
-            font-size: 13px;
-            font-weight: 800;
-            color: var(--text-dim);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* AI CHAT DEMO */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .chat-box {
-            background: var(--bg);
-            border-radius: 12px;
-            height: 220px;
-            overflow-y: auto;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        body.light-mode .chat-box {
-            background: var(--surface-light);
-        }
-        
-        .chat-box::-webkit-scrollbar { width: 4px; }
-        .chat-box::-webkit-scrollbar-thumb { 
-            background: var(--border); 
-            border-radius: 10px; 
-        }
-        
-        .msg {
-            padding: 12px 16px;
-            border-radius: 16px;
-            font-size: 14px;
-            max-width: 85%;
-            line-height: 1.5;
-        }
-        
-        .msg.bot {
-            background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(124,58,237,0.1));
-            border: 1px solid rgba(0,212,255,0.2);
-            align-self: flex-start;
-        }
-        
-        body.light-mode .msg.bot {
-            background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(124,58,237,0.08));
-            border: 1px solid rgba(0,212,255,0.15);
-        }
-        
-        .msg.user {
-            background: var(--primary);
-            color: #000;
-            font-weight: 600;
-            align-self: flex-end;
-        }
-        
-        .input-row {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .input-row input {
-            flex: 1;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            padding: 14px;
-            border-radius: 12px;
-            color: var(--text);
-            font-size: 14px;
-            outline: none;
-        }
-        
-        body.light-mode .input-row input {
-            background: var(--surface-light);
-            border: 1px solid var(--border-light);
-            color: var(--text);
-        }
-        
-        .input-row input:focus {
-            border-color: var(--primary);
-        }
-        
-        .btn-send {
-            background: var(--primary);
-            border: none;
-            padding: 14px 20px;
-            border-radius: 12px;
-            color: #000;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .btn-send:active { transform: scale(0.95); }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* TERMINAL DEMO */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .terminal {
-            background: #000;
-            border-radius: 12px;
-            height: 220px;
-            overflow-y: auto;
-            padding: 15px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            margin-bottom: 15px;
-        }
-        
-        body.light-mode .terminal {
-            background: #1a1a1a;
-        }
-        
-        .terminal::-webkit-scrollbar { width: 4px; }
-        .terminal::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        
-        .line {
-            color: var(--success);
-            margin-bottom: 8px;
-            animation: typewriter 0.5s;
-        }
-        
-        @keyframes typewriter {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .line.success { color: var(--primary); }
-        .line.error { color: var(--danger); }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* DASHBOARD DEMO */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-card {
-            background: rgba(0,212,255,0.05);
-            border: 1px solid rgba(0,212,255,0.2);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-        }
-        
-        body.light-mode .stat-card {
-            background: rgba(0,212,255,0.08);
-            border: 1px solid rgba(0,212,255,0.15);
-        }
-        
-        .stat-card .label {
-            font-size: 11px;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-        
-        .stat-card .value {
-            font-size: 28px;
-            font-weight: 900;
-            color: var(--primary);
-        }
-        
-        .control-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        body.light-mode .control-row {
-            border-bottom: 1px solid var(--border-light);
-        }
-        
-        .control-row:last-child { border: none; }
-        
-        .control-row span {
-            font-size: 14px;
-            font-weight: 600;
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* TOGGLE SWITCH */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .toggle {
-            position: relative;
-            width: 50px;
-            height: 28px;
-        }
-        
-        .toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
-            inset: 0;
-            background: #333;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        
-        body.light-mode .slider {
-            background: #ccc;
-        }
-        
-        .slider:before {
-            content: '';
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            left: 3px;
-            top: 3px;
-            background: white;
-            border-radius: 50%;
-            transition: 0.3s;
-        }
-        
-        input:checked + .slider {
-            background: var(--primary);
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(22px);
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* PRODUCT CARDS */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .products {
-            display: grid;
-            gap: 15px;
-        }
-        
-        .product {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 25px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-        
-        body.light-mode .product {
-            border: 1px solid var(--border-light);
-        }
-        
-        .product:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-        
-        .product.premium {
-            background: linear-gradient(135deg, rgba(251,191,36,0.05), rgba(124,58,237,0.05));
-            border-color: var(--gold);
-        }
-        
-        body.light-mode .product.premium {
-            background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(124,58,237,0.08));
-        }
-        
-        .product.premium::before {
-            content: 'PREMIUM';
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 10px;
-            font-weight: 800;
-            color: var(--gold);
-            padding: 4px 8px;
-            background: rgba(251,191,36,0.1);
-            border-radius: 6px;
-            letter-spacing: 1px;
-        }
-        
-        .product-tier {
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--text-dim);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-        
-        .product.premium .product-tier {
-            color: var(--gold);
-        }
-        
-        .product-price {
-            font-size: 2.2rem;
-            font-weight: 900;
-            margin-bottom: 6px;
-        }
-        
-        .product-subprice {
-            font-size: 13px;
-            color: var(--text-dim);
-            margin-bottom: 20px;
-        }
-        
-        .features {
-            list-style: none;
-            margin-bottom: 20px;
-        }
-        
-        .features li {
-            padding: 10px 0;
-            font-size: 14px;
-            color: var(--text-dim);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .features li::before {
-            content: '✓';
-            color: var(--primary);
-            font-weight: 800;
-            font-size: 16px;
-        }
-        
-        .product.premium .features li::before {
-            color: var(--gold);
-        }
-        
-        .btn-add {
-            width: 100%;
-            padding: 16px;
-            background: var(--text);
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 15px;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        body.light-mode .btn-add {
-            background: var(--text-dark);
-            color: #fff;
-        }
-        
-        .product.premium .btn-add {
-            background: var(--gold);
-            color: #000;
-        }
-        
-        .btn-add:active {
-            transform: scale(0.98);
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* FLOATING CONTACT BUTTON */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .floating-contact {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--primary);
-            color: #000;
-            padding: 16px 24px;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 800;
-            box-shadow: 0 10px 30px rgba(0,212,255,0.4);
-            cursor: pointer;
-            z-index: 90;
-            transition: all 0.2s;
-        }
-        
-        .floating-contact:active {
-            transform: scale(0.95);
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* SETTINGS OVERLAY */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(10px);
-            z-index: 200;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .settings-modal {
-            width: 90%;
-            max-width: 400px;
-            max-height: 80vh;
-            background: var(--surface);
-            border-radius: 20px;
-            padding: 30px;
-            overflow-y: auto;
-            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        
-        body.light-mode .settings-modal {
-            background: var(--surface);
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        
-        .modal-header h2 {
-            font-size: 22px;
-            font-weight: 900;
-        }
-        
-        .close-btn {
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--text-dim);
-        }
-        
-        .settings-option {
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        body.light-mode .settings-option {
-            border-bottom: 1px solid var(--border-light);
-        }
-        
-        .settings-option:last-child { border: none; }
-        
-        .settings-option h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .language-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
-        
-        .language-btn {
-            padding: 8px 16px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        body.light-mode .language-btn {
-            background: var(--surface-light);
-            border: 1px solid var(--border-light);
-        }
-        
-        .language-btn.active {
-            background: var(--primary);
-            color: #000;
-            border-color: var(--primary);
-        }
-        
-        .theme-options {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .theme-btn {
-            flex: 1;
-            padding: 12px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            text-align: center;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        body.light-mode .theme-btn {
-            background: var(--surface-light);
-            border: 1px solid var(--border-light);
-        }
-        
-        .theme-btn.active {
-            background: var(--primary);
-            color: #000;
-            border-color: var(--primary);
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* CART OVERLAY */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .cart-drawer {
-            width: 100%;
-            max-height: 90vh;
-            background: var(--surface);
-            border-radius: 30px 30px 0 0;
-            padding: 30px 25px;
-            overflow-y: auto;
-            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        
-        .cart-items {
-            margin-bottom: 25px;
-        }
-        
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        body.light-mode .cart-item {
-            border-bottom: 1px solid var(--border-light);
-        }
-        
-        .cart-item:last-child { border: none; }
-        
-        .item-name {
-            font-weight: 600;
-        }
-        
-        .item-price {
-            color: var(--primary);
-            font-weight: 800;
-        }
-        
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px 0;
-            font-size: 20px;
-            font-weight: 900;
-            border-top: 2px solid var(--border);
-            margin-bottom: 25px;
-        }
-        
-        body.light-mode .total-row {
-            border-top: 2px solid var(--border-light);
-        }
-        
-        .payment-title {
-            font-size: 13px;
-            font-weight: 800;
-            color: var(--text-dim);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-        }
-        
-        .payment-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-        
-        .payment-option {
-            padding: 16px;
-            background: rgba(255,255,255,0.03);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        body.light-mode .payment-option {
-            background: rgba(0,0,0,0.02);
-            border: 2px solid var(--border-light);
-        }
-        
-        .payment-option.active {
-            border-color: var(--primary);
-            background: rgba(0,212,255,0.1);
-            color: var(--primary);
-        }
-        
-        .btn-checkout {
-            width: 100%;
-            padding: 18px;
-            background: var(--primary);
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            font-weight: 900;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .btn-checkout:active {
-            transform: scale(0.98);
-        }
-        
-        .empty-cart {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-dim);
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* ADMIN PANEL */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .admin-panel {
-            display: none;
-        }
-        
-        .admin-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .admin-stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        body.light-mode .admin-stat-card {
-            border: 1px solid var(--border-light);
-        }
-        
-        .admin-stat-card .value {
-            font-size: 28px;
-            font-weight: 900;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-        
-        .admin-stat-card .label {
-            font-size: 12px;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .admin-section {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        body.light-mode .admin-section {
-            border: 1px solid var(--border-light);
-        }
-        
-        .admin-section h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--primary);
-        }
-        
-        .order-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        body.light-mode .order-item {
-            border-bottom: 1px solid var(--border-light);
-        }
-        
-        .order-item:last-child { border: none; }
-        
-        .order-info h4 {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .order-info p {
-            font-size: 12px;
-            color: var(--text-dim);
-        }
-        
-        .order-status {
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .status-pending {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-        
-        .status-completed {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-        
-        .status-cancelled {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-        
-        .admin-btn {
-            padding: 10px 20px;
-            background: var(--primary);
-            color: #000;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .admin-btn:active {
-            transform: scale(0.98);
-        }
-        
-        /* ═══════════════════════════════════════════════════════════════ */
-        /* NOTIFICATION */
-        /* ═══════════════════════════════════════════════════════════════ */
-        .notification {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            z-index: 300;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transform: translateX(150%);
-            transition: transform 0.3s;
-        }
-        
-        body.light-mode .notification {
-            border: 1px solid var(--border-light);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-        
-        .notification.show {
-            transform: translateX(0);
-        }
-        
-        .notification.success {
-            border-left: 4px solid var(--success);
-        }
-        
-        .notification.error {
-            border-left: 4px solid var(--danger);
-        }
-        
-        .notification.warning {
-            border-left: 4px solid var(--warning);
-        }
-        
-        .notification.info {
-            border-left: 4px solid var(--info);
-        }
-        
-        .notification-icon {
-            font-size: 20px;
-        }
-        
-        .notification-content h4 {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        
-        .notification-content p {
-            font-size: 12px;
-            color: var(--text-dim);
+            display: flex; gap: 10px; padding: 15px; overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .tab-btn {
+            background: var(--surface); color: var(--text-sec);
+            padding: 10px 20px; border-radius: 20px; border: 1px solid var(--border);
+            white-space: nowrap; transition: 0.3s; cursor: pointer;
+        }
+        .tab-btn.active { background: var(--text); color: var(--bg); font-weight: 600; border-color: var(--text); }
+
+        /* --- CONTENT SECTIONS --- */
+        .section { display: none; padding: 0 15px; animation: fadeUp 0.4s; }
+        .section.active { display: block; }
+
+        .hero { text-align: center; margin: 20px 0 30px; }
+        .hero h1 { font-size: 2rem; margin-bottom: 10px; line-height: 1.1; }
+        .hero p { color: var(--text-sec); font-size: 0.9rem; }
+        .gradient-text { background: linear-gradient(135deg, var(--accent), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* --- PRODUCT CARDS --- */
+        .products-grid { display: grid; gap: 15px; }
+        .card {
+            background: var(--surface); border-radius: 16px; padding: 20px;
+            border: 1px solid var(--border); position: relative; overflow: hidden;
+        }
+        .card.premium { border-color: rgba(251, 191, 36, 0.3); }
+        .card.premium::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--premium);
+        }
+        .card h3 { font-size: 1.1rem; margin-bottom: 5px; }
+        .price { font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; display: block; }
+        .premium .price { color: var(--premium); }
+        .btn {
+            width: 100%; padding: 12px; border-radius: 10px; border: none;
+            font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .btn-primary { background: var(--text); color: var(--bg); }
+        .btn-premium { background: var(--premium); color: #000; }
+        .btn:active { transform: scale(0.98); }
+
+        /* --- DEMO INTERFACES --- */
+        .demo-box {
+            background: #000; border-radius: 12px; padding: 15px; margin-bottom: 20px;
+            font-family: 'Courier New', monospace; min-height: 200px;
+            border: 1px solid #333; position: relative; overflow: hidden;
+        }
+        
+        /* AI Chat Demo */
+        .chat-viewport { height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+        .msg { padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; max-width: 85%; font-family: var(--font); }
+        .msg.bot { background: #1f2937; color: #fff; align-self: flex-start; }
+        .msg.user { background: var(--accent); color: #fff; align-self: flex-end; }
+        .input-area { display: flex; gap: 10px; }
+        .demo-input { flex: 1; background: #1f2937; border: none; color: white; padding: 8px; border-radius: 6px; }
+
+        /* Scraper Demo */
+        .terminal { color: #10b981; font-size: 0.8rem; line-height: 1.4; }
+        .line { margin-bottom: 4px; }
+        .cursor { display: inline-block; width: 8px; height: 14px; background: #10b981; animation: blink 1s infinite; }
+
+        /* Dashboard Demo */
+        .dash-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-box { background: #1f2937; padding: 10px; border-radius: 8px; text-align: center; }
+        .stat-val { font-size: 1.5rem; font-weight: bold; color: white; }
+        .stat-label { font-size: 0.7rem; color: #9ca3af; }
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #333; color: white; font-size: 0.9rem; font-family: var(--font); }
+
+        /* --- MODALS --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 200; display: none;
+            justify-content: center; align-items: flex-end;
+        }
+        .modal-content {
+            background: var(--surface); width: 100%; max-width: 600px;
+            border-radius: 20px 20px 0 0; padding: 25px;
+            animation: slideUp 0.3s;
+        }
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        
+        /* --- ADMIN PANEL --- */
+        .admin-panel { display: none; padding: 20px; }
+        .admin-panel.active { display: block; }
+        .stat-card { background: var(--surface-2); padding: 15px; border-radius: 10px; margin-bottom: 10px; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes blink { 50% { opacity: 0; } }
+        
+        .toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            padding: 10px 20px; border-radius: 20px; color: white;
+            font-size: 0.9rem; z-index: 300; opacity: 0; transition: 0.3s;
         }
     </style>
 </head>
 <body>
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- LOADER -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div id="loader">
-        <div class="logo-anim">NWL</div>
-        <div class="loading-bar"><div class="bar-fill"></div></div>
-    </div>
 
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- BACKGROUND EFFECTS -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div class="bg-grid"></div>
-    <div class="gradient-orb orb-1"></div>
-    <div class="gradient-orb orb-2"></div>
-
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- NAVIGATION -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <nav>
-        <div class="nav-left">
-            <div class="logo">NWL<span>_DEV</span></div>
-            <button class="nav-btn" id="language-btn" onclick="openSettings()">
-                <i class="fas fa-globe"></i>
-                <span id="current-language">EN</span>
-            </button>
-            <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">
-                <i class="fas fa-moon" id="theme-icon"></i>
-            </button>
-            <button class="nav-btn" id="admin-btn" onclick="toggleAdminPanel()">
-                <i class="fas fa-cog"></i>
-            </button>
-        </div>
-        <div class="nav-right">
-            <div class="cart-btn" onclick="openCart()">
-                <i class="fas fa-shopping-cart"></i>
-                <span id="cart-badge" class="badge hidden">0</span>
+    <header class="header">
+        <div class="logo">NWL<span>.DEV</span></div>
+        <div class="nav-actions">
+            <select class="lang-select" onchange="changeLang(this.value)">
+                <option value="en">EN</option>
+                <option value="ru">RU</option>
+                <option value="es">ES</option>
+                <option value="fr">FR</option>
+                <option value="de">DE</option>
+                <option value="zh">ZH</option>
+            </select>
+            <div class="icon-btn" onclick="toggleTheme()">
+                <i class="fas fa-sun" id="theme-icon"></i>
+            </div>
+            <div class="icon-btn" onclick="openCart()">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="badge" id="cart-count">0</span>
             </div>
         </div>
+    </header>
+
+    <nav class="tabs">
+        <button class="tab-btn active" onclick="setTab('ai')" data-t="tab_ai">AI Agents</button>
+        <button class="tab-btn" onclick="setTab('scraper')" data-t="tab_scraper">Data Tools</button>
+        <button class="tab-btn" onclick="setTab('comm')" data-t="tab_comm">Community</button>
     </nav>
 
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- MAIN CONTENT -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div class="container">
-        <!-- USER PANEL (DEFAULT) -->
-        <div id="user-panel">
-            <!-- HERO -->
+    <main>
+        
+        <div id="ai" class="section active">
             <div class="hero">
-                <h1><span id="hero-title">TELEGRAM</span><br><span class="gradient-text" id="hero-subtitle">AUTOMATION</span></h1>
-                <p id="hero-description">Python • AI • Web3 Ready</p>
+                <h1 data-t="ai_title">Smart AI Solutions</h1>
+                <p data-t="ai_desc">Automate support & sales with GPT-4</p>
             </div>
-
-            <!-- TABS -->
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab(0)">
-                    <i class="fas fa-robot"></i> <span id="tab-ai">AI</span>
-                </button>
-                <button class="tab" onclick="switchTab(1)">
-                    <i class="fas fa-database"></i> <span id="tab-data">Data</span>
-                </button>
-                <button class="tab" onclick="switchTab(2)">
-                    <i class="fas fa-users"></i> <span id="tab-comm">Comm</span>
-                </button>
-            </div>
-
-            <!-- TAB 1: AI BOTS -->
-            <div class="tab-content active">
-                <div class="demo-card">
-                    <div class="demo-header">
-                        <div class="icon"></div>
-                        <h3 id="ai-demo-title">Live AI Assistant Demo</h3>
-                    </div>
-                    <div class="chat-box" id="chat"></div>
-                    <div class="input-row">
-                        <input type="text" id="ai-input" placeholder="Ask about pricing, features..." onkeypress="if(event.key==='Enter')sendAI()">
-                        <button class="btn-send" onclick="sendAI()">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
+            
+            <div class="demo-box">
+                <div class="chat-viewport" id="ai-chat">
+                    <div class="msg bot" data-t="ai_hello">Hello! Ask me about prices or API.</div>
                 </div>
-
-                <div class="products">
-                    <div class="product">
-                        <div class="product-tier" id="product-tier-ai-standard">Standard Bot</div>
-                        <div class="product-price" id="price-standard-bot">$200</div>
-                        <div class="product-subprice" id="fixed-price">Fixed price</div>
-                        <ul class="features" id="features-ai-standard">
-                            <!-- Features will be populated by JavaScript -->
-                        </ul>
-                        <button class="btn-add" onclick="addToCart('Standard AI Bot', 200)" id="add-to-cart-ai-standard">
-                            ADD TO CART
-                        </button>
-                    </div>
-
-                    <div class="product premium">
-                        <div class="product-tier" id="product-tier-ai-premium">Smart Agent</div>
-                        <div class="product-price" id="price-smart-agent">$800</div>
-                        <div class="product-subprice" id="custom-features-price-ai">+ $35/hour for custom features</div>
-                        <ul class="features" id="features-ai-premium">
-                            <!-- Features will be populated by JavaScript -->
-                        </ul>
-                        <button class="btn-add" onclick="addToCart('Premium AI Agent', 800)" id="add-to-cart-ai-premium">
-                            ADD TO CART
-                        </button>
-                    </div>
+                <div class="input-area">
+                    <input type="text" id="ai-input" class="demo-input" placeholder="Type..." onkeypress="handleAiEnter(event)">
+                    <button class="btn-primary" style="width: 40px; border-radius: 6px;" onclick="sendAiMsg()"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
 
-            <!-- TAB 2: DATA SCRAPERS -->
-            <div class="tab-content">
-                <div class="demo-card">
-                    <div class="demo-header">
-                        <div class="icon"></div>
-                        <h3 id="scraper-demo-title">Web Scraper Terminal</h3>
-                    </div>
-                    <div class="terminal" id="terminal"></div>
-                    <div class="input-row">
-                        <input type="text" id="scraper-input" placeholder="Enter URL to scrape..." style="font-family: 'JetBrains Mono', monospace">
-                        <button class="btn-send" onclick="runScraper()">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </div>
+            <div class="products-grid">
+                <div class="card">
+                    <h3>Standard Bot</h3>
+                    <span class="price">$200</span>
+                    <button class="btn btn-primary" onclick="addToCart('Standard AI Bot', 200)" data-t="btn_add">Add to Cart</button>
                 </div>
-
-                <div class="products">
-                    <div class="product">
-                        <div class="product-tier" id="product-tier-scraper-basic">Basic Scraper</div>
-                        <div class="product-price" id="price-basic-scraper">$180</div>
-                        <div class="product-subprice" id="fixed-price-scraper">Fixed price</div>
-                        <ul class="features" id="features-scraper-basic">
-                            <!-- Features will be populated by JavaScript -->
-                        </ul>
-                        <button class="btn-add" onclick="addToCart('Basic Scraper', 180)" id="add-to-cart-scraper-basic">
-                            ADD TO CART
-                        </button>
-                    </div>
-
-                    <div class="product premium">
-                        <div class="product-tier" id="product-tier-scraper-premium">Monitor System</div>
-                        <div class="product-price" id="price-monitor-system">$600</div>
-                        <div class="product-subprice" id="custom-features-price-scraper">+ $30/hour for custom sources</div>
-                        <ul class="features" id="features-scraper-premium">
-                            <!-- Features will be populated by JavaScript -->
-                        </ul>
-                        <button class="btn-add" onclick="addToCart('Premium Monitor', 600)" id="add-to-cart-scraper-premium">
-                            ADD TO CART
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3: COMMUNITY BOTS -->
-            <div class="tab-content">
-                <div class="demo-card">
-                    <div class="demo-header">
-                        <div class="icon"></div>
-                        <h3 id="dashboard-title">Admin Dashboard Preview</h3>
-                    </div>
-                    <div class="stats">
-                        <div class="stat-card">
-                            <div class="label" id="members-label">Members</div>
-                            <div class="value" id="members">12.5k</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="label" id="active-today-label">Active Today</div>
-                            <div class="value" id="active">4.2k</div>
-                        </div>
-                    </div>
-                    <div class="control-row">
-                        <span id="anti-spam-label">🛡️ Anti-Spam</span>
-                        <label class="toggle">
-                            <input type="checkbox" checked onchange="toggleFeature('Anti-Spam')">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="control-row">
-                        <span id="crypto-paywall-label">💎 Crypto Paywall</span>
-                        <label class="toggle">
-                            <input type="checkbox" onchange="toggleFeature('Paywall')">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="control-row">
-                        <span id="gamification-label">🎮 Gamification</span>
-                        <label class="toggle">
-                            <input type="checkbox" onchange="toggleFeature('Gamification')">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="products">
-                    <div class="product">
-                        <div class="product-tier" id="product-tier-comm-basic">Moderator Bot</div>
-                        <div class="product-price" id="price-moderator-bot">$150</div>
-                        <div class="product-subprice" id="fixed-price-comm">Fixed price</div>
-                        <ul class="features" id="features-comm-basic">
-                            <!-- Features will be populated by JavaScript -->
-                        </ul>
-                        <button class="btn-add" onclick="addToCart('Moderator Bot', 150)" id="add-to-cart-comm-basic">
-                            ADD TO CART
-                        </button>
-                    </div>
-
-                    <div class="product premium">
-                        <div class="product-tier" id="product-tier-comm-premium">Community Hub</div>
-                        <div class="product-price" id="price-community-hub">$500</div>
-                        <div class="product-subprice" id="custom-features-price-comm">+ $30/hour for custom features</div>
-                        <ul class="features" id="features-comm-premium">
-                            <!-- Features will be populated by JavaScript -->
-                        </ul>
-                        <button class="btn-add" onclick="addToCart('Premium Community Bot', 500)" id="add-to-cart-comm-premium">
-                            ADD TO CART
-                        </button>
-                    </div>
+                <div class="card premium">
+                    <h3>Smart Agent (GPT-4)</h3>
+                    <span class="price">$800</span>
+                    <button class="btn btn-premium" onclick="addToCart('Smart AI Agent', 800)" data-t="btn_add_pro">Add Premium</button>
                 </div>
             </div>
         </div>
 
-        <!-- ADMIN PANEL -->
-        <div id="admin-panel" class="admin-panel">
+        <div id="scraper" class="section">
             <div class="hero">
-                <h1><span class="gradient-text" id="admin-panel-title">Admin Panel</span></h1>
-                <p id="admin-panel-subtitle">Manage orders, view statistics, and configure settings</p>
+                <h1 data-t="data_title">Data Extraction</h1>
+                <p data-t="data_desc">Parse any website in seconds</p>
             </div>
 
-            <div class="admin-stats">
-                <div class="admin-stat-card">
-                    <div class="value" id="today-orders-value">5</div>
-                    <div class="label" id="today-orders-label">Today's Orders</div>
+            <div class="demo-box">
+                <div class="terminal" id="terminal">
+                    <div class="line">user@bot:~$ waiting for target...</div>
+                    <div class="cursor"></div>
                 </div>
-                <div class="admin-stat-card">
-                    <div class="value" id="total-revenue-value">$2,850</div>
-                    <div class="label" id="total-revenue-label">Total Revenue</div>
-                </div>
-                <div class="admin-stat-card">
-                    <div class="value" id="conversion-rate-value">12.5%</div>
-                    <div class="label" id="conversion-rate-label">Conversion Rate</div>
-                </div>
-                <div class="admin-stat-card">
-                    <div class="value" id="active-users-value">142</div>
-                    <div class="label" id="active-users-label">Active Users</div>
-                </div>
+                <button class="btn-primary" style="margin-top: 10px; width: 100px; font-size: 0.8rem; padding: 5px;" onclick="runScraperDemo()">RUN DEMO</button>
             </div>
 
-            <div class="admin-section">
-                <h3><i class="fas fa-shopping-cart"></i> <span id="recent-orders-title">Recent Orders</span></h3>
-                <div id="orders-list">
-                    <!-- Orders will be populated by JavaScript -->
+            <div class="products-grid">
+                <div class="card">
+                    <h3>Basic Scraper</h3>
+                    <span class="price">$180</span>
+                    <button class="btn btn-primary" onclick="addToCart('Basic Scraper', 180)" data-t="btn_add">Add to Cart</button>
                 </div>
-            </div>
-
-            <div class="admin-section">
-                <h3><i class="fas fa-cog"></i> <span id="admin-settings-title">Admin Settings</span></h3>
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="admin-btn" onclick="loadSampleData()">
-                        <i class="fas fa-download"></i> <span id="load-sample-data">Load Sample Data</span>
-                    </button>
-                    <button class="admin-btn" onclick="clearAllData()">
-                        <i class="fas fa-trash"></i> <span id="clear-data">Clear Data</span>
-                    </button>
+                <div class="card premium">
+                    <h3>Monitor System</h3>
+                    <span class="price">$600</span>
+                    <button class="btn btn-premium" onclick="addToCart('Monitor System', 600)" data-t="btn_add_pro">Add Premium</button>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- FLOATING CONTACT BUTTON -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div class="floating-contact" onclick="openMessenger()">
-        <i class="fas fa-comment"></i> <span id="message-me-text">Message Me</span>
-    </div>
+        <div id="comm" class="section">
+            <div class="hero">
+                <h1 data-t="comm_title">Community Power</h1>
+                <p data-t="comm_desc">Manage groups & monetization</p>
+            </div>
 
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- SETTINGS OVERLAY -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div id="settings-overlay" class="overlay">
-        <div class="settings-modal">
-            <div class="modal-header">
-                <h2 id="settings-title">Settings</h2>
-                <div class="close-btn" onclick="closeSettings()">✕</div>
+            <div class="demo-box" style="display: flex; flex-direction: column; justify-content: center;">
+                <div class="dash-stats">
+                    <div class="stat-box">
+                        <div class="stat-val" id="stat-members">1,204</div>
+                        <div class="stat-label">Members</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val" id="stat-income">$420</div>
+                        <div class="stat-label">Revenue</div>
+                    </div>
+                </div>
+                <div class="toggle-row">
+                    <span>Anti-Spam Shield</span>
+                    <i class="fas fa-toggle-on" style="color: var(--success)"></i>
+                </div>
+                <div class="toggle-row">
+                    <span>Crypto Paywall</span>
+                    <i class="fas fa-toggle-off" style="color: #666" id="demo-toggle" onclick="toggleDemoSwitch()"></i>
+                </div>
+            </div>
+
+            <div class="products-grid">
+                <div class="card">
+                    <h3>Moderator Bot</h3>
+                    <span class="price">$150</span>
+                    <button class="btn btn-primary" onclick="addToCart('Moderator Bot', 150)" data-t="btn_add">Add to Cart</button>
+                </div>
+                <div class="card premium">
+                    <h3>Community Hub</h3>
+                    <span class="price">$500</span>
+                    <button class="btn btn-premium" onclick="addToCart('Community Hub', 500)" data-t="btn_add_pro">Add Premium</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="admin" class="section">
+            <h2 style="margin-bottom: 20px;">Admin Panel</h2>
+            <div class="stat-card">
+                <h4>Today's Visits</h4>
+                <div style="font-size: 2rem; font-weight: bold;">142</div>
+            </div>
+            <div class="stat-card">
+                <h4>Total Revenue</h4>
+                <div style="font-size: 2rem; font-weight: bold; color: var(--success);">$2,400</div>
+            </div>
+        </div>
+
+    </main>
+
+    <div style="height: 50px;" onclick="adminClicks++"></div>
+
+    <div class="modal-overlay" id="cart-modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px;" data-t="cart_title">Your Order</h2>
+            <div id="cart-items"></div>
+            <div style="margin-top: 20px; font-weight: bold; font-size: 1.2rem; display: flex; justify-content: space-between;">
+                <span data-t="total">Total:</span>
+                <span id="cart-total">$0</span>
             </div>
             
-            <div class="settings-option">
-                <h3><i class="fas fa-globe"></i> <span id="language-title">Language</span></h3>
-                <div class="language-options">
-                    <button class="language-btn active" onclick="changeLanguage('en')">English</button>
-                    <button class="language-btn" onclick="changeLanguage('ru')">Русский</button>
-                    <button class="language-btn" onclick="changeLanguage('es')">Español</button>
-                    <button class="language-btn" onclick="changeLanguage('fr')">Français</button>
-                    <button class="language-btn" onclick="changeLanguage('de')">Deutsch</button>
-                    <button class="language-btn" onclick="changeLanguage('zh')">中文</button>
-                </div>
+            <p style="margin: 15px 0 10px; font-size: 0.9rem; color: var(--text-sec);" data-t="pay_method">Payment Method:</p>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="selectPay('usdt')">USDT (TRC20)</button>
+                <button class="btn" style="background: var(--surface-2); color: var(--text);" onclick="selectPay('wallet')">Wallet</button>
             </div>
-            
-            <div class="settings-option">
-                <h3><i class="fas fa-palette"></i> <span id="theme-title">Theme</span></h3>
-                <div class="theme-options">
-                    <button class="theme-btn active" onclick="setTheme('dark')" id="dark-theme-btn">
-                        <i class="fas fa-moon"></i> <span id="dark-theme-text">Dark</span>
-                    </button>
-                    <button class="theme-btn" onclick="setTheme('light')" id="light-theme-btn">
-                        <i class="fas fa-sun"></i> <span id="light-theme-text">Light</span>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="settings-option">
-                <h3><i class="fas fa-user-shield"></i> <span id="admin-mode-title">Admin Mode</span></h3>
-                <div style="margin-top: 10px;">
-                    <button class="admin-btn" onclick="toggleAdminPanel()" style="width: 100%;">
-                        <i class="fas fa-cog"></i> <span id="toggle-admin-panel">Toggle Admin Panel</span>
-                    </button>
-                </div>
-            </div>
+
+            <button class="btn btn-premium" onclick="checkout()" data-t="btn_checkout">CONFIRM ORDER</button>
+            <button class="btn" style="background: transparent; margin-top: 10px; color: var(--text-sec);" onclick="closeCart()" data-t="btn_close">Close</button>
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- CART OVERLAY -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div id="cart-overlay" class="overlay" onclick="closeCart()">
-        <div class="cart-drawer" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h2 id="your-order-title">Your Order</h2>
-                <div class="close-btn" onclick="closeCart()">✕</div>
-            </div>
-            <div id="cart-items" class="cart-items">
-                <!-- Cart items will be inserted here -->
-            </div>
-            <div class="total-row">
-                <span id="total-label">Total:</span>
-                <span id="total-price">$0</span>
-            </div>
-            <div class="payment-title" id="payment-method-title">Payment Method</div>
-            <div class="payment-options">
-                <div class="payment-option active" onclick="selectPayment('usdt')">
-                    <i class="fas fa-gem"></i> <span id="usdt-payment">USDT TRC20</span>
-                </div>
-                <div class="payment-option" onclick="selectPayment('wallet')">
-                    <i class="fas fa-wallet"></i> <span id="wallet-payment">Telegram Wallet</span>
-                </div>
-            </div>
-            <button class="btn-checkout" onclick="checkout()">
-                <i class="fas fa-lock"></i> <span id="confirm-pay-text">CONFIRM & PAY →</span>
-            </button>
-        </div>
-    </div>
+    <div id="toast" class="toast">Action Successful</div>
 
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- NOTIFICATION -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div id="notification" class="notification">
-        <div class="notification-icon" id="notification-icon">
-            <i class="fas fa-info-circle"></i>
-        </div>
-        <div class="notification-content">
-            <h4 id="notification-title">Notification</h4>
-            <p id="notification-message">This is a notification message</p>
-        </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- JAVASCRIPT -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
     <script>
-        // ═══════════════════════════════════════════════════════════════
-        // TELEGRAM WEB APP INITIALIZATION
-        // ═══════════════════════════════════════════════════════════════
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        tg.setHeaderColor('#0a0a0f');
-        tg.setBackgroundColor('#0a0a0f');
+        tg.setHeaderColor('#0a0a0f'); // Set initial header color
 
-        // ═══════════════════════════════════════════════════════════════
-        // LOADER
-        // ═══════════════════════════════════════════════════════════════
-        window.onload = () => {
-            setTimeout(() => {
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loader').style.display = 'none';
-                }, 500);
-            }, 2000);
-            initDemos();
+        // --- TRANSLATIONS (6 Languages) ---
+        const i18n = {
+            en: {
+                tab_ai: "AI Agents", tab_scraper: "Data Tools", tab_comm: "Community",
+                ai_title: "Smart AI Solutions", ai_desc: "Automate support & sales",
+                data_title: "Data Extraction", data_desc: "Parse websites instantly",
+                comm_title: "Community Power", comm_desc: "Monetize & Manage",
+                btn_add: "Add to Cart", btn_add_pro: "Add Premium",
+                cart_title: "Your Order", total: "Total:", pay_method: "Payment Method:",
+                btn_checkout: "CONFIRM ORDER", btn_close: "Close",
+                ai_hello: "Hello! Ask about price or API.",
+                ai_answer_price: "Our prices start from $150.",
+                ai_answer_api: "We provide full API access."
+            },
+            ru: {
+                tab_ai: "AI Агенты", tab_scraper: "Парсеры", tab_comm: "Комьюнити",
+                ai_title: "Умные AI Решения", ai_desc: "Автоматизация продаж",
+                data_title: "Сбор Данных", data_desc: "Парсинг любых сайтов",
+                comm_title: "Управление Группой", comm_desc: "Модерация и доход",
+                btn_add: "В корзину", btn_add_pro: "Купить Premium",
+                cart_title: "Ваш заказ", total: "Итого:", pay_method: "Оплата через:",
+                btn_checkout: "ОФОРМИТЬ", btn_close: "Закрыть",
+                ai_hello: "Привет! Спроси про цены или API.",
+                ai_answer_price: "Цены начинаются от $150.",
+                ai_answer_api: "Мы предоставляем полный доступ к API."
+            },
+            es: { tab_ai: "Agentes AI", ai_title: "Soluciones IA", btn_add: "Añadir", cart_title: "Tu Pedido" },
+            fr: { tab_ai: "Agents IA", ai_title: "Solutions IA", btn_add: "Ajouter", cart_title: "Votre Commande" },
+            de: { tab_ai: "KI-Agenten", ai_title: "KI-Lösungen", btn_add: "Hinzufügen", cart_title: "Bestellung" },
+            zh: { tab_ai: "AI 代理", ai_title: "智能方案", btn_add: "添加", cart_title: "您的订单" }
         };
 
-        // ═══════════════════════════════════════════════════════════════
-        // TAB SWITCHING
-        // ═══════════════════════════════════════════════════════════════
-        let currentTab = 0;
-        
-        function switchTab(index) {
-            const tabs = document.querySelectorAll('.tab');
-            const contents = document.querySelectorAll('.tab-content');
+        // --- STATE ---
+        let currentLang = 'en';
+        let cart = [];
+        let payMethod = 'usdt';
+        let adminClicks = 0;
+
+        // --- INITIALIZATION ---
+        function init() {
+            // Restore theme & lang
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') toggleTheme(false);
             
-            tabs.forEach((t, i) => {
-                t.classList.toggle('active', i === index);
-            });
-            contents.forEach((c, i) => {
-                c.classList.toggle('active', i === index);
-            });
+            const savedLang = localStorage.getItem('lang') || 'en';
+            document.querySelector('.lang-select').value = savedLang;
+            changeLang(savedLang);
+
+            // Admin secret trigger
+            setInterval(() => {
+                if (adminClicks >= 5) {
+                    document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+                    document.getElementById('admin').classList.add('active');
+                    showToast('Admin Mode Unlocked', 'success');
+                    adminClicks = 0;
+                } else {
+                    adminClicks = 0;
+                }
+            }, 2000);
+        }
+
+        // --- CORE FUNCTIONS ---
+        function setTab(id) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
             
-            currentTab = index;
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+            
             tg.HapticFeedback.selectionChanged();
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // INITIALIZE DEMOS
-        // ═══════════════════════════════════════════════════════════════
-        function initDemos() {
-            // AI Chat initial message
-            const chat = document.getElementById('chat');
-            chat.innerHTML = '<div class="msg bot">👋 Hi! I\'m your AI assistant. Ask me about pricing, features, or delivery time.</div>';
+        function changeLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
             
-            // Terminal initial state
-            const terminal = document.getElementById('terminal');
-            if (terminal) {
-                terminal.innerHTML = '<div class="line">root@nwl:~$ Ready to scrape. Enter target URL...</div>';
-            }
-            
-            // Dashboard animation
-            animateStats();
+            const texts = i18n[lang] || i18n['en'];
+            document.querySelectorAll('[data-t]').forEach(el => {
+                const key = el.getAttribute('data-t');
+                if (texts[key]) el.innerText = texts[key];
+            });
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // AI CHAT DEMO
-        // ═══════════════════════════════════════════════════════════════
-        const aiResponses = {
-            price: "Standard bots start at $200, Premium AI at $800. Premium includes GPT-4 and costs $35/hour for custom features.",
-            pricing: "Standard bots start at $200, Premium AI at $800. Premium includes GPT-4 and costs $35/hour for custom features.",
-            cost: "Standard bots start at $200, Premium AI at $800. Premium includes GPT-4 and costs $35/hour for custom features.",
-            cheap: "Cheapest option: Moderator Bot at $150. Great for basic community management.",
-            expensive: "Most advanced: Premium AI Agent at $800 + $35/hour. Full GPT-4 integration with learning capabilities.",
-            delivery: "Standard bots: 3 days. Premium projects: 5-7 days depending on complexity.",
-            time: "Standard bots: 3 days. Premium projects: 5-7 days depending on complexity.",
-            fast: "Fastest delivery: Standard bots in 3 days. Need it faster? Contact me directly!",
-            gpt: "Yes! Premium AI bots use GPT-4 for natural conversations. They understand context and learn from chat history.",
-            ai: "Yes! Premium AI bots use GPT-4 for natural conversations. They understand context and learn from chat history.",
-            intelligent: "Premium AI uses GPT-4 for human-like responses, context awareness, and learning from interactions.",
-            scraper: "I build scrapers for any website. Basic version: $180. Premium monitor with 24/7 tracking: $600.",
-            data: "I build scrapers for any website. Basic version: $180. Premium monitor with 24/7 tracking: $600.",
-            parse: "Web scraping services: Basic ($180) for daily scraping, Premium ($600) for 24/7 monitoring with alerts.",
-            monitor: "Premium monitor system: $600 + $30/hour. Tracks prices 24/7, instant alerts, proxy rotation, no bans.",
-            community: "Community bots start at $150. Premium version ($500) includes crypto payments and gamification.",
-            moderate: "Moderator bot: $150 fixed. Auto-moderation, welcome messages, spam removal, word blacklist.",
-            payment: "I accept USDT (TRC20) and Telegram Wallet. Payment info will be sent after you confirm your order.",
-            crypto: "Yes! I accept USDT TRC20. Premium community bots can also handle member payments in crypto.",
-            usdt: "USDT TRC20 accepted! You'll receive wallet address after order confirmation.",
-            wallet: "Both USDT TRC20 and Telegram Wallet supported. Choose during checkout.",
-            hello: "Hey! Ready to automate your Telegram? Ask me anything about my services.",
-            hi: "Hey! Ready to automate your Telegram? Ask me anything about my services.",
-            hey: "Hello! I can build AI bots, scrapers, and community managers. What interests you?",
-            help: "I can help you with: AI Support Bots, Web Scrapers/Monitors, Community Management. Ask about any!",
-            what: "I build Telegram bots: AI assistants ($200-800), Data scrapers ($180-600), Community managers ($150-500).",
-            feature: "Each tier has specific features. Standard versions are fixed-price basics. Premium includes advanced features + hourly customization.",
-            custom: "Premium tiers include customization at $30-35/hour. You can change design, add features, integrate APIs, etc.",
-            example: "Examples: E-commerce bot with payments, Price monitoring for Amazon, VIP community with crypto access. Ask specifics!",
-            portfolio: "You're in my portfolio now! Try the live demos above. Each one shows real capabilities.",
-            work: "All demos are functional. Try: Ask AI questions, Run scraper with URL, Toggle dashboard features.",
-            review: "I'm new to freelancing, so prices are 30% below market. After reviews, I'll raise them. Get deals now!",
-            guarantee: "3-day money-back guarantee for standard bots. Free revisions until you're satisfied. Professional delivery.",
-            support: "Lifetime support for all projects. Questions? Just message me anytime. Updates included for 6 months.",
-            api: "Yes! I can integrate any API: OpenAI, payment processors, databases, external services. Premium tier only.",
-            database: "Database support included in Premium tiers. MySQL, PostgreSQL, MongoDB - whatever you need.",
-            host: "I can deploy your bot on cloud hosting (Railway, Render, etc). Setup included in price."
-        };
-
-        function sendAI() {
-            const input = document.getElementById('ai-input');
-            const text = input.value.trim().toLowerCase();
-            if (!text) return;
-
-            const chat = document.getElementById('chat');
+        function toggleTheme(save = true) {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
             
-            // User message
+            if (body.getAttribute('data-theme') === 'light') {
+                body.setAttribute('data-theme', 'dark');
+                icon.className = 'fas fa-sun';
+                tg.setHeaderColor('#0a0a0f');
+                if(save) localStorage.setItem('theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+                icon.className = 'fas fa-moon';
+                tg.setHeaderColor('#ffffff');
+                if(save) localStorage.setItem('theme', 'light');
+            }
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function showToast(msg, type='success') {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.background = type === 'success' ? 'var(--success)' : 'var(--danger)';
+            toast.style.opacity = '1';
+            toast.style.top = '50px';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.top = '20px';
+            }, 3000);
+        }
+
+        // --- CART LOGIC ---
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            document.getElementById('cart-count').innerText = cart.length;
+            document.getElementById('cart-count').style.display = 'block';
+            showToast(`${name} Added!`);
+            tg.HapticFeedback.notificationOccurred('success');
+        }
+
+        function openCart() {
+            if (cart.length === 0) return showToast('Cart is empty', 'error');
+            
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+            let total = 0;
+            
+            cart.forEach(item => {
+                total += item.price;
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <span>${item.name}</span>
+                        <span>$${item.price}</span>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('cart-total').innerText = `$${total}`;
+            document.getElementById('cart-modal').style.display = 'flex';
+        }
+
+        function closeCart() {
+            document.getElementById('cart-modal').style.display = 'none';
+        }
+
+        function selectPay(method) {
+            payMethod = method;
+            tg.HapticFeedback.selectionChanged();
+            showToast(`Selected: ${method.toUpperCase()}`);
+        }
+
+        function checkout() {
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            const data = {
+                type: 'order',
+                items: cart,
+                total: total,
+                payment_method: payMethod
+            };
+            tg.sendData(JSON.stringify(data));
+        }
+
+        // --- DEMOS ---
+        
+        // AI Demo
+        function handleAiEnter(e) { if(e.key === 'Enter') sendAiMsg(); }
+        
+        function sendAiMsg() {
+            const input = document.getElementById('ai-input');
+            const txt = input.value.trim().toLowerCase();
+            if (!txt) return;
+            
+            const chat = document.getElementById('ai-chat');
             chat.innerHTML += `<div class="msg user">${input.value}</div>`;
             input.value = '';
             chat.scrollTop = chat.scrollHeight;
-            
-            // Bot response
+
             setTimeout(() => {
-                let response = "I can build that! Add items to cart to discuss details. Or ask about: pricing, delivery time, features.";
+                let reply = "I can build that for you!";
+                const dict = i18n[currentLang] || i18n['en'];
                 
-                // Check for matching keywords
-                for (let key in aiResponses) {
-                    if (text.includes(key)) {
-                        response = aiResponses[key];
-                        break;
-                    }
-                }
+                if(txt.includes('price')) reply = dict.ai_answer_price || "$150+";
+                if(txt.includes('api')) reply = dict.ai_answer_api || "Yes, API included.";
                 
-                chat.innerHTML += `<div class="msg bot">${response}</div>`;
+                chat.innerHTML += `<div class="msg bot">${reply}</div>`;
                 chat.scrollTop = chat.scrollHeight;
-                tg.HapticFeedback.impactOccurred('light');
+                tg.HapticFeedback.impactOccurred('medium');
             }, 800);
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // WEB SCRAPER DEMO
-        // ═══════════════════════════════════════════════════════════════
-        function runScraper() {
-            const terminal = document.getElementById('terminal');
-            const urlInput = document.getElementById('scraper-input');
-            const url = urlInput ? urlInput.value : 'example-ecommerce.com';
-            
-            if (!terminal) return;
-            
-            terminal.innerHTML = `<div class="line">root@nwl:~$ Initiating scrape on ${url}</div>`;
-            
-            const steps = [
-                '> Connecting to proxy pool (US-EAST-1)...',
-                '<div class="line success">> [✓] Connection established (18ms)</div>',
-                '> Bypassing Cloudflare protection...',
-                '<div class="line success">> [✓] Bot protection bypassed</div>',
-                '> Fetching page content...',
-                '<div class="line success">> [✓] 200 OK - HTML received (1.2MB)</div>',
-                '> Parsing DOM structure...',
-                '> Found: 247 products, 1,830 data fields',
-                '> Extracting: titles, prices, ratings, images',
-                '> Validating data integrity...',
-                '<div class="line success">> [✓] 100% data quality confirmed</div>',
-                '> Exporting to JSON format...',
-                '<div class="line success">> [✓] COMPLETE - scrape_' + Date.now() + '.json ready</div>',
-                '<div class="line">root@nwl:~$ Scrape completed successfully.</div>'
+        // Scraper Demo
+        function runScraperDemo() {
+            const term = document.getElementById('terminal');
+            const lines = [
+                "Connecting to proxies...", "Bypassing Cloudflare...", "200 OK Received",
+                "Parsing DOM...", "Extracted 142 items", "Done."
             ];
+            term.innerHTML = '<div class="line">root@bot:~$ start job</div>';
             
             let i = 0;
             const interval = setInterval(() => {
-                if (i >= steps.length) {
-                    clearInterval(interval);
-                } else {
-                    terminal.innerHTML += steps[i];
-                    terminal.scrollTop = terminal.scrollHeight;
-                    tg.HapticFeedback.selectionChanged();
+                if(i >= lines.length) clearInterval(interval);
+                else {
+                    term.innerHTML += `<div class="line">> ${lines[i]}</div>`;
+                    term.scrollTop = term.scrollHeight;
                     i++;
                 }
             }, 500);
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // DASHBOARD STATS ANIMATION
-        // ═══════════════════════════════════════════════════════════════
-        function animateStats() {
-            const members = document.getElementById('members');
-            const active = document.getElementById('active');
-            
-            if (!members || !active) return;
-            
-            setInterval(() => {
-                const m = 12500 + Math.floor(Math.random() * 100);
-                const a = 4200 + Math.floor(Math.random() * 50);
-                members.textContent = (m / 1000).toFixed(1) + 'k';
-                active.textContent = (a / 1000).toFixed(1) + 'k';
-            }, 3000);
-        }
-
-        function toggleFeature(name) {
-            tg.HapticFeedback.notificationOccurred('success');
-            tg.showAlert(`${name} feature toggled!`);
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // CART SYSTEM
-        // ═══════════════════════════════════════════════════════════════
-        let cart = [];
-        let paymentMethod = 'usdt';
-
-        function addToCart(name, price) {
-            cart.push({ name, price });
-            updateCartBadge();
-            tg.HapticFeedback.notificationOccurred('success');
-            tg.showPopup({
-                title: '✓ Added to Cart',
-                message: `${name} - $${price}`,
-                buttons: [{ text: 'OK' }]
-            });
-        }
-
-        function updateCartBadge() {
-            const badge = document.getElementById('cart-badge');
-            if (!badge) return;
-            
-            badge.textContent = cart.length;
-            badge.classList.toggle('hidden', cart.length === 0);
-        }
-
-        function openCart() {
-            if (cart.length === 0) {
-                tg.showAlert('Your cart is empty. Add services first!');
-                return;
-            }
-            
-            const itemsDiv = document.getElementById('cart-items');
-            if (!itemsDiv) return;
-            
-            itemsDiv.innerHTML = '';
-            let total = 0;
-            
-            cart.forEach(item => {
-                total += item.price;
-                itemsDiv.innerHTML += `
-                    <div class="cart-item">
-                        <span class="item-name">${item.name}</span>
-                        <span class="item-price">$${item.price}</span>
-                    </div>
-                `;
-            });
-            
-            const totalPriceEl = document.getElementById('total-price');
-            if (totalPriceEl) {
-                totalPriceEl.textContent = `$${total}`;
-            }
-            
-            const overlay = document.getElementById('cart-overlay');
-            if (overlay) {
-                overlay.style.display = 'flex';
-            }
-        }
-
-        function closeCart() {
-            const overlay = document.getElementById('cart-overlay');
-            if (overlay) {
-                overlay.style.display = 'none';
-            }
-        }
-
-        function selectPayment(method) {
-            paymentMethod = method;
-            document.querySelectorAll('.payment-option').forEach(el => {
-                el.classList.toggle('active', el.textContent.toLowerCase().includes(method));
-            });
-            tg.HapticFeedback.selectionChanged();
-        }
-
-        function checkout() {
-            const total = document.getElementById('total-price').textContent;
-            
-            // Send order data to Telegram bot
-            tg.sendData(JSON.stringify({
-                type: 'order',
-                cart: cart,
-                total: total,
-                method: paymentMethod
-            }));
-            
-            // Close WebApp
-            tg.close();
-        }
-
-        function openMessenger() {
-            // Close WebApp to return to bot chat
-            tg.close();
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // LANGUAGE AND THEME MANAGEMENT
-        // ═══════════════════════════════════════════════════════════════
-        let currentLanguage = 'en';
-        let currentTheme = 'dark';
-
-        // Translations object
-        const translations = {
-            "en": {
-                "app_title": "NWL - Telegram Automation Expert",
-                "hero_title": "TELEGRAM",
-                "hero_subtitle": "AUTOMATION",
-                "hero_description": "Python • AI • Web3 Ready",
-                "tab_ai": "AI",
-                "tab_data": "Data",
-                "tab_comm": "Comm",
-                "ai_demo_title": "Live AI Assistant Demo",
-                "ai_demo_placeholder": "Ask about pricing, features...",
-                "scraper_demo_title": "Web Scraper Terminal",
-                "scraper_placeholder": "Enter URL to scrape...",
-                "dashboard_title": "Admin Dashboard Preview",
-                "members": "Members",
-                "active_today": "Active Today",
-                "anti_spam": "🛡️ Anti-Spam",
-                "crypto_paywall": "💎 Crypto Paywall",
-                "gamification": "🎮 Gamification",
-                "standard_bot": "Standard Bot",
-                "smart_agent": "Smart Agent",
-                "basic_scraper": "Basic Scraper",
-                "monitor_system": "Monitor System",
-                "moderator_bot": "Moderator Bot",
-                "community_hub": "Community Hub",
-                "add_to_cart": "ADD TO CART",
-                "cart": "Cart",
-                "your_order": "Your Order",
-                "total": "Total:",
-                "payment_method": "Payment Method",
-                "usdt_trc20": "USDT TRC20",
-                "telegram_wallet": "Telegram Wallet",
-                "confirm_pay": "CONFIRM & PAY →",
-                "message_me": "Message Me",
-                "premium": "PREMIUM",
-                "fixed_price": "Fixed price",
-                "custom_features_ai": "+ $35/hour for custom features",
-                "custom_features_scraper": "+ $30/hour for custom sources",
-                "custom_features_comm": "+ $30/hour for custom features",
-                "language": "Language",
-                "theme": "Theme",
-                "dark": "Dark",
-                "light": "Light",
-                "admin_panel": "Admin Panel",
-                "admin_panel_subtitle": "Manage orders, view statistics, and configure settings",
-                "orders": "Orders",
-                "statistics": "Statistics",
-                "settings": "Settings",
-                "logout": "Logout",
-                "user_id": "User ID",
-                "order_date": "Order Date",
-                "amount": "Amount",
-                "status": "Status",
-                "view_details": "View Details",
-                "today_orders": "Today's Orders",
-                "total_revenue": "Total Revenue",
-                "conversion_rate": "Conversion Rate",
-                "active_users": "Active Users",
-                "recent_orders": "Recent Orders",
-                "admin_settings": "Admin Settings",
-                "load_sample_data": "Load Sample Data",
-                "clear_data": "Clear Data",
-                "toggle_admin_panel": "Toggle Admin Panel",
-                "price_standard_bot": "$200",
-                "price_smart_agent": "$800",
-                "price_basic_scraper": "$180",
-                "price_monitor_system": "$600",
-                "price_moderator_bot": "$150",
-                "price_community_hub": "$500",
-                "bot_initial_message": "👋 Hi! I'm your AI assistant. Ask me about pricing, features, or delivery time.",
-                "terminal_ready": "root@nwl:~$ Ready to scrape. Enter target URL...",
-                "cart_empty": "Your cart is empty. Add services first!",
-                "added_to_cart": "✓ Added to Cart",
-                "order_confirmed": "✅ ORDER CONFIRMED",
-                "pay_usdt": "💎 USDT (TRC20) PAYMENT:",
-                "send_screenshot": "Send screenshot after payment.",
-                "pay_wallet": "👛 WALLET PAYMENT:",
-                "wallet_invoice": "I will send you a @wallet invoice shortly.",
-                "new_sale": "🚨 NEW SALE!",
-                "support_online": "🟢 Support Online. Write your message:",
-                "msg_from_client": "📩 MSG FROM CLIENT",
-                "dev": "👨‍💻 DEV:",
-                "sent": "✅ Sent.",
-                "reply_error": "⚠️ Reply to a message containing the User ID.",
-                "order_notification": "You have a new order!",
-                "welcome_message": "⬛ **NWL PREMIUM DEV**\n\nWelcome. Use the App to view services and live demos.\nUse the Support Chat to contact me directly.",
-                "open_app": "⚡ OPEN APP",
-                "support_chat": "💬 Support Chat",
-                "features_ai_basic": [
-                    "Button-based menu",
-                    "FAQ automation",
-                    "Admin panel",
-                    "3-day delivery"
-                ],
-                "features_ai_premium": [
-                    "GPT-4 integration",
-                    "Context-aware replies",
-                    "Learning from history",
-                    "Human handoff system",
-                    "Analytics dashboard"
-                ],
-                "features_scraper_basic": [
-                    "Single website parsing",
-                    "CSV/Excel export",
-                    "Daily automation",
-                    "Simple data fields"
-                ],
-                "features_scraper_premium": [
-                    "24/7 price tracking",
-                    "Multi-site monitoring",
-                    "Instant Telegram alerts",
-                    "Proxy rotation (anti-ban)",
-                    "API access"
-                ],
-                "features_comm_basic": [
-                    "Auto-moderation",
-                    "Welcome messages",
-                    "Link/spam removal",
-                    "Word blacklist"
-                ],
-                "features_comm_premium": [
-                    "Crypto payment gate",
-                    "Level & XP system",
-                    "Role management",
-                    "Private channel access",
-                    "Analytics & insights"
-                ]
-            },
-            "ru": {
-                "app_title": "NWL - Эксперт по автоматизации Telegram",
-                "hero_title": "TELEGRAM",
-                "hero_subtitle": "АВТОМАТИЗАЦИЯ",
-                "hero_description": "Python • AI • Web3 Ready",
-                "tab_ai": "AI",
-                "tab_data": "Данные",
-                "tab_comm": "Сообщество",
-                "ai_demo_title": "Демо AI ассистента",
-                "ai_demo_placeholder": "Спросите о ценах, функциях...",
-                "scraper_demo_title": "Терминал веб-скрапера",
-                "scraper_placeholder": "Введите URL для парсинга...",
-                "dashboard_title": "Превью админ-панели",
-                "members": "Участники",
-                "active_today": "Активные сегодня",
-                "anti_spam": "🛡️ Анти-спам",
-                "crypto_paywall": "💎 Крипто-платёж",
-                "gamification": "🎮 Геймификация",
-                "standard_bot": "Стандартный бот",
-                "smart_agent": "Умный агент",
-                "basic_scraper": "Базовый скрапер",
-                "monitor_system": "Система мониторинга",
-                "moderator_bot": "Бот-модератор",
-                "community_hub": "Центр сообщества",
-                "add_to_cart": "В КОРЗИНУ",
-                "cart": "Корзина",
-                "your_order": "Ваш заказ",
-                "total": "Итого:",
-                "payment_method": "Способ оплаты",
-                "usdt_trc20": "USDT TRC20",
-                "telegram_wallet": "Telegram Wallet",
-                "confirm_pay": "ПОДТВЕРДИТЬ И ОПЛАТИТЬ →",
-                "message_me": "Написать мне",
-                "premium": "ПРЕМИУМ",
-                "fixed_price": "Фиксированная цена",
-                "custom_features_ai": "+ $35/час за кастомные функции",
-                "custom_features_scraper": "+ $30/час за кастомные источники",
-                "custom_features_comm": "+ $30/час за кастомные функции",
-                "language": "Язык",
-                "theme": "Тема",
-                "dark": "Тёмная",
-                "light": "Светлая",
-                "admin_panel": "Админ-панель",
-                "admin_panel_subtitle": "Управление заказами, просмотр статистики и настройки",
-                "orders": "Заказы",
-                "statistics": "Статистика",
-                "settings": "Настройки",
-                "logout": "Выйти",
-                "user_id": "ID пользователя",
-                "order_date": "Дата заказа",
-                "amount": "Сумма",
-                "status": "Статус",
-                "view_details": "Подробнее",
-                "today_orders": "Заказы сегодня",
-                "total_revenue": "Общая выручка",
-                "conversion_rate": "Конверсия",
-                "active_users": "Активные пользователи",
-                "recent_orders": "Последние заказы",
-                "admin_settings": "Настройки админа",
-                "load_sample_data": "Загрузить тестовые данные",
-                "clear_data": "Очистить данные",
-                "toggle_admin_panel": "Переключить админ-панель",
-                "price_standard_bot": "$200",
-                "price_smart_agent": "$800",
-                "price_basic_scraper": "$180",
-                "price_monitor_system": "$600",
-                "price_moderator_bot": "$150",
-                "price_community_hub": "$500",
-                "bot_initial_message": "👋 Привет! Я ваш AI ассистент. Спросите меня о ценах, функциях или времени доставки.",
-                "terminal_ready": "root@nwl:~$ Готов к парсингу. Введите целевой URL...",
-                "cart_empty": "Ваша корзина пуста. Сначала добавьте услуги!",
-                "added_to_cart": "✓ Добавлено в корзину",
-                "order_confirmed": "✅ ЗАКАЗ ПОДТВЕРЖДЁН",
-                "pay_usdt": "💎 ОПЛАТА USDT (TRC20):",
-                "send_screenshot": "Отправьте скриншот после оплаты.",
-                "pay_wallet": "👛 ОПЛАТА ЧЕРЕЗ КОШЕЛЁК:",
-                "wallet_invoice": "Я отправлю вам инвойс @wallet в ближайшее время.",
-                "new_sale": "🚨 НОВАЯ ПРОДАЖА!",
-                "support_online": "🟢 Поддержка онлайн. Напишите ваше сообщение:",
-                "msg_from_client": "📩 СООБЩЕНИЕ ОТ КЛИЕНТА",
-                "dev": "👨‍💻 РАЗРАБОТЧИК:",
-                "sent": "✅ Отправлено.",
-                "reply_error": "⚠️ Ответьте на сообщение, содержащее ID пользователя.",
-                "order_notification": "У вас новый заказ!",
-                "welcome_message": "⬛ **NWL PREMIUM DEV**\n\nДобро пожаловать. Используйте приложение для просмотра услуг и живых демо.\nИспользуйте чат поддержки для связи со мной напрямую.",
-                "open_app": "⚡ ОТКРЫТЬ ПРИЛОЖЕНИЕ",
-                "support_chat": "💬 Чат поддержки",
-                "features_ai_basic": [
-                    "Меню на кнопках",
-                    "Автоматизация FAQ",
-                    "Админ-панель",
-                    "Доставка за 3 дня"
-                ],
-                "features_ai_premium": [
-                    "Интеграция GPT-4",
-                    "Контекстные ответы",
-                    "Обучение на истории",
-                    "Система передачи человеку",
-                    "Аналитическая панель"
-                ],
-                "features_scraper_basic": [
-                    "Парсинг одного сайта",
-                    "Экспорт в CSV/Excel",
-                    "Ежедневная автоматизация",
-                    "Простые поля данных"
-                ],
-                "features_scraper_premium": [
-                    "Круглосуточный отслеживание цен",
-                    "Мониторинг нескольких сайтов",
-                    "Мгновенные оповещения в Telegram",
-                    "Ротация прокси (анти-бан)",
-                    "Доступ к API"
-                ],
-                "features_comm_basic": [
-                    "Авто-модерация",
-                    "Приветственные сообщения",
-                    "Удаление ссылок/спама",
-                    "Чёрный список слов"
-                ],
-                "features_comm_premium": [
-                    "Крипто-платёжный шлюз",
-                    "Система уровней и опыта",
-                    "Управление ролями",
-                    "Доступ к приватным каналам",
-                    "Аналитика и инсайты"
-                ]
-            },
-            "es": {
-                "app_title": "NWL - Experto en Automatización de Telegram",
-                "hero_title": "TELEGRAM",
-                "hero_subtitle": "AUTOMATIZACIÓN",
-                "hero_description": "Python • AI • Web3 Ready",
-                "tab_ai": "IA",
-                "tab_data": "Datos",
-                "tab_comm": "Comunidad",
-                "ai_demo_title": "Demo de Asistente de IA en Vivo",
-                "ai_demo_placeholder": "Pregunta sobre precios, funciones...",
-                "scraper_demo_title": "Terminal de Web Scraper",
-                "scraper_placeholder": "Introduce URL para analizar...",
-                "dashboard_title": "Vista Previa del Panel de Administración",
-                "members": "Miembros",
-                "active_today": "Activos Hoy",
-                "anti_spam": "🛡️ Anti-Spam",
-                "crypto_paywall": "💎 Pago con Crypto",
-                "gamification": "🎮 Gamificación",
-                "standard_bot": "Bot Estándar",
-                "smart_agent": "Agente Inteligente",
-                "basic_scraper": "Scraper Básico",
-                "monitor_system": "Sistema de Monitoreo",
-                "moderator_bot": "Bot Moderador",
-                "community_hub": "Centro de Comunidad",
-                "add_to_cart": "AÑADIR AL CARRITO",
-                "cart": "Carrito",
-                "your_order": "Tu Pedido",
-                "total": "Total:",
-                "payment_method": "Método de Pago",
-                "usdt_trc20": "USDT TRC20",
-                "telegram_wallet": "Telegram Wallet",
-                "confirm_pay": "CONFIRMAR Y PAGAR →",
-                "message_me": "Enviarme Mensaje",
-                "premium": "PREMIUM",
-                "fixed_price": "Precio fijo",
-                "custom_features_ai": "+ $35/hora por funciones personalizadas",
-                "custom_features_scraper": "+ $30/hora por fuentes personalizadas",
-                "custom_features_comm": "+ $30/hora por funciones personalizadas",
-                "language": "Idioma",
-                "theme": "Tema",
-                "dark": "Oscuro",
-                "light": "Claro",
-                "admin_panel": "Panel de Admin",
-                "admin_panel_subtitle": "Gestionar pedidos, ver estadísticas y configurar ajustes",
-                "orders": "Pedidos",
-                "statistics": "Estadísticas",
-                "settings": "Ajustes",
-                "logout": "Cerrar Sesión",
-                "user_id": "ID de Usuario",
-                "order_date": "Fecha del Pedido",
-                "amount": "Cantidad",
-                "status": "Estado",
-                "view_details": "Ver Detalles",
-                "today_orders": "Pedidos de Hoy",
-                "total_revenue": "Ingresos Totales",
-                "conversion_rate": "Tasa de Conversión",
-                "active_users": "Usuarios Activos",
-                "recent_orders": "Pedidos Recientes",
-                "admin_settings": "Ajustes de Admin",
-                "load_sample_data": "Cargar Datos de Ejemplo",
-                "clear_data": "Limpiar Datos",
-                "toggle_admin_panel": "Alternar Panel de Admin",
-                "price_standard_bot": "$200",
-                "price_smart_agent": "$800",
-                "price_basic_scraper": "$180",
-                "price_monitor_system": "$600",
-                "price_moderator_bot": "$150",
-                "price_community_hub": "$500",
-                "bot_initial_message": "👋 ¡Hola! Soy tu asistente de IA. Pregúntame sobre precios, funciones o tiempo de entrega.",
-                "terminal_ready": "root@nwl:~$ Listo para analizar. Introduce la URL objetivo...",
-                "cart_empty": "Tu carrito está vacío. ¡Añade servicios primero!",
-                "added_to_cart": "✓ Añadido al Carrito",
-                "order_confirmed": "✅ PEDIDO CONFIRMADO",
-                "pay_usdt": "💎 PAGO USDT (TRC20):",
-                "send_screenshot": "Envía captura de pantalla después del pago.",
-                "pay_wallet": "👛 PAGO CON CARTERA:",
-                "wallet_invoice": "Te enviaré una factura @wallet en breve.",
-                "new_sale": "🚨 ¡NUEVA VENTA!",
-                "support_online": "🟢 Soporte en línea. Escribe tu mensaje:",
-                "msg_from_client": "📩 MENSAJE DEL CLIENTE",
-                "dev": "👨‍💻 DESARROLLADOR:",
-                "sent": "✅ Enviado.",
-                "reply_error": "⚠️ Responde a un mensaje que contenga el ID del usuario.",
-                "order_notification": "¡Tienes un nuevo pedido!",
-                "welcome_message": "⬛ **NWL PREMIUM DEV**\n\nBienvenido. Usa la App para ver servicios y demostraciones en vivo.\nUsa el Chat de Soporte para contactarme directamente.",
-                "open_app": "⚡ ABRIR APP",
-                "support_chat": "💬 Chat de Soporte",
-                "features_ai_basic": [
-                    "Menú basado en botones",
-                    "Automatización de FAQ",
-                    "Panel de administración",
-                    "Entrega en 3 días"
-                ],
-                "features_ai_premium": [
-                    "Integración GPT-4",
-                    "Respuestas conscientes del contexto",
-                    "Aprendizaje del historial",
-                    "Sistema de transferencia humana",
-                    "Panel de análisis"
-                ],
-                "features_scraper_basic": [
-                    "Análisis de un solo sitio web",
-                    "Exportación CSV/Excel",
-                    "Automatización diaria",
-                    "Campos de datos simples"
-                ],
-                "features_scraper_premium": [
-                    "Seguimiento de precios 24/7",
-                    "Monitoreo multi-sitio",
-                    "Alertas instantáneas en Telegram",
-                    "Rotación de proxy (anti-ban)",
-                    "Acceso a API"
-                ],
-                "features_comm_basic": [
-                    "Auto-moderación",
-                    "Mensajes de bienvenida",
-                    "Eliminación de enlaces/spam",
-                    "Lista negra de palabras"
-                ],
-                "features_comm_premium": [
-                    "Pasarela de pago crypto",
-                    "Sistema de niveles y XP",
-                    "Gestión de roles",
-                    "Acceso a canales privados",
-                    "Análisis e insights"
-                ]
-            },
-            "fr": {
-                "app_title": "NWL - Expert en Automatisation Telegram",
-                "hero_title": "TELEGRAM",
-                "hero_subtitle": "AUTOMATISATION",
-                "hero_description": "Python • IA • Web3 Ready",
-                "tab_ai": "IA",
-                "tab_data": "Données",
-                "tab_comm": "Communauté",
-                "ai_demo_title": "Démo en direct de l'assistant IA",
-                "ai_demo_placeholder": "Demandez des prix, fonctionnalités...",
-                "scraper_demo_title": "Terminal de Web Scraper",
-                "scraper_placeholder": "Entrez l'URL à analyser...",
-                "dashboard_title": "Aperçu du tableau de bord admin",
-                "members": "Membres",
-                "active_today": "Actifs Aujourd'hui",
-                "anti_spam": "🛡️ Anti-Spam",
-                "crypto_paywall": "💎 Paiement Crypto",
-                "gamification": "🎮 Ludification",
-                "standard_bot": "Bot Standard",
-                "smart_agent": "Agent Intelligent",
-                "basic_scraper": "Scraper Basique",
-                "monitor_system": "Système de Surveillance",
-                "moderator_bot": "Bot Modérateur",
-                "community_hub": "Hub Communautaire",
-                "add_to_cart": "AJOUTER AU PANIER",
-                "cart": "Panier",
-                "your_order": "Votre Commande",
-                "total": "Total :",
-                "payment_method": "Méthode de Paiement",
-                "usdt_trc20": "USDT TRC20",
-                "telegram_wallet": "Telegram Wallet",
-                "confirm_pay": "CONFIRMER ET PAYER →",
-                "message_me": "Me Contacter",
-                "premium": "PREMIUM",
-                "fixed_price": "Prix fixe",
-                "custom_features_ai": "+ $35/heure pour fonctions personnalisées",
-                "custom_features_scraper": "+ $30/heure pour sources personnalisées",
-                "custom_features_comm": "+ $30/heure pour fonctions personnalisées",
-                "language": "Langue",
-                "theme": "Thème",
-                "dark": "Sombre",
-                "light": "Clair",
-                "admin_panel": "Panneau Admin",
-                "admin_panel_subtitle": "Gérer les commandes, voir les statistiques et configurer les paramètres",
-                "orders": "Commandes",
-                "statistics": "Statistiques",
-                "settings": "Paramètres",
-                "logout": "Déconnexion",
-                "user_id": "ID Utilisateur",
-                "order_date": "Date de Commande",
-                "amount": "Montant",
-                "status": "Statut",
-                "view_details": "Voir Détails",
-                "today_orders": "Commandes du Jour",
-                "total_revenue": "Revenu Total",
-                "conversion_rate": "Taux de Conversion",
-                "active_users": "Utilisateurs Actifs",
-                "recent_orders": "Commandes Récentes",
-                "admin_settings": "Paramètres Admin",
-                "load_sample_data": "Charger des Données Exemple",
-                "clear_data": "Effacer les Données",
-                "toggle_admin_panel": "Basculer le Panneau Admin",
-                "price_standard_bot": "$200",
-                "price_smart_agent": "$800",
-                "price_basic_scraper": "$180",
-                "price_monitor_system": "$600",
-                "price_moderator_bot": "$150",
-                "price_community_hub": "$500",
-                "bot_initial_message": "👋 Bonjour ! Je suis votre assistant IA. Demandez-moi des prix, fonctionnalités ou délais de livraison.",
-                "terminal_ready": "root@nwl:~$ Prêt à analyser. Entrez l'URL cible...",
-                "cart_empty": "Votre panier est vide. Ajoutez d'abord des services !",
-                "added_to_cart": "✓ Ajouté au Panier",
-                "order_confirmed": "✅ COMMANDE CONFIRMÉE",
-                "pay_usdt": "💎 PAIEMENT USDT (TRC20) :",
-                "send_screenshot": "Envoyez une capture d'écran après paiement.",
-                "pay_wallet": "👛 PAIEMENT PORTEFEUILLE :",
-                "wallet_invoice": "Je vous enverrai une facture @wallet sous peu.",
-                "new_sale": "🚨 NOUVELLE VENTE !",
-                "support_online": "🟢 Support en ligne. Écrivez votre message :",
-                "msg_from_client": "📩 MESSAGE DU CLIENT",
-                "dev": "👨‍💻 DÉVELOPPEUR :",
-                "sent": "✅ Envoyé.",
-                "reply_error": "⚠️ Répondez à un message contenant l'ID utilisateur.",
-                "order_notification": "Vous avez une nouvelle commande !",
-                "welcome_message": "⬛ **NWL PREMIUM DEV**\n\nBienvenue. Utilisez l'application pour voir les services et démos en direct.\nUtilisez le Chat Support pour me contacter directement.",
-                "open_app": "⚡ OUVRIR L'APP",
-                "support_chat": "💬 Chat de Support",
-                "features_ai_basic": [
-                    "Menu à boutons",
-                    "Automatisation FAQ",
-                    "Panneau admin",
-                    "Livraison en 3 jours"
-                ],
-                "features_ai_premium": [
-                    "Intégration GPT-4",
-                    "Réponses contextuelles",
-                    "Apprentissage de l'historique",
-                    "Système de transfert humain",
-                    "Tableau de bord analytique"
-                ],
-                "features_scraper_basic": [
-                    "Analyse d'un seul site web",
-                    "Export CSV/Excel",
-                    "Automatisation quotidienne",
-                    "Champs de données simples"
-                ],
-                "features_scraper_premium": [
-                    "Suivi de prix 24/7",
-                    "Surveillance multi-sites",
-                    "Alertes instantanées Telegram",
-                    "Rotation de proxy (anti-ban)",
-                    "Accès API"
-                ],
-                "features_comm_basic": [
-                    "Auto-modération",
-                    "Messages de bienvenue",
-                    "Suppression liens/spam",
-                    "Liste noire de mots"
-                ],
-                "features_comm_premium": [
-                    "Passerelle de paiement crypto",
-                    "Système de niveaux et XP",
-                    "Gestion des rôles",
-                    "Accès aux chaînes privées",
-                    "Analyses et insights"
-                ]
-            },
-            "de": {
-                "app_title": "NWL - Telegram Automatisierungsexperte",
-                "hero_title": "TELEGRAM",
-                "hero_subtitle": "AUTOMATISIERUNG",
-                "hero_description": "Python • KI • Web3 Ready",
-                "tab_ai": "KI",
-                "tab_data": "Daten",
-                "tab_comm": "Community",
-                "ai_demo_title": "Live KI-Assistent Demo",
-                "ai_demo_placeholder": "Fragen Sie nach Preisen, Funktionen...",
-                "scraper_demo_title": "Web Scraper Terminal",
-                "scraper_placeholder": "URL zum Scrapen eingeben...",
-                "dashboard_title": "Admin-Dashboard Vorschau",
-                "members": "Mitglieder",
-                "active_today": "Heute aktiv",
-                "anti_spam": "🛡️ Anti-Spam",
-                "crypto_paywall": "💎 Krypto-Zahlung",
-                "gamification": "🎮 Gamifizierung",
-                "standard_bot": "Standard Bot",
-                "smart_agent": "Intelligenter Agent",
-                "basic_scraper": "Basis Scraper",
-                "monitor_system": "Monitor System",
-                "moderator_bot": "Moderator Bot",
-                "community_hub": "Community Hub",
-                "add_to_cart": "IN DEN WARENKORB",
-                "cart": "Warenkorb",
-                "your_order": "Ihre Bestellung",
-                "total": "Gesamt:",
-                "payment_method": "Zahlungsmethode",
-                "usdt_trc20": "USDT TRC20",
-                "telegram_wallet": "Telegram Wallet",
-                "confirm_pay": "BESTÄTIGEN & BEZAHLEN →",
-                "message_me": "Nachricht an mich",
-                "premium": "PREMIUM",
-                "fixed_price": "Fester Preis",
-                "custom_features_ai": "+ $35/Stunde für benutzerdefinierte Funktionen",
-                "custom_features_scraper": "+ $30/Stunde für benutzerdefinierte Quellen",
-                "custom_features_comm": "+ $30/Stunde für benutzerdefinierte Funktionen",
-                "language": "Sprache",
-                "theme": "Thema",
-                "dark": "Dunkel",
-                "light": "Hell",
-                "admin_panel": "Admin-Panel",
-                "admin_panel_subtitle": "Bestellungen verwalten, Statistiken anzeigen und Einstellungen konfigurieren",
-                "orders": "Bestellungen",
-                "statistics": "Statistiken",
-                "settings": "Einstellungen",
-                "logout": "Abmelden",
-                "user_id": "Benutzer-ID",
-                "order_date": "Bestelldatum",
-                "amount": "Betrag",
-                "status": "Status",
-                "view_details": "Details anzeigen",
-                "today_orders": "Heutige Bestellungen",
-                "total_revenue": "Gesamteinnahmen",
-                "conversion_rate": "Konversionsrate",
-                "active_users": "Aktive Nutzer",
-                "recent_orders": "Aktuelle Bestellungen",
-                "admin_settings": "Admin-Einstellungen",
-                "load_sample_data": "Beispieldaten laden",
-                "clear_data": "Daten löschen",
-                "toggle_admin_panel": "Admin-Panel umschalten",
-                "price_standard_bot": "$200",
-                "price_smart_agent": "$800",
-                "price_basic_scraper": "$180",
-                "price_monitor_system": "$600",
-                "price_moderator_bot": "$150",
-                "price_community_hub": "$500",
-                "bot_initial_message": "👋 Hallo! Ich bin Ihr KI-Assistent. Fragen Sie mich nach Preisen, Funktionen oder Lieferzeiten.",
-                "terminal_ready": "root@nwl:~$ Bereit zum Scrapen. Ziel-URL eingeben...",
-                "cart_empty": "Ihr Warenkorb ist leer. Fügen Sie zuerst Dienste hinzu!",
-                "added_to_cart": "✓ Zum Warenkorb hinzugefügt",
-                "order_confirmed": "✅ BESTELLUNG BESTÄTIGT",
-                "pay_usdt": "💎 USDT (TRC20) ZAHLUNG:",
-                "send_screenshot": "Senden Sie Screenshot nach Zahlung.",
-                "pay_wallet": "👛 WALLET-ZAHLUNG:",
-                "wallet_invoice": "Ich sende Ihnen bald eine @wallet-Rechnung.",
-                "new_sale": "🚨 NEUER VERKAUF!",
-                "support_online": "🟢 Support online. Schreiben Sie Ihre Nachricht:",
-                "msg_from_client": "📩 NACHRICHT VOM KUNDEN",
-                "dev": "👨‍💻 ENTWICKLER:",
-                "sent": "✅ Gesendet.",
-                "reply_error": "⚠️ Antworten Sie auf eine Nachricht mit der Benutzer-ID.",
-                "order_notification": "Sie haben eine neue Bestellung!",
-                "welcome_message": "⬛ **NWL PREMIUM DEV**\n\nWillkommen. Nutzen Sie die App, um Dienste und Live-Demos zu sehen.\nNutzen Sie den Support-Chat, um mich direkt zu kontaktieren.",
-                "open_app": "⚡ APP ÖFFNEN",
-                "support_chat": "💬 Support Chat",
-                "features_ai_basic": [
-                    "Button-basiertes Menü",
-                    "FAQ-Automatisierung",
-                    "Admin-Panel",
-                    "3-Tage Lieferung"
-                ],
-                "features_ai_premium": [
-                    "GPT-4 Integration",
-                    "Kontextbewusste Antworten",
-                    "Lernen aus Verlauf",
-                    "Menschliches Übergabesystem",
-                    "Analytics-Dashboard"
-                ],
-                "features_scraper_basic": [
-                    "Einzel-Website-Parsing",
-                    "CSV/Excel-Export",
-                    "Tägliche Automatisierung",
-                    "Einfache Datenfelder"
-                ],
-                "features_scraper_premium": [
-                    "24/7 Preisverfolgung",
-                    "Multi-Site-Monitoring",
-                    "Sofortige Telegram-Benachrichtigungen",
-                    "Proxy-Rotation (Anti-Ban)",
-                    "API-Zugriff"
-                ],
-                "features_comm_basic": [
-                    "Auto-Moderation",
-                    "Willkommensnachrichten",
-                    "Link/Spam-Entfernung",
-                    "Wort-Blacklist"
-                ],
-                "features_comm_premium": [
-                    "Krypto-Zahlungsgate",
-                    "Level- & XP-System",
-                    "Rollenverwaltung",
-                    "Privater Kanalzugriff",
-                    "Analysen & Insights"
-                ]
-            },
-            "zh": {
-                "app_title": "NWL - Telegram自动化专家",
-                "hero_title": "TELEGRAM",
-                "hero_subtitle": "自动化",
-                "hero_description": "Python • 人工智能 • 支持Web3",
-                "tab_ai": "人工智能",
-                "tab_data": "数据",
-                "tab_comm": "社区",
-                "ai_demo_title": "AI助手实时演示",
-                "ai_demo_placeholder": "询问价格、功能...",
-                "scraper_demo_title": "网页抓取终端",
-                "scraper_placeholder": "输入要抓取的URL...",
-                "dashboard_title": "管理面板预览",
-                "members": "成员",
-                "active_today": "今日活跃",
-                "anti_spam": "🛡️ 反垃圾",
-                "crypto_paywall": "💎 加密货币支付",
-                "gamification": "🎮 游戏化",
-                "standard_bot": "标准机器人",
-                "smart_agent": "智能代理",
-                "basic_scraper": "基础爬虫",
-                "monitor_system": "监控系统",
-                "moderator_bot": "审核机器人",
-                "community_hub": "社区中心",
-                "add_to_cart": "加入购物车",
-                "cart": "购物车",
-                "your_order": "您的订单",
-                "total": "总计:",
-                "payment_method": "支付方式",
-                "usdt_trc20": "USDT TRC20",
-                "telegram_wallet": "Telegram钱包",
-                "confirm_pay": "确认并支付 →",
-                "message_me": "联系我",
-                "premium": "高级版",
-                "fixed_price": "固定价格",
-                "custom_features_ai": "+ $35/小时定制功能",
-                "custom_features_scraper": "+ $30/小时定制源",
-                "custom_features_comm": "+ $30/小时定制功能",
-                "language": "语言",
-                "theme": "主题",
-                "dark": "深色",
-                "light": "浅色",
-                "admin_panel": "管理面板",
-                "admin_panel_subtitle": "管理订单、查看统计信息和配置设置",
-                "orders": "订单",
-                "statistics": "统计",
-                "settings": "设置",
-                "logout": "退出登录",
-                "user_id": "用户ID",
-                "order_date": "订单日期",
-                "amount": "金额",
-                "status": "状态",
-                "view_details": "查看详情",
-                "today_orders": "今日订单",
-                "total_revenue": "总收入",
-                "conversion_rate": "转化率",
-                "active_users": "活跃用户",
-                "recent_orders": "近期订单",
-                "admin_settings": "管理设置",
-                "load_sample_data": "加载示例数据",
-                "clear_data": "清除数据",
-                "toggle_admin_panel": "切换管理面板",
-                "price_standard_bot": "$200",
-                "price_smart_agent": "$800",
-                "price_basic_scraper": "$180",
-                "price_monitor_system": "$600",
-                "price_moderator_bot": "$150",
-                "price_community_hub": "$500",
-                "bot_initial_message": "👋 你好！我是您的AI助手。问我价格、功能或交付时间。",
-                "terminal_ready": "root@nwl:~$ 准备抓取。输入目标URL...",
-                "cart_empty": "您的购物车为空。请先添加服务！",
-                "added_to_cart": "✓ 已加入购物车",
-                "order_confirmed": "✅ 订单已确认",
-                "pay_usdt": "💎 USDT (TRC20) 支付:",
-                "send_screenshot": "支付后发送截图。",
-                "pay_wallet": "👛 钱包支付:",
-                "wallet_invoice": "我将尽快向您发送@wallet发票。",
-                "new_sale": "🚨 新销售！",
-                "support_online": "🟢 支持在线。请写下您的消息:",
-                "msg_from_client": "📩 客户消息",
-                "dev": "👨‍💻 开发者:",
-                "sent": "✅ 已发送。",
-                "reply_error": "⚠️ 请回复包含用户ID的消息。",
-                "order_notification": "您有新订单！",
-                "welcome_message": "⬛ **NWL PREMIUM DEV**\n\n欢迎使用。使用应用程序查看服务和实时演示。\n使用支持聊天直接联系我。",
-                "open_app": "⚡ 打开应用",
-                "support_chat": "💬 支持聊天",
-                "features_ai_basic": [
-                    "基于按钮的菜单",
-                    "FAQ自动化",
-                    "管理面板",
-                    "3天交付"
-                ],
-                "features_ai_premium": [
-                    "GPT-4集成",
-                    "上下文感知回复",
-                    "学习历史",
-                    "人工交接系统",
-                    "分析仪表板"
-                ],
-                "features_scraper_basic": [
-                    "单网站解析",
-                    "CSV/Excel导出",
-                    "每日自动化",
-                    "简单数据字段"
-                ],
-                "features_scraper_premium": [
-                    "24/7价格跟踪",
-                    "多站点监控",
-                    "即时Telegram警报",
-                    "代理轮换（反封禁）",
-                    "API访问"
-                ],
-                "features_comm_basic": [
-                    "自动审核",
-                    "欢迎消息",
-                    "链接/垃圾信息删除",
-                    "词汇黑名单"
-                ],
-                "features_comm_premium": [
-                    "加密货币支付网关",
-                    "等级和XP系统",
-                    "角色管理",
-                    "私人频道访问",
-                    "分析和洞察"
-                ]
-            }
-        };
-
-        // Load saved settings from localStorage
-        function loadSettings() {
-            const savedLanguage = localStorage.getItem('nwl_language');
-            const savedTheme = localStorage.getItem('nwl_theme');
-            
-            if (savedLanguage && translations[savedLanguage]) {
-                currentLanguage = savedLanguage;
-            }
-            
-            if (savedTheme) {
-                currentTheme = savedTheme;
-            }
-            
-            applyLanguage();
-            applyTheme();
-        }
-
-        // Apply current language to the page
-        function applyLanguage() {
-            const lang = translations[currentLanguage];
-            if (!lang) return;
-            
-            // Update all elements with data-i18n attribute
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (lang[key]) {
-                    if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
-                        element.setAttribute('placeholder', lang[key]);
-                    } else {
-                        element.textContent = lang[key];
-                    }
-                }
-            });
-            
-            // Update features lists
-            updateFeaturesLists();
-            
-            // Update AI chat initial message
-            const chat = document.getElementById('chat');
-            if (chat) {
-                chat.innerHTML = `<div class="msg bot">${lang['bot_initial_message']}</div>`;
-            }
-            
-            // Update terminal initial message
-            const terminal = document.getElementById('terminal');
-            if (terminal) {
-                terminal.innerHTML = `<div class="line">${lang['terminal_ready']}</div>`;
-            }
-            
-            // Update language button
-            const languageBtn = document.getElementById('current-language');
-            if (languageBtn) {
-                languageBtn.textContent = currentLanguage.toUpperCase();
-            }
-            
-            // Update page title
-            document.title = lang['app_title'];
-        }
-
-        // Update features lists in product cards
-        function updateFeaturesLists() {
-            const lang = translations[currentLanguage];
-            
-            // AI Basic Features
-            const aiBasicFeatures = document.getElementById('features-ai-standard');
-            if (aiBasicFeatures && lang['features_ai_basic']) {
-                aiBasicFeatures.innerHTML = lang['features_ai_basic'].map(feature => 
-                    `<li>${feature}</li>`
-                ).join('');
-            }
-            
-            // AI Premium Features
-            const aiPremiumFeatures = document.getElementById('features-ai-premium');
-            if (aiPremiumFeatures && lang['features_ai_premium']) {
-                aiPremiumFeatures.innerHTML = lang['features_ai_premium'].map(feature => 
-                    `<li>${feature}</li>`
-                ).join('');
-            }
-            
-            // Scraper Basic Features
-            const scraperBasicFeatures = document.getElementById('features-scraper-basic');
-            if (scraperBasicFeatures && lang['features_scraper_basic']) {
-                scraperBasicFeatures.innerHTML = lang['features_scraper_basic'].map(feature => 
-                    `<li>${feature}</li>`
-                ).join('');
-            }
-            
-            // Scraper Premium Features
-            const scraperPremiumFeatures = document.getElementById('features-scraper-premium');
-            if (scraperPremiumFeatures && lang['features_scraper_premium']) {
-                scraperPremiumFeatures.innerHTML = lang['features_scraper_premium'].map(feature => 
-                    `<li>${feature}</li>`
-                ).join('');
-            }
-            
-            // Community Basic Features
-            const commBasicFeatures = document.getElementById('features-comm-basic');
-            if (commBasicFeatures && lang['features_comm_basic']) {
-                commBasicFeatures.innerHTML = lang['features_comm_basic'].map(feature => 
-                    `<li>${feature}</li>`
-                ).join('');
-            }
-            
-            // Community Premium Features
-            const commPremiumFeatures = document.getElementById('features-comm-premium');
-            if (commPremiumFeatures && lang['features_comm_premium']) {
-                commPremiumFeatures.innerHTML = lang['features_comm_premium'].map(feature => 
-                    `<li>${feature}</li>`
-                ).join('');
-            }
-        }
-
-        // Apply current theme
-        function applyTheme() {
-            if (currentTheme === 'light') {
-                document.body.classList.add('light-mode');
-                document.getElementById('theme-icon').className = 'fas fa-sun';
-            } else {
-                document.body.classList.remove('light-mode');
-                document.getElementById('theme-icon').className = 'fas fa-moon';
-            }
-            
-            // Update theme buttons
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            if (currentTheme === 'dark') {
-                document.getElementById('dark-theme-btn').classList.add('active');
-            } else {
-                document.getElementById('light-theme-btn').classList.add('active');
-            }
-        }
-
-        // Change language
-        function changeLanguage(langCode) {
-            if (!translations[langCode]) return;
-            
-            currentLanguage = langCode;
-            localStorage.setItem('nwl_language', langCode);
-            
-            // Update language buttons
-            document.querySelectorAll('.language-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('onclick') === `changeLanguage('${langCode}')`) {
-                    btn.classList.add('active');
-                }
-            });
-            
-            applyLanguage();
-            showNotification('Language changed', 'success');
-        }
-
-        // Set theme
-        function setTheme(theme) {
-            currentTheme = theme;
-            localStorage.setItem('nwl_theme', theme);
-            applyTheme();
-            showNotification('Theme changed', 'success');
-        }
-
-        // Toggle theme
-        function toggleTheme() {
-            if (currentTheme === 'dark') {
-                setTheme('light');
-            } else {
-                setTheme('dark');
-            }
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // SETTINGS OVERLAY
-        // ═══════════════════════════════════════════════════════════════
-        function openSettings() {
-            const overlay = document.getElementById('settings-overlay');
-            if (overlay) {
-                overlay.style.display = 'flex';
-            }
-        }
-
-        function closeSettings() {
-            const overlay = document.getElementById('settings-overlay');
-            if (overlay) {
-                overlay.style.display = 'none';
-            }
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // ADMIN PANEL
-        // ═══════════════════════════════════════════════════════════════
-        let isAdminPanelVisible = false;
-
-        function toggleAdminPanel() {
-            const userPanel = document.getElementById('user-panel');
-            const adminPanel = document.getElementById('admin-panel');
-            
-            isAdminPanelVisible = !isAdminPanelVisible;
-            
-            if (isAdminPanelVisible) {
-                userPanel.style.display = 'none';
-                adminPanel.style.display = 'block';
-                loadAdminData();
-            } else {
-                userPanel.style.display = 'block';
-                adminPanel.style.display = 'none';
-            }
-            
-            showNotification(isAdminPanelVisible ? 'Admin panel opened' : 'Admin panel closed', 'info');
-        }
-
-        function loadAdminData() {
-            // Load sample data for admin panel
-            const ordersList = document.getElementById('orders-list');
-            if (!ordersList) return;
-            
-            const orders = [
-                { id: 1, user: 'John Doe', date: '2023-10-01', amount: '$200', status: 'completed' },
-                { id: 2, user: 'Jane Smith', date: '2023-10-02', amount: '$800', status: 'pending' },
-                { id: 3, user: 'Bob Johnson', date: '2023-10-03', amount: '$350', status: 'completed' },
-                { id: 4, user: 'Alice Brown', date: '2023-10-04', amount: '$600', status: 'cancelled' }
-            ];
-            
-            ordersList.innerHTML = orders.map(order => `
-                <div class="order-item">
-                    <div class="order-info">
-                        <h4>Order #${order.id} - ${order.user}</h4>
-                        <p>${order.date} • ${order.amount}</p>
-                    </div>
-                    <div class="order-status status-${order.status}">${order.status}</div>
-                </div>
-            `).join('');
-            
-            // Update stats
-            document.getElementById('today-orders-value').textContent = '4';
-            document.getElementById('total-revenue-value').textContent = '$1,950';
-            document.getElementById('conversion-rate-value').textContent = '12.5%';
-            document.getElementById('active-users-value').textContent = '142';
-        }
-
-        function loadSampleData() {
-            // In a real app, this would load data from a server
-            showNotification('Sample data loaded', 'success');
-            loadAdminData();
-        }
-
-        function clearAllData() {
-            if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
-                cart = [];
-                updateCartBadge();
-                localStorage.removeItem('nwl_cart');
-                showNotification('All data cleared', 'success');
-            }
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // NOTIFICATION SYSTEM
-        // ═══════════════════════════════════════════════════════════════
-        function showNotification(message, type = 'info', title = 'Notification') {
-            const notification = document.getElementById('notification');
-            const notificationTitle = document.getElementById('notification-title');
-            const notificationMessage = document.getElementById('notification-message');
-            const notificationIcon = document.getElementById('notification-icon');
-            
-            if (!notification || !notificationTitle || !notificationMessage || !notificationIcon) return;
-            
-            // Set content
-            notificationTitle.textContent = title;
-            notificationMessage.textContent = message;
-            
-            // Set icon and color based on type
-            notification.className = `notification ${type}`;
-            let iconClass = 'fas fa-info-circle';
-            switch (type) {
-                case 'success':
-                    iconClass = 'fas fa-check-circle';
-                    break;
-                case 'error':
-                    iconClass = 'fas fa-exclamation-circle';
-                    break;
-                case 'warning':
-                    iconClass = 'fas fa-exclamation-triangle';
-                    break;
-            }
-            notificationIcon.innerHTML = `<i class="${iconClass}"></i>`;
-            
-            // Show notification
-            notification.classList.add('show');
-            
-            // Hide after 3 seconds
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // INITIALIZATION
-        // ═══════════════════════════════════════════════════════════════
-        function init() {
-            // Load settings
-            loadSettings();
-            
-            // Initialize AI chat with current language
-            const lang = translations[currentLanguage];
-            if (lang) {
-                const chat = document.getElementById('chat');
-                if (chat) {
-                    chat.innerHTML = `<div class="msg bot">${lang['bot_initial_message']}</div>`;
-                }
+        // Dashboard Demo
+        function toggleDemoSwitch() {
+            const el = document.getElementById('demo-toggle');
+            if (el.classList.contains('fa-toggle-off')) {
+                el.classList.replace('fa-toggle-off', 'fa-toggle-on');
+                el.style.color = 'var(--success)';
+                showToast('Paywall Activated');
                 
-                const terminal = document.getElementById('terminal');
-                if (terminal) {
-                    terminal.innerHTML = `<div class="line">${lang['terminal_ready']}</div>`;
-                }
+                // Simulate stat increase
+                let inc = 420;
+                const timer = setInterval(() => {
+                    inc += 10;
+                    document.getElementById('stat-income').innerText = `$${inc}`;
+                    if(inc > 500) clearInterval(timer);
+                }, 100);
+            } else {
+                el.classList.replace('fa-toggle-on', 'fa-toggle-off');
+                el.style.color = '#666';
             }
-            
-            // Initialize cart from localStorage
-            const savedCart = localStorage.getItem('nwl_cart');
-            if (savedCart) {
-                cart = JSON.parse(savedCart);
-                updateCartBadge();
-            }
-            
-            // Add data-i18n attributes to elements that need translation
-            // This should be done in HTML, but we can also do it here if needed
-            // For now, we assume HTML already has data-i18n attributes
-            
-            // Update features lists
-            updateFeaturesLists();
         }
 
-        // Save cart to localStorage when changed
-        function saveCart() {
-            localStorage.setItem('nwl_cart', JSON.stringify(cart));
-        }
-
-        // Override addToCart to save to localStorage
-        const originalAddToCart = addToCart;
-        addToCart = function(name, price) {
-            originalAddToCart(name, price);
-            saveCart();
-        };
-
-        // Initialize the app
+        // Run
         init();
+
     </script>
 </body>
 </html>
