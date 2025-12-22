@@ -10,9 +10,9 @@
         :root {
             --bg: #030304;
             --card-bg: #111115;
-            --accent: #007AFF; /* System Blue - Trust */
+            --accent: #007AFF;
             --accent-glow: rgba(0, 122, 255, 0.3);
-            --pro: #FFD60A; /* System Yellow - Premium */
+            --pro: #FFD60A;
             --pro-glow: rgba(255, 214, 10, 0.2);
             --success: #30D158;
             --text: #FFFFFF;
@@ -131,9 +131,48 @@
         }
 
         /* MODAL */
-        .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; display: none; align-items: flex-end; }
-        .modal-content { background: #1C1C1E; width: 100%; padding: 25px; border-radius: 25px 25px 0 0; animation: slideUp 0.3s ease; }
+        .modal-bg { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.8); z-index: 2000; 
+            display: none; align-items: flex-end; justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content { 
+            background: #1C1C1E; width: 100%; max-width: 500px; padding: 25px; 
+            border-radius: 25px 25px 0 0; animation: slideUp 0.3s ease;
+            box-shadow: 0 -10px 50px rgba(0,0,0,0.5);
+        }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .cart-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { color: white; font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+        .cart-item-tier { color: var(--text-sec); font-size: 12px; }
+        .cart-item-price { color: var(--pro); font-weight: 700; font-size: 16px; margin-left: 15px; }
+        .cart-item-remove {
+            width: 28px; height: 28px; background: rgba(255,59,48,0.1); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; color: #FF3B30;
+            margin-left: 15px; cursor: pointer; border: none; font-size: 12px;
+        }
+
+        /* WOW EFFECTS */
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px var(--accent-glow); }
+            50% { box-shadow: 0 0 20px var(--accent-glow); }
+        }
+        
+        .wow-glow {
+            animation: glow 2s infinite;
+        }
+
+        .cart-badge {
+            position: absolute; top: -8px; right: -8px; width: 20px; height: 20px;
+            background: #FF3B30; border-radius: 50%; color: white; font-size: 11px;
+            display: flex; align-items: center; justify-content: center; font-weight: bold;
+        }
 
     </style>
 </head>
@@ -142,21 +181,6 @@
     <div class="header">
         <div class="logo">NOVA <span>SYSTEMS</span></div>
         <div class="status-badge"><div class="status-dot"></div> OPEN FOR WORK</div>
-    </div>
-
-    <div class="trust-row">
-        <div class="stat-item">
-            <span class="stat-val">300+</span>
-            <span class="stat-lbl">Projects</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-val">99.9%</span>
-            <span class="stat-lbl">Uptime</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-val">24/7</span>
-            <span class="stat-lbl">Support</span>
-        </div>
     </div>
 
     <div class="nav-scroll">
@@ -169,7 +193,7 @@
         <h1>Intelligent Agents</h1>
         <p class="subtitle">Automated sales & support staff. They don't sleep, don't ask for raises, and handle thousands of clients simultaneously.</p>
 
-        <div class="demo-container">
+        <div class="demo-container wow-glow">
             <div class="demo-header">
                 <span class="demo-title">LIVE PREVIEW (GPT-4 ENGINE)</span>
                 <i class="fas fa-robot" style="color:#666"></i>
@@ -183,7 +207,7 @@
             </div>
         </div>
 
-        <div class="pricing-card" id="card-ai">
+        <div class="pricing-card">
             <div class="toggle-container">
                 <div class="toggle-btn core-active" onclick="setTier('ai', 'core')" id="btn-ai-core">CORE</div>
                 <div class="toggle-btn" onclick="setTier('ai', 'pro')" id="btn-ai-pro">PRO ⚡</div>
@@ -194,8 +218,7 @@
                 <div class="price-label">One-time payment<br>Lifetime License</div>
             </div>
 
-            <table class="comparison-table" id="table-ai">
-                </table>
+            <table class="comparison-table" id="table-ai"></table>
 
             <button class="buy-btn core" id="buy-ai" onclick="addToCart('ai')">ADD TO CART</button>
         </div>
@@ -205,7 +228,7 @@
         <h1>Data Extraction</h1>
         <p class="subtitle">Get instant Telegram alerts when prices change, stocks drop, or competitors update their inventory. Stay ahead of the market.</p>
 
-        <div class="demo-container">
+        <div class="demo-container wow-glow">
             <div class="demo-header">
                 <span class="demo-title">REAL-TIME MONITOR</span>
                 <i class="fas fa-network-wired" style="color:#666"></i>
@@ -222,7 +245,7 @@
             </div>
         </div>
 
-        <div class="pricing-card" id="card-scraper">
+        <div class="pricing-card">
             <div class="toggle-container">
                 <div class="toggle-btn core-active" onclick="setTier('scraper', 'core')" id="btn-scraper-core">CORE</div>
                 <div class="toggle-btn" onclick="setTier('scraper', 'pro')" id="btn-scraper-pro">PRO ⚡</div>
@@ -243,16 +266,15 @@
         <h1>Community Empire</h1>
         <p class="subtitle">Monetize your audience. Automatically manage paid subscriptions, kick non-payers, and protect your content.</p>
 
-        <div class="demo-container">
+        <div class="demo-container wow-glow">
             <div class="demo-header">
                 <span class="demo-title">GROUP ACTIVITY LOG</span>
                 <i class="fas fa-users" style="color:#666"></i>
             </div>
-            <div class="activity-log" id="comm-log">
-                </div>
+            <div class="activity-log" id="comm-log"></div>
         </div>
 
-        <div class="pricing-card" id="card-comm">
+        <div class="pricing-card">
             <div class="toggle-container">
                 <div class="toggle-btn core-active" onclick="setTier('comm', 'core')" id="btn-comm-core">CORE</div>
                 <div class="toggle-btn" onclick="setTier('comm', 'pro')" id="btn-comm-pro">PRO ⚡</div>
@@ -276,21 +298,36 @@
         <div class="cart-float" id="cart-float" onclick="openCheckout()">
             <i class="fas fa-shopping-bag"></i>
             <span id="cart-total">$0</span>
+            <div class="cart-badge" id="cart-badge" style="display: none;">0</div>
         </div>
     </div>
 
     <div class="modal-bg" id="modal">
         <div class="modal-content">
-            <h2 style="margin-bottom:15px; font-weight:800;">Order Summary</h2>
-            <div id="order-items" style="margin-bottom:20px; color:#aaa; font-size:14px; line-height:1.6;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-weight:800;">Your Cart</h2>
+                <div onclick="closeModal()" style="color: var(--text-sec); font-size: 24px; cursor: pointer;">×</div>
+            </div>
             
-            <div style="background:#111; padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid #333;">
-                <div style="color:#666; font-size:12px; margin-bottom:5px;">Estimated Delivery</div>
-                <div style="color:white; font-weight:bold;">2-4 Business Days</div>
+            <div id="order-items" style="margin-bottom: 25px; max-height: 300px; overflow-y: auto;"></div>
+            
+            <div style="background: #111; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #333;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <div style="color: var(--text-sec); font-size: 14px;">Subtotal</div>
+                    <div style="color: white; font-weight: bold; font-size: 18px;" id="cart-subtotal">$0</div>
+                </div>
+                <div style="color: #666; font-size: 12px; line-height: 1.4;">
+                    <i class="fas fa-bolt" style="color: var(--pro); margin-right: 5px;"></i>
+                    <span id="delivery-time">Delivery: 1 business day</span>
+                </div>
             </div>
 
-            <button class="buy-btn pro" onclick="submitOrder()">CONFIRM & PAY</button>
-            <div style="text-align:center; margin-top:15px; color:#666; font-size:12px;" onclick="closeModal()">Close Window</div>
+            <button class="buy-btn pro" onclick="submitOrder()" style="margin-bottom: 15px;">PROCEED TO CHECKOUT</button>
+            
+            <div style="text-align: center; color: #666; font-size: 11px; line-height: 1.4;">
+                <div><i class="fas fa-lock"></i> Secure checkout via Telegram</div>
+                <div>Accepting USDT, TON, BTC, ETH</div>
+            </div>
         </div>
     </div>
 
@@ -301,16 +338,82 @@
         // --- PRODUCT DATA ---
         const products = {
             ai: {
-                core: { price: 290, name: "AI Support Core", features: [["Smart Auto-Reply", "Yes"], ["Admin Panel", "No"], ["Context Memory", "Short"], ["Languages", "EN only"]] },
-                pro: { price: 890, name: "AI Sales Agent PRO", features: [["Smart Auto-Reply", "GPT-4 Turbo"], ["Admin Panel", "Full Dashboard"], ["Context Memory", "Infinite"], ["Languages", "Multi-Lang + Voice"]] }
+                core: { 
+                    price: 290, 
+                    name: "AI Support Core", 
+                    features: [
+                        ["Smart Auto-Reply", "Yes"], 
+                        ["Admin Panel", "Basic"], 
+                        ["Context Memory", "24 hours"], 
+                        ["Languages", "EN & RU"],
+                        ["Response Time", "< 0.5s"],
+                        ["Integration", "Telegram + Web"]
+                    ] 
+                },
+                pro: { 
+                    price: 890, 
+                    name: "AI Sales Agent PRO", 
+                    features: [
+                        ["Smart Auto-Reply", "GPT-4 Level"], 
+                        ["Admin Panel", "Full Dashboard"], 
+                        ["Context Memory", "Unlimited"], 
+                        ["Languages", "Multi-Lang"],
+                        ["Customization", "Full Control"],
+                        ["Integration", "All Platforms"]
+                    ] 
+                }
             },
             scraper: {
-                core: { price: 250, name: "Scraper Basic", features: [["Target Site", "1 Source"], ["Speed", "Standard"], ["Export", "CSV/Excel"], ["Alerts", "Email"]] },
-                pro: { price: 750, name: "Data Miner PRO", features: [["Target Site", "Up to 5"], ["Speed", "Real-time"], ["Export", "API / Webhook"], ["Alerts", "Telegram Instant"]] }
+                core: { 
+                    price: 250, 
+                    name: "Scraper Basic", 
+                    features: [
+                        ["Target Site", "1 Source"], 
+                        ["Speed", "Standard"], 
+                        ["Export", "CSV/Excel"], 
+                        ["Alerts", "Email"],
+                        ["Proxy Support", "Basic"],
+                        ["Setup Time", "1 hour"]
+                    ] 
+                },
+                pro: { 
+                    price: 750, 
+                    name: "Data Miner PRO", 
+                    features: [
+                        ["Target Site", "Up to 5"], 
+                        ["Speed", "Real-time"], 
+                        ["Export", "API / Webhook"], 
+                        ["Alerts", "Telegram Instant"],
+                        ["Proxy Support", "Advanced"],
+                        ["Setup Time", "2-3 hours"]
+                    ] 
+                }
             },
             comm: {
-                core: { price: 190, name: "Group Manager", features: [["Anti-Spam", "Basic Filter"], ["Welcome Msg", "Text only"], ["Payments", "Manual Verify"], ["Recurring Bill", "No"]] },
-                pro: { price: 590, name: "Subscription Empire", features: [["Anti-Spam", "AI Filter"], ["Welcome Msg", "Custom Media"], ["Payments", "Auto USDT/TON"], ["Recurring Bill", "Auto-Kick"]] }
+                core: { 
+                    price: 190, 
+                    name: "Group Manager", 
+                    features: [
+                        ["Anti-Spam", "Basic Filter"], 
+                        ["Welcome Msg", "Text + Media"], 
+                        ["Payments", "Manual Verify"], 
+                        ["Recurring Bill", "No"],
+                        ["Max Users", "10,000"],
+                        ["Analytics", "Basic"]
+                    ] 
+                },
+                pro: { 
+                    price: 590, 
+                    name: "Subscription Empire", 
+                    features: [
+                        ["Anti-Spam", "AI Filter"], 
+                        ["Welcome Msg", "Custom Media"], 
+                        ["Payments", "Auto USDT/TON"], 
+                        ["Recurring Bill", "Auto-Kick"],
+                        ["Max Users", "Unlimited"],
+                        ["Analytics", "Advanced"]
+                    ] 
+                }
             }
         };
 
@@ -332,7 +435,7 @@
             const data = products[cat][tier];
             
             // UI Toggle
-            const card = document.getElementById('card-'+cat);
+            const card = document.querySelector(`#${cat} .toggle-container`);
             card.querySelectorAll('.toggle-btn').forEach(b => {
                 b.classList.remove('core-active', 'pro-active');
             });
@@ -355,95 +458,374 @@
             tg.HapticFeedback.selectionChanged();
         }
 
-        // --- CART SYSTEM ---
+        // --- CART SYSTEM WITH REMOVE ---
         function addToCart(cat) {
             const tier = activeTiers[cat];
-            const item = products[cat][tier];
-            cart.push({ ...item, tier });
-            updateCartUI();
-            tg.HapticFeedback.notificationOccurred('success');
+            const product = products[cat][tier];
+            
+            // Check if already in cart
+            const existingIndex = cart.findIndex(item => 
+                item.name === product.name && item.tier === tier
+            );
+            
+            if (existingIndex === -1) {
+                cart.push({ 
+                    ...product, 
+                    tier,
+                    id: Date.now() + Math.random(),
+                    category: cat
+                });
+                
+                // Animation effect
+                const button = document.getElementById(`buy-${cat}`);
+                button.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    button.style.transform = 'scale(1)';
+                }, 150);
+                
+                tg.HapticFeedback.notificationOccurred('success');
+                updateCartUI();
+            } else {
+                // Already in cart - show message in chat
+                const chat = document.getElementById('ai-chat');
+                chat.innerHTML += `<div class="msg bot">This item is already in your cart. You can adjust quantity in the cart.</div>`;
+                chat.scrollTop = chat.scrollHeight;
+                tg.HapticFeedback.impactOccurred('warning');
+            }
+        }
+
+        function removeFromCart(itemId) {
+            const index = cart.findIndex(item => item.id === itemId);
+            if (index !== -1) {
+                cart.splice(index, 1);
+                updateCartUI();
+                tg.HapticFeedback.impactOccurred('light');
+            }
         }
 
         function updateCartUI() {
             const total = cart.reduce((sum, i) => sum + i.price, 0);
-            const float = document.getElementById('cart-float');
-            if(total > 0) {
-                float.style.display = 'flex';
+            const cartFloat = document.getElementById('cart-float');
+            const cartBadge = document.getElementById('cart-badge');
+            
+            if(cart.length > 0) {
+                cartFloat.style.display = 'flex';
+                cartBadge.style.display = 'flex';
+                cartBadge.innerText = cart.length;
                 document.getElementById('cart-total').innerText = '$' + total;
+                
+                // Add glow effect to cart
+                cartFloat.classList.add('wow-glow');
+            } else {
+                cartFloat.style.display = 'none';
+                cartBadge.style.display = 'none';
+                cartFloat.classList.remove('wow-glow');
+            }
+            
+            // Update modal if open
+            if(document.getElementById('modal').style.display === 'flex') {
+                renderCartItems();
+            }
+            
+            // Update delivery time
+            updateDeliveryTime();
+        }
+
+        function renderCartItems() {
+            const list = document.getElementById('order-items');
+            const subtotal = cart.reduce((sum, i) => sum + i.price, 0);
+            
+            if(cart.length === 0) {
+                list.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: var(--text-sec);">
+                        <i class="fas fa-shopping-cart" style="font-size: 40px; margin-bottom: 15px; opacity: 0.3;"></i>
+                        <div>Your cart is empty</div>
+                    </div>
+                `;
+            } else {
+                list.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-tier">${item.tier.toUpperCase()} Version</div>
+                        </div>
+                        <div class="cart-item-price">$${item.price}</div>
+                        <button class="cart-item-remove" onclick="removeFromCart(${item.id})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+            
+            document.getElementById('cart-subtotal').innerText = '$' + subtotal;
+        }
+
+        function updateDeliveryTime() {
+            const hasPro = cart.some(item => item.tier === 'pro');
+            const deliveryTime = document.getElementById('delivery-time');
+            
+            if (hasPro) {
+                deliveryTime.innerHTML = 'Delivery: 1-3 business days (customization may extend)';
+            } else {
+                deliveryTime.innerHTML = 'Delivery: 1 business day';
             }
         }
 
         function openCheckout() {
-            const list = document.getElementById('order-items');
-            list.innerHTML = cart.map(i => `
-                <div style="display:flex; justify-content:space-between; padding:5px 0;">
-                    <span>${i.name}</span>
-                    <span style="color:white; font-weight:bold;">$${i.price}</span>
-                </div>
-            `).join('');
-            
-            // Add hourly rate note if PRO is selected
-            if(cart.some(i => i.tier === 'pro')) {
-                list.innerHTML += `<div style="margin-top:10px; padding-top:10px; border-top:1px dashed #333; font-size:11px; color:var(--pro);">
-                    * PRO includes architecture for scale. Custom modifications billed at $40/hour.
-                </div>`;
+            if(cart.length === 0) {
+                tg.HapticFeedback.impactOccurred('error');
+                return;
             }
-
+            
+            renderCartItems();
             document.getElementById('modal').style.display = 'flex';
+            tg.HapticFeedback.impactOccurred('light');
         }
 
-        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+        function closeModal() { 
+            document.getElementById('modal').style.display = 'none'; 
+            tg.HapticFeedback.impactOccurred('light');
+        }
 
         function submitOrder() {
+            if(cart.length === 0) return;
+            
             const total = cart.reduce((sum, i) => sum + i.price, 0);
-            tg.sendData(JSON.stringify({ type: 'order', cart, total }));
+            const orderData = {
+                type: 'order',
+                cart: cart.map(item => ({ 
+                    name: item.name, 
+                    price: item.price, 
+                    tier: item.tier,
+                    category: item.category
+                })),
+                total: total,
+                timestamp: Date.now()
+            };
+            
+            tg.sendData(JSON.stringify(orderData));
+            tg.HapticFeedback.notificationOccurred('success');
+            
+            // Show confirmation
+            const chat = document.getElementById('ai-chat');
+            chat.innerHTML += `<div class="msg bot">Order submitted! We'll contact you via Telegram within minutes to proceed with payment and setup.</div>`;
+            chat.scrollTop = chat.scrollHeight;
+            
+            closeModal();
         }
 
         function contactDev() {
-            // Close webview and signal bot to start chat
             tg.sendData(JSON.stringify({ type: 'contact' }));
         }
 
-        // --- DEMOS ---
+        // --- УМНЫЙ AI AGENT ---
         
-        // 1. AI CHAT (Smarter)
-        const aiKnowledge = [
-            { k: ['price', 'cost', 'pay'], a: "Pricing depends on the tier. Core starts at $190. Pro versions include advanced scalability." },
-            { k: ['hello', 'hi', 'start'], a: "Systems online. I am ready to optimize your workflow. What solution do you need?" },
-            { k: ['scra', 'data', 'pars'], a: "My scraping modules can process 50+ pages per second with anti-detect technology." },
-            { k: ['comm', 'group', 'user'], a: "I can manage groups of 100k+ users, handling bans and payments automatically." },
-            { k: ['support', 'help'], a: "We provide 30 days of free technical support for all deployments." }
-        ];
-
-        function handleEnter(e) { if(e.key==='Enter') sendAi(); }
-        function sendAi() {
-            const inp = document.getElementById('ai-input');
-            const txt = inp.value.trim().toLowerCase();
-            if(!txt) return;
-            
-            const chat = document.getElementById('ai-chat');
-            chat.innerHTML += `<div class="msg user">${inp.value}</div>`;
-            inp.value = '';
-            chat.scrollTop = chat.scrollHeight;
-
-            let ans = "I can build a custom module for that. Please select the PRO tier to discuss specific requirements.";
-            
-            // Fuzzy-ish matching
-            for(let item of aiKnowledge) {
-                if(item.k.some(key => txt.includes(key))) {
-                    ans = item.a;
-                    break;
+        // 1. База знаний
+        const aiKnowledge = {
+            patterns: [
+                // ПРИВЕТСТВИЯ
+                { 
+                    keywords: ['привет', 'здравствуйте', 'хай', 'добрый день', 'hello', 'hi', 'hey'],
+                    responses: {
+                        en: [
+                            "Hello! I'm NOVA AI agent. Ready to automate your business? Ask me about pricing, features, or technical details.",
+                            "Hi there! Looking to scale your operations with AI? I can tell you everything about our solutions."
+                        ],
+                        ru: [
+                            "Привет! Я AI-агент NOVA. Готов автоматизировать ваш бизнес? Спрашивайте про цены, возможности или технические детали.",
+                            "Здравствуйте! Хотите масштабировать бизнес с помощью AI? Расскажу все о наших решениях."
+                        ]
+                    },
+                    priority: 10
+                },
+                
+                // ЦЕНЫ
+                { 
+                    keywords: ['price', 'cost', 'сколько стоит', 'цена', 'стоимость', 'how much'],
+                    responses: {
+                        en: [
+                            "**Our investment structure:**\n• AI Agents: $290 (Core) / $890 (Pro)\n• Data Scrapers: $250 (Core) / $750 (Pro)\n• Community Tools: $190 (Core) / $590 (Pro)\n\nOne-time payment, lifetime license. Full source code included. Which solution interests you?",
+                            "**Value for money:** Core versions handle 90% of needs. Pro adds unlimited customization, priority support, and advanced features. ROI typically within 30 days."
+                        ],
+                        ru: [
+                            "**Наши цены:**\n• AI агенты: $290 (Core) / $890 (Pro)\n• Скраперы: $250 (Core) / $750 (Pro)\n• Инструменты сообществ: $190 (Core) / $590 (Pro)\n\nОдин платеж, пожизненная лицензия. Полный исходный код включен. Что вас интересует?",
+                            "**Соотношение цены и качества:** Core версии покрывают 90% задач. Pro добавляет полную кастомизацию, приоритетную поддержку и продвинутые функции. Окупаемость обычно за 30 дней."
+                        ]
+                    },
+                    priority: 9
+                },
+                
+                // ДОСТАВКА
+                { 
+                    keywords: ['delivery', 'доставка', 'when get', 'когда получу', 'срок', 'time'],
+                    responses: {
+                        en: [
+                            "**Delivery timeline:**\n• Core versions: 1 business day\n• Pro versions: 1-3 business days (customization may extend)\n\nWe deliver via encrypted Telegram channel with full documentation and installation support.",
+                            "Speed matters. Core solutions delivered in 24 hours. Pro versions take 1-3 days as we customize them to your exact needs."
+                        ],
+                        ru: [
+                            "**Сроки доставки:**\n• Core версии: 1 рабочий день\n• Pro версии: 1-3 рабочих дня (кастомизация может увеличить)\n\nДоставляем через зашифрованный Telegram канал с полной документацией и помощью в установке.",
+                            "Скорость важна. Core решения доставляем за 24 часа. Pro версии занимают 1-3 дня, так как настраиваем их под ваши задачи."
+                        ]
+                    },
+                    priority: 8
+                },
+                
+                // ОПЛАТА
+                { 
+                    keywords: ['payment', 'оплата', 'pay', 'крипта', 'crypto', 'usdt', 'ton'],
+                    responses: {
+                        en: [
+                            "**We accept cryptocurrency only:** USDT (TRC20/ERC20), TON, Bitcoin, Ethereum.\n\n**Why crypto?**\n✓ Instant confirmation (seconds)\n✓ No personal data required\n✓ Available worldwide\n✓ Lower fees than banks\n✓ No chargebacks\n\nFaster delivery, better privacy.",
+                            "Crypto payments mean you get your solution faster. No bank delays, no paperwork. Just instant delivery of working code."
+                        ],
+                        ru: [
+                            "**Принимаем только криптовалюту:** USDT (TRC20/ERC20), TON, Bitcoin, Ethereum.\n\n**Почему крипта?**\n✓ Мгновенное подтверждение\n✓ Не нужны ваши данные\n✓ Доступно по всему миру\n✓ Комиссии ниже банковских\n✓ Никаких чарджбэков\n\nБыстрее доставка, лучше приватность.",
+                            "Оплата криптой = быстрое получение решения. Никаких задержек банков, никаких документов. Только мгновенная доставка рабочего кода."
+                        ]
+                    },
+                    priority: 9
+                },
+                
+                // КАСТОМИЗАЦИЯ
+                { 
+                    keywords: ['custom', 'кастом', 'customization', 'modify', 'изменить', 'настроить'],
+                    responses: {
+                        en: [
+                            "**Pro versions are fully customizable.** We adapt the solution to your exact business needs, branding, and workflows. Think of it as having a dedicated dev team without the overhead.",
+                            "With Pro, you get more than software - you get a solution molded to your business. We adjust AI personality, integration points, and features to match your requirements."
+                        ],
+                        ru: [
+                            "**Pro версии полностью кастомизируемы.** Адаптируем решение под ваш бизнес, брендинг и процессы. Это как иметь собственную команду разработчиков без расходов.",
+                            "С Pro вы получаете не просто софт, а решение, созданное под ваш бизнес. Настраиваем личность AI, точки интеграции и функции под ваши задачи."
+                        ]
+                    },
+                    priority: 7
+                },
+                
+                // ГАРАНТИИ
+                { 
+                    keywords: ['warranty', 'гарантия', 'guarantee', 'refund', 'возврат'],
+                    responses: {
+                        en: [
+                            "**Our guarantee:** 30 days of included support. If it doesn't work as described, we fix it. Lifetime bug fixes. We stand behind our code - it's battle-tested and production-ready.",
+                            "You get working solutions, not just code. 30-day support included. We fix any issues. Our reputation is built on delivering what we promise."
+                        ],
+                        ru: [
+                            "**Наша гарантия:** 30 дней поддержки включено. Если не работает как описано - исправим. Пожизненные исправления ошибок. Мы отвечаем за свой код - он проверен в бою и готов к работе.",
+                            "Вы получаете работающие решения, а не просто код. 30 дней поддержки включено. Исправляем любые проблемы. Наша репутация построена на выполнении обещаний."
+                        ]
+                    },
+                    priority: 6
+                },
+                
+                // ТЕХНИЧЕСКОЕ
+                { 
+                    keywords: ['technical', 'технические', 'server', 'сервер', 'requirements', 'требования'],
+                    responses: {
+                        en: [
+                            "**Technical:** Runs on any VPS with 1GB+ RAM. We provide installation scripts, configuration files, and setup assistance. No coding required for Core versions.",
+                            "Simple setup: 1) Buy VPS, 2) Run our script, 3) Configure. We help with each step. Solutions work 24/7 with 99.9% uptime."
+                        ],
+                        ru: [
+                            "**Технически:** Работает на любом VPS от 1GB RAM. Даем скрипты установки, файлы конфигурации и помощь в настройке. Для Core версий не нужно знать программирование.",
+                            "Простая установка: 1) Купить VPS, 2) Запустить наш скрипт, 3) Настроить. Помогаем на каждом этапе. Решения работают 24/7 с аптаймом 99.9%."
+                        ]
+                    },
+                    priority: 5
                 }
+            ],
+            
+            fallback: {
+                en: [
+                    "I specialize in business automation. Could you rephrase about AI agents, scrapers, or community tools?",
+                    "Ask me about pricing, delivery, customization, or technical details of our solutions.",
+                    "For complex custom projects, we work hourly at $40 after the initial Pro purchase. Want details about our standard solutions first?"
+                ],
+                ru: [
+                    "Я специализируюсь на автоматизации бизнеса. Можете перефразировать про AI агентов, скраперы или инструменты сообществ?",
+                    "Спросите про цены, доставку, кастомизацию или технические детали наших решений.",
+                    "Для сложных кастомных проектов работаем почасовая $40 после покупки Pro. Хотите сначала узнать о стандартных решениях?"
+                ]
             }
+        };
 
-            setTimeout(() => {
-                chat.innerHTML += `<div class="msg bot">${ans}</div>`;
-                chat.scrollTop = chat.scrollHeight;
-                tg.HapticFeedback.impactOccurred('medium');
-            }, 700);
+        // 2. Определитель языка
+        function detectLanguage(text) {
+            const ruRegex = /[а-яё]/i;
+            return ruRegex.test(text) ? 'ru' : 'en';
         }
 
-        // 2. SCRAPER (5 Sources)
+        // 3. Поиск ответа
+        const responseCache = new Map();
+        
+        function findBestResponse(query, language) {
+            const cacheKey = `${language}:${query.toLowerCase().trim()}`;
+            if(responseCache.has(cacheKey)) {
+                return responseCache.get(cacheKey);
+            }
+            
+            const queryLower = query.toLowerCase();
+            let bestMatch = null;
+            let highestScore = 0;
+            
+            for(const pattern of aiKnowledge.patterns) {
+                for(const keyword of pattern.keywords) {
+                    if(queryLower.includes(keyword)) {
+                        const score = pattern.priority;
+                        if(score > highestScore) {
+                            highestScore = score;
+                            bestMatch = pattern;
+                        }
+                        break;
+                    }
+                }
+            }
+            
+            let response;
+            if(bestMatch && bestMatch.responses[language]) {
+                const responses = bestMatch.responses[language];
+                response = responses[Math.floor(Math.random() * responses.length)];
+            } else {
+                const fallbacks = aiKnowledge.fallback[language];
+                response = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+            }
+            
+            responseCache.set(cacheKey, response);
+            if(responseCache.size > 100) {
+                const firstKey = responseCache.keys().next().value;
+                responseCache.delete(firstKey);
+            }
+            
+            return response;
+        }
+
+        // 4. Функции AI чата
+        function handleEnter(e) { 
+            if(e.key === 'Enter') sendAi();
+        }
+        
+        function sendAi() {
+            const input = document.getElementById('ai-input');
+            const query = input.value.trim();
+            if(!query) return;
+            
+            const chat = document.getElementById('ai-chat');
+            chat.innerHTML += `<div class="msg user">${query}</div>`;
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+            
+            setTimeout(() => {
+                const language = detectLanguage(query);
+                const response = findBestResponse(query, language);
+                
+                chat.innerHTML += `<div class="msg bot">${response}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+                tg.HapticFeedback.impactOccurred('medium');
+            }, 300);
+        }
+
+        // --- SCRAPER DEMO ---
         let scrapeInt;
         const scenarios = {
             amazon: { cmd: "amazon_monitor.py", logs: ["Checking ASIN: B08X...", "Price: $99.00 (No Change)", "Price: $85.00 (DROP DETECTED!)", "Sending Alert to Telegram..."] },
@@ -474,7 +856,7 @@
             }, 800);
         }
 
-        // 3. COMMUNITY LOGS
+        // --- COMMUNITY LOGS ---
         function startCommLog() {
             const logBox = document.getElementById('comm-log');
             const actions = [
@@ -490,7 +872,7 @@
                 const act = actions[idx % actions.length];
                 const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 const html = `
-                    <div class="log-item animate__animated animate__fadeIn">
+                    <div class="log-item">
                         <div class="log-icon ${act.i}"><i class="fas fa-${act.i === 'pay' ? 'wallet' : act.i === 'join' ? 'user-plus' : 'ban'}"></i></div>
                         <div class="log-text">${act.t}</div>
                         <div class="log-time">${time}</div>
@@ -501,12 +883,26 @@
             }, 2000);
         }
 
-        // INITIALIZE
+        // --- ИНИЦИАЛИЗАЦИЯ ---
         (function init() {
             // Render initial tables
             ['ai', 'scraper', 'comm'].forEach(c => setTier(c, 'core'));
             startCommLog();
             setScrapeMode('amazon', document.querySelector('.term-btn'));
+            
+            // Preload common AI responses
+            setTimeout(() => {
+                ['price', 'hello', 'delivery', 'payment'].forEach(query => {
+                    ['en', 'ru'].forEach(lang => {
+                        findBestResponse(query, lang);
+                    });
+                });
+            }, 100);
+            
+            // Close modal on outside click
+            document.getElementById('modal').addEventListener('click', function(e) {
+                if(e.target === this) closeModal();
+            });
         })();
 
     </script>
