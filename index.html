@@ -357,8 +357,18 @@
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready(); tg.expand(); tg.setHeaderColor('#030304');
+        let tg = null;
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+                tg = window.Telegram.WebApp;
+                tg.ready();
+                tg.expand();
+                tg.setHeaderColor('#030304');
+                tg.setBackgroundColor('#030304');
+            }
+        } catch (error) {
+            console.error('Telegram WebApp initialization error:', error);
+        }
 
         // --- PRODUCT DATA ---
         const products = {
@@ -447,34 +457,42 @@
 
         // --- СИСТЕМА ВОССТАНОВЛЕНИЯ ---
         let isBotOnline = true;
-        let offlineMessages = JSON.parse(localStorage.getItem('nova_offline_messages') || '[]');
-        let offlineOrders = JSON.parse(localStorage.getItem('nova_offline_orders') || '[]');
+        let offlineMessages = [];
+        let offlineOrders = [];
+
+        try {
+            offlineMessages = JSON.parse(localStorage.getItem('nova_offline_messages') || '[]');
+            offlineOrders = JSON.parse(localStorage.getItem('nova_offline_orders') || '[]');
+        } catch (e) {
+            console.error('Failed to parse offline data:', e);
+        }
 
         // Проверка статуса бота
         async function checkBotStatus() {
+            if (!tg) {
+                isBotOnline = false;
+                return;
+            }
+            
             try {
-                // Простая проверка через отправку тестового сообщения в фоновом режиме
                 const testData = { type: 'ping', timestamp: Date.now() };
                 tg.sendData(JSON.stringify(testData));
                 
-                // Если бот был оффлайн и теперь онлайн
                 if (!isBotOnline) {
                     isBotOnline = true;
                     document.getElementById('serverStatus').style.display = 'none';
                     
-                    // Показываем уведомление о восстановлении
                     const chat = document.getElementById('ai-chat');
                     if (chat) {
                         chat.innerHTML += `
                             <div class="msg bot" style="background: var(--success); color: white;">
                                 <i class="fas fa-check-circle"></i> <strong>System Restored:</strong><br>
-                                Connection reestablished. All saved messages and orders have been sent to our system.
+                                Connection reestablished. All saved messages and orders have been sent.
                             </div>
                         `;
                         chat.scrollTop = chat.scrollHeight;
                     }
                     
-                    // Отправляем накопленные сообщения
                     await processOfflineData();
                 }
             } catch (error) {
@@ -487,7 +505,7 @@
                         chat.innerHTML += `
                             <div class="msg bot" style="background: #FF3B30; color: white;">
                                 <i class="fas fa-server"></i> <strong>System Notice:</strong><br>
-                                Temporary server maintenance. Your messages and orders are being saved locally and will be sent automatically when we're back online.
+                                Temporary connection issue. Your messages and orders are being saved locally.
                             </div>
                         `;
                         chat.scrollTop = chat.scrollHeight;
@@ -498,24 +516,30 @@
 
         // Сохранение сообщений при оффлайн режиме
         function saveOfflineMessage(type, data) {
-            const message = {
-                type: type,
-                data: data,
-                timestamp: Date.now(),
-                synced: false
-            };
-            
-            if (type === 'message') {
-                offlineMessages.push(message);
-                localStorage.setItem('nova_offline_messages', JSON.stringify(offlineMessages));
-            } else if (type === 'order') {
-                offlineOrders.push(message);
-                localStorage.setItem('nova_offline_orders', JSON.stringify(offlineOrders));
+            try {
+                const message = {
+                    type: type,
+                    data: data,
+                    timestamp: Date.now(),
+                    synced: false
+                };
+                
+                if (type === 'message') {
+                    offlineMessages.push(message);
+                    localStorage.setItem('nova_offline_messages', JSON.stringify(offlineMessages));
+                } else if (type === 'order') {
+                    offlineOrders.push(message);
+                    localStorage.setItem('nova_offline_orders', JSON.stringify(offlineOrders));
+                }
+            } catch (e) {
+                console.error('Failed to save offline message:', e);
             }
         }
 
         // Обработка накопленных данных при восстановлении
         async function processOfflineData() {
+            if (!tg) return;
+            
             // Обрабатываем сообщения
             for (const msg of offlineMessages) {
                 if (!msg.synced) {
@@ -541,8 +565,12 @@
             }
             
             // Обновляем localStorage
-            localStorage.setItem('nova_offline_messages', JSON.stringify(offlineMessages.filter(m => !m.synced)));
-            localStorage.setItem('nova_offline_orders', JSON.stringify(offlineOrders.filter(o => !o.synced)));
+            try {
+                localStorage.setItem('nova_offline_messages', JSON.stringify(offlineMessages.filter(m => !m.synced)));
+                localStorage.setItem('nova_offline_orders', JSON.stringify(offlineOrders.filter(o => !o.synced)));
+            } catch (e) {
+                console.error('Failed to update localStorage:', e);
+            }
             
             // Показываем уведомление
             const chat = document.getElementById('ai-chat');
@@ -550,7 +578,7 @@
                 chat.innerHTML += `
                     <div class="msg bot">
                         <i class="fas fa-sync-alt"></i> <strong>Sync Complete:</strong><br>
-                        ${offlineMessages.filter(m => m.synced).length} messages and ${offlineOrders.filter(o => o.synced).length} orders have been sent to our system.
+                        Sent ${offlineMessages.filter(m => m.synced).length} messages and ${offlineOrders.filter(o => o.synced).length} orders.
                     </div>
                 `;
                 chat.scrollTop = chat.scrollHeight;
@@ -563,7 +591,12 @@
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
             btn.classList.add('active');
-            tg.HapticFeedback.impactOccurred('light');
+            
+            if (tg && tg.HapticFeedback) {
+                try {
+                    tg.HapticFeedback.impactOccurred('light');
+                } catch (e) {}
+            }
         }
 
         // --- PRICING LOGIC ---
@@ -592,7 +625,11 @@
             const table = document.getElementById(`table-${cat}`);
             table.innerHTML = data.features.map(f => `<tr><td><i class="fas fa-check-circle"></i> ${f[0]}</td><td>${f[1]}</td></tr>`).join('');
             
-            tg.HapticFeedback.selectionChanged();
+            if (tg && tg.HapticFeedback) {
+                try {
+                    tg.HapticFeedback.selectionChanged();
+                } catch (e) {}
+            }
         }
 
         // --- CART SYSTEM WITH REMOVE ---
@@ -620,7 +657,12 @@
                     button.style.transform = 'scale(1)';
                 }, 150);
                 
-                tg.HapticFeedback.notificationOccurred('success');
+                if (tg && tg.HapticFeedback) {
+                    try {
+                        tg.HapticFeedback.notificationOccurred('success');
+                    } catch (e) {}
+                }
+                
                 updateCartUI();
                 
                 // Show confirmation in chat
@@ -631,7 +673,11 @@
                 }
             } else {
                 // Already in cart
-                tg.HapticFeedback.impactOccurred('warning');
+                if (tg && tg.HapticFeedback) {
+                    try {
+                        tg.HapticFeedback.impactOccurred('warning');
+                    } catch (e) {}
+                }
             }
         }
 
@@ -640,7 +686,11 @@
             if (index !== -1) {
                 cart.splice(index, 1);
                 updateCartUI();
-                tg.HapticFeedback.impactOccurred('light');
+                if (tg && tg.HapticFeedback) {
+                    try {
+                        tg.HapticFeedback.impactOccurred('light');
+                    } catch (e) {}
+                }
             }
         }
 
@@ -714,18 +764,32 @@
 
         function openCheckout() {
             if(cart.length === 0) {
-                tg.HapticFeedback.impactOccurred('error');
+                if (tg && tg.HapticFeedback) {
+                    try {
+                        tg.HapticFeedback.impactOccurred('error');
+                    } catch (e) {}
+                }
                 return;
             }
             
             renderCartItems();
             document.getElementById('modal').style.display = 'flex';
-            tg.HapticFeedback.impactOccurred('light');
+            
+            if (tg && tg.HapticFeedback) {
+                try {
+                    tg.HapticFeedback.impactOccurred('light');
+                } catch (e) {}
+            }
         }
 
         function closeModal() { 
             document.getElementById('modal').style.display = 'none'; 
-            tg.HapticFeedback.impactOccurred('light');
+            
+            if (tg && tg.HapticFeedback) {
+                try {
+                    tg.HapticFeedback.impactOccurred('light');
+                } catch (e) {}
+            }
         }
 
         function submitOrder() {
@@ -744,7 +808,7 @@
                 timestamp: Date.now()
             };
             
-            if (!isBotOnline) {
+            if (!isBotOnline || !tg) {
                 // Сохраняем заказ локально
                 saveOfflineMessage('order', orderData);
                 
@@ -761,28 +825,57 @@
                 }
                 
                 closeModal();
-                tg.HapticFeedback.notificationOccurred('success');
+                
+                if (tg && tg.HapticFeedback) {
+                    try {
+                        tg.HapticFeedback.notificationOccurred('success');
+                    } catch (e) {}
+                }
+                
                 return;
             }
             
             // Отправляем заказ
-            tg.sendData(JSON.stringify(orderData));
-            tg.HapticFeedback.notificationOccurred('success');
-            
-            // Show confirmation
-            const chat = document.getElementById('ai-chat');
-            if (chat) {
-                chat.innerHTML += `<div class="msg bot">Order submitted! We'll contact you via Telegram within minutes to proceed with payment and setup.</div>`;
-                chat.scrollTop = chat.scrollHeight;
+            try {
+                tg.sendData(JSON.stringify(orderData));
+                
+                if (tg && tg.HapticFeedback) {
+                    try {
+                        tg.HapticFeedback.notificationOccurred('success');
+                    } catch (e) {}
+                }
+                
+                // Show confirmation
+                const chat = document.getElementById('ai-chat');
+                if (chat) {
+                    chat.innerHTML += `<div class="msg bot">Order submitted! We'll contact you via Telegram within minutes to proceed with payment and setup.</div>`;
+                    chat.scrollTop = chat.scrollHeight;
+                }
+                
+                closeModal();
+            } catch (error) {
+                console.error('Failed to send order:', error);
+                saveOfflineMessage('order', orderData);
+                
+                const chat = document.getElementById('ai-chat');
+                if (chat) {
+                    chat.innerHTML += `
+                        <div class="msg bot" style="background: #FF9500; color: white;">
+                            <i class="fas fa-save"></i> <strong>Order Saved Locally:</strong><br>
+                            Connection issue. Your order has been saved and will be sent when possible.
+                        </div>
+                    `;
+                    chat.scrollTop = chat.scrollHeight;
+                }
+                
+                closeModal();
             }
-            
-            closeModal();
         }
 
         function contactDev() {
             const contactData = { type: 'contact', timestamp: Date.now() };
             
-            if (!isBotOnline) {
+            if (!isBotOnline || !tg) {
                 saveOfflineMessage('message', contactData);
                 
                 const chat = document.getElementById('ai-chat');
@@ -798,7 +891,12 @@
                 return;
             }
             
-            tg.sendData(JSON.stringify(contactData));
+            try {
+                tg.sendData(JSON.stringify(contactData));
+            } catch (error) {
+                console.error('Failed to send contact request:', error);
+                saveOfflineMessage('message', contactData);
+            }
         }
 
         // --- УМНЫЙ AI AGENT ---
@@ -808,7 +906,7 @@
             patterns: [
                 // ПРИВЕТСТВИЯ
                 { 
-                    keywords: ['привет', 'здравствуйте', 'хай', 'добрый день', 'hello', 'hi', 'hey'],
+                    keywords: ['привет', 'здравствуйте', 'хай', 'добрый день', 'hello', 'hi', 'hey', 'hi!', 'hello!', 'hey!', 'hi there'],
                     responses: [
                         "Hello! I'm NOVA AI agent. Ready to automate your business? Ask me about pricing, features, or technical details.",
                         "Hi there! Looking to scale your operations? I can tell you everything about our solutions."
@@ -962,7 +1060,12 @@
                 
                 chat.innerHTML += `<div class="msg bot">${response}</div>`;
                 chat.scrollTop = chat.scrollHeight;
-                tg.HapticFeedback.impactOccurred('medium');
+                
+                if (tg && tg.HapticFeedback) {
+                    try {
+                        tg.HapticFeedback.impactOccurred('medium');
+                    } catch (e) {}
+                }
             }, 300);
         }
 
@@ -1045,12 +1148,14 @@
                 if(e.target === this) closeModal();
             });
             
-            // Check bot status every 30 seconds
-            checkBotStatus();
-            setInterval(checkBotStatus, 30000);
-            
-            // Process any offline data on load
-            setTimeout(processOfflineData, 2000);
+            // Check bot status every 30 seconds if Telegram WebApp is available
+            if (tg) {
+                checkBotStatus();
+                setInterval(checkBotStatus, 30000);
+                
+                // Process any offline data on load
+                setTimeout(processOfflineData, 2000);
+            }
         })();
 
     </script>
