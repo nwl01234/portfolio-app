@@ -7,6 +7,7 @@ import sqlite3
 import time
 from collections import deque
 from typing import Optional, Dict, Any
+from difflib import SequenceMatcher
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from aiogram.types import WebAppInfo, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
@@ -18,20 +19,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 
 TOKEN = os.getenv("TOKEN")
 ADMIN_ID = os.getenv("ADMIN_ID")
-WEBAPP_URL = os.getenv("WEBAPP_URL", "https://your-webapp-url.com")
 USDT_WALLET = os.getenv("USDT_WALLET")
-BTC_WALLET = os.getenv("BTC_WALLET")
-
-# Проверка обязательных переменных
-if not TOKEN:
-    logging.error("TOKEN is not set in .env file")
-    exit(1)
-
-if not ADMIN_ID:
-    logging.warning("ADMIN_ID is not set in .env file")
-
-if not USDT_WALLET or USDT_WALLET == "В":
-    logging.warning("USDT_WALLET is not properly set in .env file")
+WEBAPP_URL = os.getenv("WEBAPP_URL", "https://your-webapp-url.com")
 
 # Оптимизация: задаем настройки бота для производительности
 default = DefaultBotProperties(parse_mode="Markdown")
@@ -151,7 +140,7 @@ def save_important_message(user_id: int, message_type: str, data: str):
 
 KNOWLEDGE_BASE_EN = {
     'greeting': {
-        'keywords': ['hello', 'hi', 'hey', 'start', 'good morning', 'good afternoon', '/start', 'hi ', 'hi!', 'hi.'],
+        'keywords': ['hello', 'hi', 'hey', 'start', 'good morning', 'good afternoon', '/start'],
         'responses': [
             "🟦 **NOVA SYSTEMS**\n\nHello! I'm a professional automation system for Telegram business.\n\nI specialize in:\n• AI Agents\n• Data Scrapers\n• Community Tools\n\nHow can I assist you today?",
             "👋 **Welcome to NOVA SYSTEMS**\n\nPremium automation solutions for serious businesses.\n\nReady to scale your operations? What are you looking for?"
@@ -175,7 +164,7 @@ KNOWLEDGE_BASE_EN = {
         'keywords': ['payment', 'pay', 'crypto', 'usdt', 'ton', 'bitcoin', 'ethereum', 'wallet', 'how pay'],
         'responses': [
             "💳 **Payment System:**\n\nWe accept cryptocurrency only:\n✓ USDT (TRC20/ERC20)\n✓ TON\n✓ Bitcoin\n✓ Ethereum\n\n**Advantages:**\n• Instant confirmation\n• No personal data required\n• Available worldwide\n• Lower fees (save 3-5%)",
-            "🔐 **Crypto Payments:**\n\nFast, secure, and private.\n\n**Wallet for payment:**\n`{USDT_WALLET}`\n\n**Bitcoin wallet:**\n`{BTC_WALLET}`\n\nSend transaction hash after payment."
+            "🔐 **Crypto Payments:**\n\nFast, secure, and private.\n\n**Wallet for payment:**\n`{USDT_WALLET}`\n\nSend transaction hash after payment."
         ]
     },
     'features': {
@@ -221,7 +210,7 @@ KNOWLEDGE_BASE_EN = {
 # Минимальные русские ответы (только если пользователь пишет по-русски)
 KNOWLEDGE_BASE_RU = {
     'greeting': {
-        'keywords': ['привет', 'здравствуйте', 'хай', 'добрый день', 'начать', 'привет ', 'привет!', 'привет.'],
+        'keywords': ['привет', 'здравствуйте', 'хай', 'добрый день', 'начать'],
         'responses': [
             "🟦 **NOVA SYSTEMS**\n\nПривет! Я система автоматизации для бизнеса в Telegram.\n\nЧем могу помочь?"
         ]
@@ -233,9 +222,9 @@ KNOWLEDGE_BASE_RU = {
         ]
     },
     'payment': {
-        'keywords': ['оплата', 'платеж', 'крипта', 'usdt', 'bitcoin', 'биткоин'],
+        'keywords': ['оплата', 'платеж', 'крипта', 'usdt'],
         'responses': [
-            "💳 **Оплата криптовалютой:**\nUSDT, TON, Bitcoin, Ethereum\n\n**Кошелек USDT:**\n`{USDT_WALLET}`\n\n**Кошелек Bitcoin:**\n`{BTC_WALLET}`"
+            f"💳 **Оплата криптовалютой:**\nUSDT, TON, Bitcoin, Ethereum\n\nКошелек: `{USDT_WALLET}`"
         ]
     }
 }
@@ -276,7 +265,7 @@ def detect_language_fast(text: str) -> str:
 
 def get_intent_fast(text: str, language: str) -> Optional[str]:
     """Быстрое определение намерения"""
-    text_lower = text.lower().strip()
+    text_lower = text.lower()
     cache_key = f"intent_{language}_{hash(text_lower[:50])}"
     
     # Проверяем кэш
@@ -293,8 +282,7 @@ def get_intent_fast(text: str, language: str) -> Optional[str]:
     
     for intent, data in knowledge_base.items():
         for keyword in data['keywords']:
-            # Проверяем точное совпадение или вхождение
-            if keyword == text_lower or keyword in text_lower:
+            if keyword in text_lower:
                 score = len(keyword)
                 if score > best_score:
                     best_score = score
@@ -318,11 +306,8 @@ def get_response(intent: Optional[str], language: str, user_id: int) -> str:
         response = responses[user_id % len(responses)]
         
         # Заменяем плейсхолдеры
-        if USDT_WALLET and USDT_WALLET != "В" and '{USDT_WALLET}' in response:
+        if USDT_WALLET and '{USDT_WALLET}' in response:
             response = response.replace('{USDT_WALLET}', USDT_WALLET)
-        
-        if BTC_WALLET and '{BTC_WALLET}' in response:
-            response = response.replace('{BTC_WALLET}', BTC_WALLET)
         
         return response
     
@@ -332,17 +317,12 @@ def get_response(intent: Optional[str], language: str, user_id: int) -> str:
 
 def get_main_keyboard():
     """Основная клавиатура (только английская)"""
-    keyboard_buttons = [
-        [KeyboardButton(text="💰 Prices"), KeyboardButton(text="🚀 Delivery")],
-        [KeyboardButton(text="💳 Payment"), KeyboardButton(text="🔧 Support")]
-    ]
-    
-    # Добавляем кнопку веб-приложения только если URL корректный
-    if WEBAPP_URL and WEBAPP_URL != "https://your-webapp-url.com":
-        keyboard_buttons.insert(0, [KeyboardButton(text="⚡ OPEN NOVA SYSTEM", web_app=WebAppInfo(url=WEBAPP_URL))])
-    
     return ReplyKeyboardMarkup(
-        keyboard=keyboard_buttons,
+        keyboard=[
+            [KeyboardButton(text="⚡ OPEN NOVA SYSTEM", web_app=WebAppInfo(url=WEBAPP_URL))],
+            [KeyboardButton(text="💰 Prices"), KeyboardButton(text="🚀 Delivery")],
+            [KeyboardButton(text="💳 Payment"), KeyboardButton(text="🔧 Support")]
+        ],
         resize_keyboard=True,
         input_field_placeholder="Ask about our solutions..."
     )
@@ -378,7 +358,7 @@ async def start_command(message: types.Message):
         "✓ Lifetime license\n"
         "✓ Full source code\n"
         "✓ 30-day support\n\n"
-        "Use the buttons below to explore:"
+        "👇 **Open the system to explore solutions:**"
     )
     
     await message.answer(
@@ -450,16 +430,7 @@ async def show_delivery(message: types.Message):
 @dp.message(F.text == "💳 Payment")
 async def show_payment(message: types.Message):
     """Показать информацию об оплате"""
-    wallet_text = ""
-    
-    if USDT_WALLET and USDT_WALLET != "В":
-        wallet_text += f"**USDT Wallet:**\n`{USDT_WALLET}`\n\n"
-    else:
-        wallet_text += "**USDT Wallet:** Not configured\n\n"
-    
-    if BTC_WALLET:
-        wallet_text += f"**Bitcoin Wallet:**\n`{BTC_WALLET}`\n\n"
-    
+    wallet = USDT_WALLET or "WALLET_NOT_CONFIGURED"
     response = (
         f"💳 **Payment Information:**\n\n"
         f"**Accepted cryptocurrencies:**\n"
@@ -472,7 +443,8 @@ async def show_payment(message: types.Message):
         f"• No personal data required\n"
         f"• Available worldwide\n"
         f"• Lower fees\n\n"
-        f"{wallet_text}"
+        f"**Payment wallet:**\n"
+        f"`{wallet}`\n\n"
         f"Send transaction hash after payment."
     )
     
@@ -618,7 +590,7 @@ async def handle_web_app_data(message: types.Message):
             has_pro = any(item.get('tier') == 'pro' for item in cart_items)
             delivery_time = "1-3 business days" if has_pro else "1 business day"
             
-            wallet = USDT_WALLET if USDT_WALLET and USDT_WALLET != "В" else "WALLET_NOT_CONFIGURED"
+            wallet = USDT_WALLET or "WALLET_NOT_CONFIGURED"
             response = (
                 f"✅ **ORDER #{order_id} CREATED**\n\n"
                 f"**Total: ${total}**\n"
@@ -790,17 +762,8 @@ async def main():
     bot_info = await bot.get_me()
     logging.info("🚀 Starting NOVA SYSTEMS Bot...")
     logging.info(f"🤖 Bot ID: {bot_info.id}")
-    logging.info(f"🤖 Bot Username: @{bot_info.username}")
     logging.info(f"👑 Admin ID: {ADMIN_ID}")
     logging.info(f"🌐 WebApp URL: {WEBAPP_URL}")
-    logging.info(f"💰 USDT Wallet: {USDT_WALLET}")
-    logging.info(f"₿ Bitcoin Wallet: {BTC_WALLET}")
-    
-    # Проверка WebApp URL
-    if WEBAPP_URL == "https://your-webapp-url.com":
-        logging.warning("⚠️ WebApp URL is set to default value. Mini app button may not work.")
-    elif not WEBAPP_URL.startswith(("http://", "https://")):
-        logging.error("❌ WebApp URL must start with http:// or https://")
     
     # Запускаем фоновые задачи
     asyncio.create_task(monitor_performance())

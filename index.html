@@ -23,7 +23,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; outline: none; }
         body { background: var(--bg); color: var(--text); font-family: var(--font); padding-bottom: 120px; overflow-x: hidden; }
 
-        /* HEADER & STATUS */
         .header {
             position: sticky; top: 0; z-index: 100; background: rgba(3,3,4,0.95);
             backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -34,13 +33,11 @@
         .status-badge { font-size: 10px; background: rgba(48, 209, 88, 0.15); color: var(--success); padding: 4px 8px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
         .status-dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; box-shadow: 0 0 5px var(--success); }
 
-        /* HERO STATS */
         .trust-row { display: flex; justify-content: space-around; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .stat-item { text-align: center; }
         .stat-val { font-size: 16px; font-weight: 800; display: block; margin-bottom: 2px; }
         .stat-lbl { font-size: 10px; color: var(--text-sec); text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* NAVIGATION */
         .nav-scroll { padding: 15px 0 5px 20px; overflow-x: auto; display: flex; gap: 10px; scrollbar-width: none; }
         .nav-btn {
             padding: 8px 16px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
@@ -48,7 +45,6 @@
         }
         .nav-btn.active { background: var(--text); color: black; border-color: white; font-weight: 600; }
 
-        /* SECTIONS */
         .section { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -56,7 +52,6 @@
         h1 { font-size: 28px; font-weight: 800; margin-bottom: 5px; }
         .subtitle { color: var(--text-sec); font-size: 14px; margin-bottom: 20px; line-height: 1.4; }
 
-        /* LIVE DEMOS */
         .demo-container {
             background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
             overflow: hidden; margin-bottom: 25px; position: relative;
@@ -67,7 +62,6 @@
         }
         .demo-title { font-size: 11px; font-weight: 700; color: var(--text-sec); text-transform: uppercase; }
         
-        /* AI CHAT DEMO */
         .chat-window { height: 200px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .msg { padding: 10px 14px; border-radius: 12px; font-size: 13px; max-width: 85%; line-height: 1.4; }
         .msg.bot { background: #1C1C1E; color: #E5E5EA; align-self: flex-start; border-left: 2px solid var(--accent); }
@@ -76,13 +70,11 @@
         .chat-input { flex: 1; background: #1C1C1E; border: none; padding: 10px; border-radius: 8px; color: white; font-size: 13px; }
         .send-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        /* SCRAPER TERMINAL */
         .terminal { background: #080808; padding: 15px; height: 180px; font-family: 'Courier New', monospace; font-size: 11px; color: var(--success); overflow-y: hidden; }
         .term-controls { display: flex; gap: 5px; padding: 10px; background: #111; overflow-x: auto; }
         .term-btn { padding: 4px 8px; border-radius: 4px; border: 1px solid #333; color: #888; background: transparent; font-size: 10px; cursor: pointer; }
         .term-btn.active { border-color: var(--success); color: var(--success); background: rgba(48,209,88,0.1); }
 
-        /* COMMUNITY LOGS */
         .activity-log { height: 180px; padding: 15px; overflow-y: auto; }
         .log-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 12px; }
         .log-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; }
@@ -92,7 +84,6 @@
         .log-text { color: #ccc; }
         .log-time { margin-left: auto; color: #555; font-size: 10px; }
 
-        /* PRODUCT CARDS & PRICING */
         .pricing-card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
         
         .toggle-container { background: rgba(0,0,0,0.4); padding: 4px; border-radius: 10px; display: flex; margin-bottom: 20px; }
@@ -114,7 +105,6 @@
         .buy-btn.pro { background: var(--pro); color: black; box-shadow: 0 5px 20px rgba(255, 214, 10, 0.2); }
         .buy-btn:active { transform: scale(0.98); opacity: 0.9; }
 
-        /* FLOATING ACTIONS */
         .bottom-bar {
             position: fixed; bottom: 20px; left: 20px; right: 20px;
             display: flex; gap: 10px; z-index: 1000;
@@ -130,82 +120,32 @@
             color: white; font-weight: 700; box-shadow: 0 5px 20px var(--accent-glow); cursor: pointer;
         }
 
-        /* MODAL */
-        .modal-bg { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.8); z-index: 2000; 
-            display: none; align-items: flex-end; justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-        .modal-content { 
-            background: #1C1C1E; width: 100%; max-width: 500px; padding: 25px; 
-            border-radius: 25px 25px 0 0; animation: slideUp 0.3s ease;
-            box-shadow: 0 -10px 50px rgba(0,0,0,0.5);
-        }
+        .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; display: none; align-items: flex-end; }
+        .modal-content { background: #1C1C1E; width: 100%; padding: 25px; border-radius: 25px 25px 0 0; animation: slideUp 0.3s ease; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-        .cart-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .cart-item-info { flex: 1; }
-        .cart-item-name { color: white; font-weight: 600; font-size: 14px; margin-bottom: 3px; }
-        .cart-item-tier { color: var(--text-sec); font-size: 12px; }
-        .cart-item-price { color: var(--pro); font-weight: 700; font-size: 16px; margin-left: 15px; }
-        .cart-item-remove {
-            width: 28px; height: 28px; background: rgba(255,59,48,0.1); border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; color: #FF3B30;
-            margin-left: 15px; cursor: pointer; border: none; font-size: 12px;
-        }
-
-        /* WOW EFFECTS */
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 5px var(--accent-glow); }
-            50% { box-shadow: 0 0 20px var(--accent-glow); }
-        }
-        
-        .wow-glow {
-            animation: glow 2s infinite;
-        }
-
-        .cart-badge {
-            position: absolute; top: -8px; right: -8px; width: 20px; height: 20px;
-            background: #FF3B30; border-radius: 50%; color: white; font-size: 11px;
-            display: flex; align-items: center; justify-content: center; font-weight: bold;
-        }
-
-        /* SERVER STATUS */
-        .server-status {
-            position: fixed; top: 10px; right: 10px; 
-            background: rgba(255, 59, 48, 0.9); color: white; 
-            padding: 10px 15px; border-radius: 10px; font-size: 12px; 
-            z-index: 10000; display: none; align-items: center; gap: 8px;
-            animation: pulse 2s infinite;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            max-width: 300px;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-        
-        .server-status i { font-size: 14px; }
 
     </style>
 </head>
 <body>
 
-    <!-- Server Status Indicator -->
-    <div class="server-status" id="serverStatus">
-        <i class="fas fa-exclamation-triangle"></i>
-        <span>Server maintenance in progress. Your requests are saved and will be processed when we're back online.</span>
-    </div>
-
     <div class="header">
         <div class="logo">NOVA <span>SYSTEMS</span></div>
         <div class="status-badge"><div class="status-dot"></div> OPEN FOR WORK</div>
+    </div>
+
+    <div class="trust-row">
+        <div class="stat-item">
+            <span class="stat-val">300+</span>
+            <span class="stat-lbl">Projects</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-val">99.9%</span>
+            <span class="stat-lbl">Uptime</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-val">24/7</span>
+            <span class="stat-lbl">Support</span>
+        </div>
     </div>
 
     <div class="nav-scroll">
@@ -218,13 +158,13 @@
         <h1>Intelligent Agents</h1>
         <p class="subtitle">Automated sales & support staff. They don't sleep, don't ask for raises, and handle thousands of clients simultaneously.</p>
 
-        <div class="demo-container wow-glow">
+        <div class="demo-container">
             <div class="demo-header">
                 <span class="demo-title">LIVE PREVIEW (GPT-4 ENGINE)</span>
                 <i class="fas fa-robot" style="color:#666"></i>
             </div>
             <div class="chat-window" id="ai-chat">
-                <div class="msg bot">Nexus Core initialized. I can answer questions, sell products, and schedule appointments. Try me.</div>
+                <div class="msg bot">Nexus Core initialized. I can answer questions in English and Russian about pricing, features, and technical details. Try me.</div>
             </div>
             <div class="chat-input-area">
                 <input type="text" class="chat-input" id="ai-input" placeholder="Ask about price, services..." onkeypress="handleEnter(event)">
@@ -232,7 +172,7 @@
             </div>
         </div>
 
-        <div class="pricing-card">
+        <div class="pricing-card" id="card-ai">
             <div class="toggle-container">
                 <div class="toggle-btn core-active" onclick="setTier('ai', 'core')" id="btn-ai-core">CORE</div>
                 <div class="toggle-btn" onclick="setTier('ai', 'pro')" id="btn-ai-pro">PRO ⚡</div>
@@ -243,7 +183,8 @@
                 <div class="price-label">One-time payment<br>Lifetime License</div>
             </div>
 
-            <table class="comparison-table" id="table-ai"></table>
+            <table class="comparison-table" id="table-ai">
+                </table>
 
             <button class="buy-btn core" id="buy-ai" onclick="addToCart('ai')">ADD TO CART</button>
         </div>
@@ -253,7 +194,7 @@
         <h1>Data Extraction</h1>
         <p class="subtitle">Get instant Telegram alerts when prices change, stocks drop, or competitors update their inventory. Stay ahead of the market.</p>
 
-        <div class="demo-container wow-glow">
+        <div class="demo-container">
             <div class="demo-header">
                 <span class="demo-title">REAL-TIME MONITOR</span>
                 <i class="fas fa-network-wired" style="color:#666"></i>
@@ -270,7 +211,7 @@
             </div>
         </div>
 
-        <div class="pricing-card">
+        <div class="pricing-card" id="card-scraper">
             <div class="toggle-container">
                 <div class="toggle-btn core-active" onclick="setTier('scraper', 'core')" id="btn-scraper-core">CORE</div>
                 <div class="toggle-btn" onclick="setTier('scraper', 'pro')" id="btn-scraper-pro">PRO ⚡</div>
@@ -291,15 +232,16 @@
         <h1>Community Empire</h1>
         <p class="subtitle">Monetize your audience. Automatically manage paid subscriptions, kick non-payers, and protect your content.</p>
 
-        <div class="demo-container wow-glow">
+        <div class="demo-container">
             <div class="demo-header">
                 <span class="demo-title">GROUP ACTIVITY LOG</span>
                 <i class="fas fa-users" style="color:#666"></i>
             </div>
-            <div class="activity-log" id="comm-log"></div>
+            <div class="activity-log" id="comm-log">
+                </div>
         </div>
 
-        <div class="pricing-card">
+        <div class="pricing-card" id="card-comm">
             <div class="toggle-container">
                 <div class="toggle-btn core-active" onclick="setTier('comm', 'core')" id="btn-comm-core">CORE</div>
                 <div class="toggle-btn" onclick="setTier('comm', 'pro')" id="btn-comm-pro">PRO ⚡</div>
@@ -323,267 +265,46 @@
         <div class="cart-float" id="cart-float" onclick="openCheckout()">
             <i class="fas fa-shopping-bag"></i>
             <span id="cart-total">$0</span>
-            <div class="cart-badge" id="cart-badge" style="display: none;">0</div>
         </div>
     </div>
 
     <div class="modal-bg" id="modal">
         <div class="modal-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="font-weight:800;">Your Cart</h2>
-                <div onclick="closeModal()" style="color: var(--text-sec); font-size: 24px; cursor: pointer;">×</div>
-            </div>
+            <h2 style="margin-bottom:15px; font-weight:800;">Order Summary</h2>
+            <div id="order-items" style="margin-bottom:20px; color:#aaa; font-size:14px; line-height:1.6;"></div>
             
-            <div id="order-items" style="margin-bottom: 25px; max-height: 300px; overflow-y: auto;"></div>
-            
-            <div style="background: #111; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #333;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <div style="color: var(--text-sec); font-size: 14px;">Subtotal</div>
-                    <div style="color: white; font-weight: bold; font-size: 18px;" id="cart-subtotal">$0</div>
-                </div>
-                <div style="color: #666; font-size: 12px; line-height: 1.4;">
-                    <i class="fas fa-bolt" style="color: var(--pro); margin-right: 5px;"></i>
-                    <span id="delivery-time">Delivery: 1 business day</span>
-                </div>
+            <div style="background:#111; padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid #333;">
+                <div style="color:#666; font-size:12px; margin-bottom:5px;">Estimated Delivery</div>
+                <div style="color:white; font-weight:bold;">2-4 Business Days</div>
             </div>
 
-            <button class="buy-btn pro" onclick="submitOrder()" style="margin-bottom: 15px;">PROCEED TO CHECKOUT</button>
-            
-            <div style="text-align: center; color: #666; font-size: 11px; line-height: 1.4;">
-                <div><i class="fas fa-lock"></i> Secure checkout via Telegram</div>
-                <div>Accepting USDT, TON, BTC, ETH</div>
-            </div>
+            <button class="buy-btn pro" onclick="submitOrder()">CONFIRM & PAY</button>
+            <div style="text-align:center; margin-top:15px; color:#666; font-size:12px;" onclick="closeModal()">Close Window</div>
         </div>
     </div>
 
     <script>
-        let tg = null;
-        try {
-            if (window.Telegram && window.Telegram.WebApp) {
-                tg = window.Telegram.WebApp;
-                tg.ready();
-                tg.expand();
-                tg.setHeaderColor('#030304');
-                tg.setBackgroundColor('#030304');
-            }
-        } catch (error) {
-            console.error('Telegram WebApp initialization error:', error);
-        }
+        const tg = window.Telegram.WebApp;
+        tg.ready(); tg.expand(); tg.setHeaderColor('#030304');
 
         // --- PRODUCT DATA ---
         const products = {
             ai: {
-                core: { 
-                    price: 290, 
-                    name: "AI Support Core", 
-                    features: [
-                        ["Smart Auto-Reply", "Yes"], 
-                        ["Admin Panel", "Basic"], 
-                        ["Context Memory", "24 hours"], 
-                        ["Languages", "EN & RU"],
-                        ["Response Time", "< 0.5s"],
-                        ["Integration", "Telegram + Web"]
-                    ] 
-                },
-                pro: { 
-                    price: 890, 
-                    name: "AI Sales Agent PRO", 
-                    features: [
-                        ["Smart Auto-Reply", "Advanced"], 
-                        ["Admin Panel", "Full Dashboard"], 
-                        ["Context Memory", "Unlimited"], 
-                        ["Languages", "Multi-Lang"],
-                        ["Customization", "Full Control"],
-                        ["Integration", "All Platforms"]
-                    ] 
-                }
+                core: { price: 290, name: "AI Support Core", features: [["Smart Auto-Reply", "Yes"], ["Admin Panel", "No"], ["Context Memory", "Short"], ["Languages", "EN only"]] },
+                pro: { price: 890, name: "AI Sales Agent PRO", features: [["Smart Auto-Reply", "GPT-4 Turbo"], ["Admin Panel", "Full Dashboard"], ["Context Memory", "Infinite"], ["Languages", "Multi-Lang + Voice"]] }
             },
             scraper: {
-                core: { 
-                    price: 250, 
-                    name: "Scraper Basic", 
-                    features: [
-                        ["Target Site", "1 Source"], 
-                        ["Speed", "Standard"], 
-                        ["Export", "CSV/Excel"], 
-                        ["Alerts", "Email"],
-                        ["Proxy Support", "Basic"],
-                        ["Setup Time", "1 hour"]
-                    ] 
-                },
-                pro: { 
-                    price: 750, 
-                    name: "Data Miner PRO", 
-                    features: [
-                        ["Target Site", "Up to 5"], 
-                        ["Speed", "Real-time"], 
-                        ["Export", "API / Webhook"], 
-                        ["Alerts", "Telegram Instant"],
-                        ["Proxy Support", "Advanced"],
-                        ["Setup Time", "2-3 hours"]
-                    ] 
-                }
+                core: { price: 250, name: "Scraper Basic", features: [["Target Site", "1 Source"], ["Speed", "Standard"], ["Export", "CSV/Excel"], ["Alerts", "Email"]] },
+                pro: { price: 750, name: "Data Miner PRO", features: [["Target Site", "Up to 5"], ["Speed", "Real-time"], ["Export", "API / Webhook"], ["Alerts", "Telegram Instant"]] }
             },
             comm: {
-                core: { 
-                    price: 190, 
-                    name: "Group Manager", 
-                    features: [
-                        ["Anti-Spam", "Basic Filter"], 
-                        ["Welcome Msg", "Text + Media"], 
-                        ["Payments", "Manual Verify"], 
-                        ["Recurring Bill", "No"],
-                        ["Max Users", "10,000"],
-                        ["Analytics", "Basic"]
-                    ] 
-                },
-                pro: { 
-                    price: 590, 
-                    name: "Subscription Empire", 
-                    features: [
-                        ["Anti-Spam", "AI Filter"], 
-                        ["Welcome Msg", "Custom Media"], 
-                        ["Payments", "Auto USDT/TON"], 
-                        ["Recurring Bill", "Auto-Kick"],
-                        ["Max Users", "Unlimited"],
-                        ["Analytics", "Advanced"]
-                    ] 
-                }
+                core: { price: 190, name: "Group Manager", features: [["Anti-Spam", "Basic Filter"], ["Welcome Msg", "Text only"], ["Payments", "Manual Verify"], ["Recurring Bill", "No"]] },
+                pro: { price: 590, name: "Subscription Empire", features: [["Anti-Spam", "AI Filter"], ["Welcome Msg", "Custom Media"], ["Payments", "Auto USDT/TON"], ["Recurring Bill", "Auto-Kick"]] }
             }
         };
 
         let activeTiers = { ai: 'core', scraper: 'core', comm: 'core' };
         let cart = [];
-
-        // --- СИСТЕМА ВОССТАНОВЛЕНИЯ ---
-        let isBotOnline = true;
-        let offlineMessages = [];
-        let offlineOrders = [];
-
-        try {
-            offlineMessages = JSON.parse(localStorage.getItem('nova_offline_messages') || '[]');
-            offlineOrders = JSON.parse(localStorage.getItem('nova_offline_orders') || '[]');
-        } catch (e) {
-            console.error('Failed to parse offline data:', e);
-        }
-
-        // Проверка статуса бота
-        async function checkBotStatus() {
-            if (!tg) {
-                isBotOnline = false;
-                return;
-            }
-            
-            try {
-                const testData = { type: 'ping', timestamp: Date.now() };
-                tg.sendData(JSON.stringify(testData));
-                
-                if (!isBotOnline) {
-                    isBotOnline = true;
-                    document.getElementById('serverStatus').style.display = 'none';
-                    
-                    const chat = document.getElementById('ai-chat');
-                    if (chat) {
-                        chat.innerHTML += `
-                            <div class="msg bot" style="background: var(--success); color: white;">
-                                <i class="fas fa-check-circle"></i> <strong>System Restored:</strong><br>
-                                Connection reestablished. All saved messages and orders have been sent.
-                            </div>
-                        `;
-                        chat.scrollTop = chat.scrollHeight;
-                    }
-                    
-                    await processOfflineData();
-                }
-            } catch (error) {
-                if (isBotOnline) {
-                    isBotOnline = false;
-                    document.getElementById('serverStatus').style.display = 'flex';
-                    
-                    const chat = document.getElementById('ai-chat');
-                    if (chat) {
-                        chat.innerHTML += `
-                            <div class="msg bot" style="background: #FF3B30; color: white;">
-                                <i class="fas fa-server"></i> <strong>System Notice:</strong><br>
-                                Temporary connection issue. Your messages and orders are being saved locally.
-                            </div>
-                        `;
-                        chat.scrollTop = chat.scrollHeight;
-                    }
-                }
-            }
-        }
-
-        // Сохранение сообщений при оффлайн режиме
-        function saveOfflineMessage(type, data) {
-            try {
-                const message = {
-                    type: type,
-                    data: data,
-                    timestamp: Date.now(),
-                    synced: false
-                };
-                
-                if (type === 'message') {
-                    offlineMessages.push(message);
-                    localStorage.setItem('nova_offline_messages', JSON.stringify(offlineMessages));
-                } else if (type === 'order') {
-                    offlineOrders.push(message);
-                    localStorage.setItem('nova_offline_orders', JSON.stringify(offlineOrders));
-                }
-            } catch (e) {
-                console.error('Failed to save offline message:', e);
-            }
-        }
-
-        // Обработка накопленных данных при восстановлении
-        async function processOfflineData() {
-            if (!tg) return;
-            
-            // Обрабатываем сообщения
-            for (const msg of offlineMessages) {
-                if (!msg.synced) {
-                    try {
-                        tg.sendData(JSON.stringify(msg.data));
-                        msg.synced = true;
-                    } catch (error) {
-                        console.error('Failed to sync offline message:', error);
-                    }
-                }
-            }
-            
-            // Обрабатываем заказы
-            for (const order of offlineOrders) {
-                if (!order.synced) {
-                    try {
-                        tg.sendData(JSON.stringify(order.data));
-                        order.synced = true;
-                    } catch (error) {
-                        console.error('Failed to sync offline order:', error);
-                    }
-                }
-            }
-            
-            // Обновляем localStorage
-            try {
-                localStorage.setItem('nova_offline_messages', JSON.stringify(offlineMessages.filter(m => !m.synced)));
-                localStorage.setItem('nova_offline_orders', JSON.stringify(offlineOrders.filter(o => !o.synced)));
-            } catch (e) {
-                console.error('Failed to update localStorage:', e);
-            }
-            
-            // Показываем уведомление
-            const chat = document.getElementById('ai-chat');
-            if (chat && (offlineMessages.length > 0 || offlineOrders.length > 0)) {
-                chat.innerHTML += `
-                    <div class="msg bot">
-                        <i class="fas fa-sync-alt"></i> <strong>Sync Complete:</strong><br>
-                        Sent ${offlineMessages.filter(m => m.synced).length} messages and ${offlineOrders.filter(o => o.synced).length} orders.
-                    </div>
-                `;
-                chat.scrollTop = chat.scrollHeight;
-            }
-        }
 
         // --- NAVIGATION ---
         function setTab(id, btn) {
@@ -591,12 +312,7 @@
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
             btn.classList.add('active');
-            
-            if (tg && tg.HapticFeedback) {
-                try {
-                    tg.HapticFeedback.impactOccurred('light');
-                } catch (e) {}
-            }
+            tg.HapticFeedback.impactOccurred('light');
         }
 
         // --- PRICING LOGIC ---
@@ -605,7 +321,7 @@
             const data = products[cat][tier];
             
             // UI Toggle
-            const card = document.querySelector(`#${cat} .toggle-container`);
+            const card = document.getElementById('card-'+cat);
             card.querySelectorAll('.toggle-btn').forEach(b => {
                 b.classList.remove('core-active', 'pro-active');
             });
@@ -625,381 +341,197 @@
             const table = document.getElementById(`table-${cat}`);
             table.innerHTML = data.features.map(f => `<tr><td><i class="fas fa-check-circle"></i> ${f[0]}</td><td>${f[1]}</td></tr>`).join('');
             
-            if (tg && tg.HapticFeedback) {
-                try {
-                    tg.HapticFeedback.selectionChanged();
-                } catch (e) {}
-            }
+            tg.HapticFeedback.selectionChanged();
         }
 
-        // --- CART SYSTEM WITH REMOVE ---
+        // --- CART SYSTEM ---
         function addToCart(cat) {
             const tier = activeTiers[cat];
-            const product = products[cat][tier];
-            
-            // Check if already in cart
-            const existingIndex = cart.findIndex(item => 
-                item.name === product.name && item.tier === tier
-            );
-            
-            if (existingIndex === -1) {
-                cart.push({ 
-                    ...product, 
-                    tier,
-                    id: Date.now() + Math.random(),
-                    category: cat
-                });
-                
-                // Animation effect
-                const button = document.getElementById(`buy-${cat}`);
-                button.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    button.style.transform = 'scale(1)';
-                }, 150);
-                
-                if (tg && tg.HapticFeedback) {
-                    try {
-                        tg.HapticFeedback.notificationOccurred('success');
-                    } catch (e) {}
-                }
-                
-                updateCartUI();
-                
-                // Show confirmation in chat
-                const chat = document.getElementById('ai-chat');
-                if (chat) {
-                    chat.innerHTML += `<div class="msg bot">Added ${product.name} to your cart. View cart to proceed with checkout.</div>`;
-                    chat.scrollTop = chat.scrollHeight;
-                }
-            } else {
-                // Already in cart
-                if (tg && tg.HapticFeedback) {
-                    try {
-                        tg.HapticFeedback.impactOccurred('warning');
-                    } catch (e) {}
-                }
-            }
-        }
-
-        function removeFromCart(itemId) {
-            const index = cart.findIndex(item => item.id === itemId);
-            if (index !== -1) {
-                cart.splice(index, 1);
-                updateCartUI();
-                if (tg && tg.HapticFeedback) {
-                    try {
-                        tg.HapticFeedback.impactOccurred('light');
-                    } catch (e) {}
-                }
-            }
+            const item = products[cat][tier];
+            cart.push({ ...item, tier });
+            updateCartUI();
+            tg.HapticFeedback.notificationOccurred('success');
         }
 
         function updateCartUI() {
             const total = cart.reduce((sum, i) => sum + i.price, 0);
-            const cartFloat = document.getElementById('cart-float');
-            const cartBadge = document.getElementById('cart-badge');
-            
-            if(cart.length > 0) {
-                cartFloat.style.display = 'flex';
-                cartBadge.style.display = 'flex';
-                cartBadge.innerText = cart.length;
+            const float = document.getElementById('cart-float');
+            if(total > 0) {
+                float.style.display = 'flex';
                 document.getElementById('cart-total').innerText = '$' + total;
-                
-                // Add glow effect to cart
-                cartFloat.classList.add('wow-glow');
-            } else {
-                cartFloat.style.display = 'none';
-                cartBadge.style.display = 'none';
-                cartFloat.classList.remove('wow-glow');
-            }
-            
-            // Update modal if open
-            if(document.getElementById('modal').style.display === 'flex') {
-                renderCartItems();
-            }
-            
-            // Update delivery time
-            updateDeliveryTime();
-        }
-
-        function renderCartItems() {
-            const list = document.getElementById('order-items');
-            const subtotal = cart.reduce((sum, i) => sum + i.price, 0);
-            
-            if(cart.length === 0) {
-                list.innerHTML = `
-                    <div style="text-align: center; padding: 40px 20px; color: var(--text-sec);">
-                        <i class="fas fa-shopping-cart" style="font-size: 40px; margin-bottom: 15px; opacity: 0.3;"></i>
-                        <div>Your cart is empty</div>
-                    </div>
-                `;
-            } else {
-                list.innerHTML = cart.map(item => `
-                    <div class="cart-item">
-                        <div class="cart-item-info">
-                            <div class="cart-item-name">${item.name}</div>
-                            <div class="cart-item-tier">${item.tier.toUpperCase()} Version</div>
-                        </div>
-                        <div class="cart-item-price">$${item.price}</div>
-                        <button class="cart-item-remove" onclick="removeFromCart(${item.id})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `).join('');
-            }
-            
-            document.getElementById('cart-subtotal').innerText = '$' + subtotal;
-        }
-
-        function updateDeliveryTime() {
-            const hasPro = cart.some(item => item.tier === 'pro');
-            const deliveryTime = document.getElementById('delivery-time');
-            
-            if (hasPro) {
-                deliveryTime.innerHTML = 'Delivery: 1-3 business days';
-            } else {
-                deliveryTime.innerHTML = 'Delivery: 1 business day';
             }
         }
 
         function openCheckout() {
-            if(cart.length === 0) {
-                if (tg && tg.HapticFeedback) {
-                    try {
-                        tg.HapticFeedback.impactOccurred('error');
-                    } catch (e) {}
-                }
-                return;
-            }
+            const list = document.getElementById('order-items');
+            list.innerHTML = cart.map(i => `
+                <div style="display:flex; justify-content:space-between; padding:5px 0;">
+                    <span>${i.name}</span>
+                    <span style="color:white; font-weight:bold;">$${i.price}</span>
+                </div>
+            `).join('');
             
-            renderCartItems();
+            // Add hourly rate note if PRO is selected
+            if(cart.some(i => i.tier === 'pro')) {
+                list.innerHTML += `<div style="margin-top:10px; padding-top:10px; border-top:1px dashed #333; font-size:11px; color:var(--pro);">
+                    * PRO includes architecture for scale. Custom modifications billed at $40/hour.
+                </div>`;
+            }
+
             document.getElementById('modal').style.display = 'flex';
-            
-            if (tg && tg.HapticFeedback) {
-                try {
-                    tg.HapticFeedback.impactOccurred('light');
-                } catch (e) {}
-            }
         }
 
-        function closeModal() { 
-            document.getElementById('modal').style.display = 'none'; 
-            
-            if (tg && tg.HapticFeedback) {
-                try {
-                    tg.HapticFeedback.impactOccurred('light');
-                } catch (e) {}
-            }
-        }
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
         function submitOrder() {
-            if(cart.length === 0) return;
-            
             const total = cart.reduce((sum, i) => sum + i.price, 0);
-            const orderData = {
-                type: 'order',
-                cart: cart.map(item => ({ 
-                    name: item.name, 
-                    price: item.price, 
-                    tier: item.tier,
-                    category: item.category
-                })),
-                total: total,
-                timestamp: Date.now()
-            };
-            
-            if (!isBotOnline || !tg) {
-                // Сохраняем заказ локально
-                saveOfflineMessage('order', orderData);
-                
-                // Показываем сообщение о сохранении
-                const chat = document.getElementById('ai-chat');
-                if (chat) {
-                    chat.innerHTML += `
-                        <div class="msg bot" style="background: #FF9500; color: white;">
-                            <i class="fas fa-save"></i> <strong>Order Saved Locally:</strong><br>
-                            Your order has been saved. It will be sent automatically when the server is back online.
-                        </div>
-                    `;
-                    chat.scrollTop = chat.scrollHeight;
-                }
-                
-                closeModal();
-                
-                if (tg && tg.HapticFeedback) {
-                    try {
-                        tg.HapticFeedback.notificationOccurred('success');
-                    } catch (e) {}
-                }
-                
-                return;
-            }
-            
-            // Отправляем заказ
-            try {
-                tg.sendData(JSON.stringify(orderData));
-                
-                if (tg && tg.HapticFeedback) {
-                    try {
-                        tg.HapticFeedback.notificationOccurred('success');
-                    } catch (e) {}
-                }
-                
-                // Show confirmation
-                const chat = document.getElementById('ai-chat');
-                if (chat) {
-                    chat.innerHTML += `<div class="msg bot">Order submitted! We'll contact you via Telegram within minutes to proceed with payment and setup.</div>`;
-                    chat.scrollTop = chat.scrollHeight;
-                }
-                
-                closeModal();
-            } catch (error) {
-                console.error('Failed to send order:', error);
-                saveOfflineMessage('order', orderData);
-                
-                const chat = document.getElementById('ai-chat');
-                if (chat) {
-                    chat.innerHTML += `
-                        <div class="msg bot" style="background: #FF9500; color: white;">
-                            <i class="fas fa-save"></i> <strong>Order Saved Locally:</strong><br>
-                            Connection issue. Your order has been saved and will be sent when possible.
-                        </div>
-                    `;
-                    chat.scrollTop = chat.scrollHeight;
-                }
-                
-                closeModal();
-            }
+            tg.sendData(JSON.stringify({ type: 'order', cart, total }));
         }
 
         function contactDev() {
-            const contactData = { type: 'contact', timestamp: Date.now() };
-            
-            if (!isBotOnline || !tg) {
-                saveOfflineMessage('message', contactData);
-                
-                const chat = document.getElementById('ai-chat');
-                if (chat) {
-                    chat.innerHTML += `
-                        <div class="msg bot" style="background: #FF9500; color: white;">
-                            <i class="fas fa-save"></i> <strong>Message Saved:</strong><br>
-                            Your contact request has been saved and will be sent when the server is back online.
-                        </div>
-                    `;
-                    chat.scrollTop = chat.scrollHeight;
-                }
-                return;
-            }
-            
-            try {
-                tg.sendData(JSON.stringify(contactData));
-            } catch (error) {
-                console.error('Failed to send contact request:', error);
-                saveOfflineMessage('message', contactData);
-            }
+            // Close webview and signal bot to start chat
+            tg.sendData(JSON.stringify({ type: 'contact' }));
         }
 
-        // --- УМНЫЙ AI AGENT ---
+        // --- УМНЫЙ AI AGENT (ОПТИМИЗИРОВАННЫЙ) ---
         
-        // 1. База знаний
+        // 1. Система знаний с приоритетами и контекстом
         const aiKnowledge = {
+            // База знаний с приоритетами (высокий приоритет = точное совпадение)
             patterns: [
-                // ПРИВЕТСТВИЯ
+                // ПРИВЕТСТВИЯ (высокий приоритет)
                 { 
-                    keywords: ['привет', 'здравствуйте', 'хай', 'добрый день', 'hello', 'hi', 'hey', 'hi!', 'hello!', 'hey!', 'hi there'],
-                    responses: [
-                        "Hello! I'm NOVA AI agent. Ready to automate your business? Ask me about pricing, features, or technical details.",
-                        "Hi there! Looking to scale your operations? I can tell you everything about our solutions."
-                    ],
+                    keywords: ['привет', 'здравствуйте', 'хай', 'добрый день', 'здрасьте', 'hello', 'hi', 'hey', 'good morning'],
+                    responses: {
+                        en: [
+                            "Hello! I'm the NOVA AI agent. I can help you with pricing, technical details, and project consultation. How can I assist you today?",
+                            "Hi there! Ready to optimize your business with intelligent automation. What would you like to know about our AI agents?"
+                        ],
+                        ru: [
+                            "Привет! Я AI-агент NOVA. Могу помочь с ценами, техническими деталями и консультацией по проектам. Чем могу помочь?",
+                            "Здравствуйте! Готов помочь с автоматизацией вашего бизнеса. Что вас интересует в наших AI-агентах?"
+                        ]
+                    },
                     priority: 10
                 },
                 
-                // ЦЕНЫ
+                // ЦЕНЫ И СТОИМОСТЬ
                 { 
-                    keywords: ['price', 'cost', 'сколько стоит', 'цена', 'стоимость', 'how much'],
-                    responses: [
-                        "Our pricing: AI Agents: $290/$890, Data Scrapers: $250/$750, Community Tools: $190/$590. One-time payment, lifetime license. Full source code included.",
-                        "Standard versions: $190-$290, Enterprise: $590-$890. All include lifetime license and 30-day support."
-                    ],
+                    keywords: ['price', 'cost', 'сколько стоит', 'цена', 'стоимость', 'прайс', 'цены', 'pricing', 'how much'],
+                    responses: {
+                        en: [
+                            "**Pricing Structure:**\n- Core AI Agent: $290 (one-time)\n- Pro AI Agent: $890 (includes GPT-4 integration)\n- Scrapers: $250-750\n- Community tools: $190-590\n\nAll licenses are lifetime with 30-day support included.",
+                            "**Cost breakdown:**\nAI Agents start at $290 for Core version. Pro version with advanced features is $890. Which solution are you considering?"
+                        ],
+                        ru: [
+                            "**Структура цен:**\n- Базовый AI агент: $290 (единоразово)\n- Pro AI агент: $890 (включает GPT-4)\n- Скраперы: $250-750\n- Инструменты сообществ: $190-590\n\nВсе лицензии бессрочные с 30-дневной поддержкой.",
+                            "**Стоимость:**\nAI агенты от $290 за базовую версию. Pro версия с расширенными функциями - $890. Какое решение вас интересует?"
+                        ]
+                    },
                     priority: 9
                 },
                 
-                // ДОСТАВКА
+                // ФУНКЦИОНАЛЬНОСТЬ И ВОЗМОЖНОСТИ
                 { 
-                    keywords: ['delivery', 'доставка', 'when get', 'когда получу', 'срок', 'time'],
-                    responses: [
-                        "Delivery: Standard versions: 1 business day. Enterprise: 1-3 business days. We deliver via encrypted Telegram channel.",
-                        "Fast delivery: Standard in 24 hours, Enterprise in 1-3 days with customization."
-                    ],
+                    keywords: ['features', 'возможности', 'функции', 'what can', 'что может', 'can it', 'умеет'],
+                    responses: {
+                        en: [
+                            "**Core Features:**\n- 24/7 automated customer support\n- Multi-language responses (EN/RU)\n- Context-aware conversations\n- Integration with Telegram/websites\n- Custom response templates\n\nPro version adds GPT-4, voice synthesis, and unlimited contexts.",
+                            "**Capabilities:**\n• Handle 1000+ simultaneous conversations\n• Learn from your business data\n• Auto-respond in 0.3 seconds\n• Support & sales automation\n• Payment processing integration"
+                        ],
+                        ru: [
+                            "**Основные возможности:**\n- Круглосуточная поддержка клиентов\n- Мультиязычные ответы (RU/EN)\n- Контекстные диалоги\n- Интеграция с Telegram/сайтами\n- Шаблоны ответов\n\nPro версия добавляет GPT-4, синтез речи и неограниченные контексты.",
+                            "**Функционал:**\n• Обработка 1000+ диалогов одновременно\n• Обучение на ваших данных\n• Ответ за 0.3 секунды\n• Автоматизация поддержки и продаж\n• Интеграция с платежами"
+                        ]
+                    },
                     priority: 8
                 },
                 
-                // ОПЛАТА
+                // ТЕХНИЧЕСКИЕ ДЕТАЛИ
                 { 
-                    keywords: ['payment', 'оплата', 'pay', 'крипта', 'crypto', 'usdt', 'ton'],
-                    responses: [
-                        "We accept cryptocurrency only: USDT (TRC20/ERC20), TON, Bitcoin, Ethereum. Faster confirmation, better privacy, lower fees.",
-                        "Crypto payments: instant confirmation, no personal data required, available worldwide."
-                    ],
-                    priority: 9
-                },
-                
-                // КАСТОМИЗАЦИЯ
-                { 
-                    keywords: ['custom', 'кастом', 'customization', 'modify', 'изменить', 'настроить'],
-                    responses: [
-                        "Enterprise versions are fully customizable. We adapt the solution to your exact business needs, branding, and workflows.",
-                        "With Enterprise, you get a solution molded to your business. We adjust everything to match your requirements."
-                    ],
+                    keywords: ['technical', 'технические', 'how it works', 'как работает', 'architecture', 'архитектура', 'setup', 'установка'],
+                    responses: {
+                        en: [
+                            "**Technical Overview:**\n- Node.js/Python backend\n- WebSocket for real-time communication\n- Redis for session management\n- <5ms response time\n- Horizontal scaling supported\n\nDeployment takes 1-2 days with full documentation.",
+                            "**How it works:**\n1. Receive message via API/Telegram\n2. Process with intent recognition\n3. Match with knowledge base\n4. Generate contextual response\n5. Learn from interactions\n\nWorks on any server from 1GB RAM."
+                        ],
+                        ru: [
+                            "**Технические детали:**\n- Бэкенд на Node.js/Python\n- WebSocket для реального времени\n- Redis для сессий\n- <5мс время ответа\n- Поддержка горизонтального масштабирования\n\nУстановка занимает 1-2 дня с полной документацией.",
+                            "**Как работает:**\n1. Получает сообщение через API/Telegram\n2. Обрабатывает с распознаванием намерений\n3. Сопоставляет с базой знаний\n4. Генерирует контекстный ответ\n5. Учится на взаимодействиях\n\nРаботает на любом сервере от 1GB RAM."
+                        ]
+                    },
                     priority: 7
                 },
                 
-                // ГАРАНТИИ
+                // ПОДДЕРЖКА И ГАРАНТИИ
                 { 
-                    keywords: ['warranty', 'гарантия', 'guarantee', 'refund', 'возврат'],
-                    responses: [
-                        "30 days of included support. If it doesn't work as described, we fix it. Lifetime bug fixes.",
-                        "You get working solutions. 30-day support included. We fix any issues."
-                    ],
+                    keywords: ['support', 'поддержка', 'help', 'помощь', 'warranty', 'гарантия', 'update', 'обновление'],
+                    responses: {
+                        en: [
+                            "**Support & Updates:**\n✓ 30 days free technical support\n✓ Lifetime bug fixes\n✓ Community access\n✓ Documentation & tutorials\n✓ Email/Telegram support channels\n\nPro tier includes priority support and custom feature requests.",
+                            "We provide comprehensive support: installation help, configuration assistance, and troubleshooting. All updates are free for lifetime license holders."
+                        ],
+                        ru: [
+                            "**Поддержка и обновления:**\n✓ 30 дней бесплатной техподдержки\n✓ Пожизненные исправления ошибок\n✓ Доступ к сообществу\n✓ Документация и руководства\n✓ Поддержка по Email/Telegram\n\nPro версия включает приоритетную поддержку.",
+                            "Мы предоставляем полную поддержку: помощь в установке, настройке и решении проблем. Все обновления бесплатны для владельцев лицензий."
+                        ]
+                    },
                     priority: 6
                 },
                 
-                // ТЕХНИЧЕСКОЕ
+                // ИНТЕГРАЦИИ
                 { 
-                    keywords: ['technical', 'технические', 'server', 'сервер', 'requirements', 'требования'],
-                    responses: [
-                        "Runs on any VPS with 1GB+ RAM. We provide installation scripts and setup assistance. No coding required for Standard.",
-                        "Simple setup: 1) Buy VPS, 2) Run our script, 3) Configure. We help with each step."
-                    ],
+                    keywords: ['integration', 'интеграция', 'telegram', 'website', 'сайт', 'api', 'connect', 'подключить'],
+                    responses: {
+                        en: [
+                            "**Integration Options:**\n• Telegram bot (instant setup)\n• Website widget (copy-paste code)\n• REST API for custom apps\n• WebSocket for real-time\n• CRM systems (Zapier/Make)\n\nWe provide ready-to-use code snippets for all platforms.",
+                            "Easily integrate via:\n1. Telegram: @BotFather token\n2. Website: JavaScript snippet\n3. Mobile: React Native module\n4. Backend: Python/Node.js SDK\n\nAverage setup time: 15 minutes."
+                        ],
+                        ru: [
+                            "**Варианты интеграции:**\n• Telegram бот (мгновенная настройка)\n• Виджет для сайта (скопировать код)\n• REST API для кастомных приложений\n• WebSocket для реального времени\n• CRM системы (Zapier/Make)\n\nПредоставляем готовые примеры кода.",
+                            "Легкая интеграция через:\n1. Telegram: токен @BotFather\n2. Сайт: JavaScript код\n3. Мобильные: React Native модуль\n4. Бэкенд: Python/Node.js SDK\n\nСреднее время настройки: 15 минут."
+                        ]
+                    },
                     priority: 5
                 }
             ],
             
+            // Запасные ответы для неизвестных запросов
             fallback: {
                 en: [
-                    "I specialize in business automation. Could you rephrase about AI agents, scrapers, or community tools?",
-                    "Ask me about pricing, delivery, customization, or technical details of our solutions.",
-                    "For Enterprise versions, we offer complete customization. Let me tell you how we tailor solutions."
+                    "I specialize in AI agents for automation. Could you rephrase your question about pricing, features, or technical details?",
+                    "I'm optimized for business automation queries. Ask me about: pricing, features, setup, or integration options.",
+                    "For complex custom projects, our team provides consultations at $40/hour. Would you like details about our standard solutions first?"
                 ],
                 ru: [
-                    "Я специализируюсь на автоматизации бизнеса. Можете перефразировать про AI агентов, скраперы или инструменты сообществ?",
-                    "Спросите про цены, доставку, кастомизацию или технические детали наших решений.",
-                    "Для Enterprise версий мы предлагаем полную кастомизацию. Рассказать, как мы адаптируем решения?"
+                    "Я специализируюсь на AI агентах для автоматизации. Можете переформулировать вопрос о ценах, возможностях или технических деталях?",
+                    "Я оптимизирован для вопросов об автоматизации бизнеса. Спросите о: ценах, функциях, установке или интеграции.",
+                    "Для сложных кастомных проектов наша команда предоставляет консультации за $40/час. Хотите сначала узнать о стандартных решениях?"
                 ]
             }
         };
 
-        // 2. Определитель языка
+        // 2. Определитель языка (оптимизированный)
         function detectLanguage(text) {
             const ruRegex = /[а-яё]/i;
-            return ruRegex.test(text) ? 'ru' : 'en';
+            const enRegex = /[a-z]/i;
+            let ruCount = 0, enCount = 0;
+            
+            for(let i = 0; i < Math.min(text.length, 100); i++) {
+                const char = text[i];
+                if(ruRegex.test(char)) ruCount++;
+                if(enRegex.test(char)) enCount++;
+            }
+            
+            return ruCount > enCount ? 'ru' : 'en';
         }
 
-        // 3. Поиск ответа
+        // 3. Улучшенный поиск ответа с кэшированием
         const responseCache = new Map();
+        const CACHE_SIZE = 100;
         
         function findBestResponse(query, language) {
-            const cacheKey = `${language}:${query.toLowerCase().trim()}`;
+            const cacheKey = `${language}:${query.toLowerCase().trim().slice(0, 50)}`;
             if(responseCache.has(cacheKey)) {
                 return responseCache.get(cacheKey);
             }
@@ -1008,68 +540,86 @@
             let bestMatch = null;
             let highestScore = 0;
             
+            // Быстрый поиск по ключевым словам
             for(const pattern of aiKnowledge.patterns) {
                 for(const keyword of pattern.keywords) {
                     if(queryLower.includes(keyword)) {
-                        const score = pattern.priority;
+                        const score = pattern.priority + (queryLower.split(keyword).length - 1);
                         if(score > highestScore) {
                             highestScore = score;
                             bestMatch = pattern;
                         }
-                        break;
+                        break; // Достаточно одного совпадения в паттерне
                     }
                 }
             }
             
             let response;
-            if(bestMatch) {
-                const responses = bestMatch.responses;
+            if(bestMatch && bestMatch.responses[language]) {
+                const responses = bestMatch.responses[language];
                 response = responses[Math.floor(Math.random() * responses.length)];
             } else {
-                const fallbacks = aiKnowledge.fallback[language === 'ru' ? 'ru' : 'en'];
+                const fallbacks = aiKnowledge.fallback[language];
                 response = fallbacks[Math.floor(Math.random() * fallbacks.length)];
             }
             
-            responseCache.set(cacheKey, response);
-            if(responseCache.size > 100) {
+            // Кэширование с ограничением размера
+            if(responseCache.size >= CACHE_SIZE) {
                 const firstKey = responseCache.keys().next().value;
                 responseCache.delete(firstKey);
             }
+            responseCache.set(cacheKey, response);
             
             return response;
         }
 
-        // 4. Функции AI чата
+        // 4. Оптимизированная функция отправки
         function handleEnter(e) { 
-            if(e.key === 'Enter') sendAi();
+            if(e.key === 'Enter') {
+                e.preventDefault();
+                sendAi();
+            }
         }
         
         function sendAi() {
             const input = document.getElementById('ai-input');
             const query = input.value.trim();
-            if(!query) return;
+            if(!query || query.length > 500) return;
             
-            const chat = document.getElementById('ai-chat');
-            chat.innerHTML += `<div class="msg user">${query}</div>`;
+            const chatWindow = document.getElementById('ai-chat');
+            
+            // Пользовательское сообщение
+            chatWindow.innerHTML += `<div class="msg user">${query}</div>`;
             input.value = '';
-            chat.scrollTop = chat.scrollHeight;
+            chatWindow.scrollTop = chatWindow.scrollHeight;
             
+            // Определение языка и поиск ответа
             setTimeout(() => {
                 const language = detectLanguage(query);
                 const response = findBestResponse(query, language);
                 
-                chat.innerHTML += `<div class="msg bot">${response}</div>`;
-                chat.scrollTop = chat.scrollHeight;
-                
-                if (tg && tg.HapticFeedback) {
-                    try {
-                        tg.HapticFeedback.impactOccurred('medium');
-                    } catch (e) {}
-                }
-            }, 300);
+                chatWindow.innerHTML += `<div class="msg bot">${response}</div>`;
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+                tg.HapticFeedback.impactOccurred('medium');
+            }, 300); // Уменьшено для лучшего UX
         }
 
-        // --- SCRAPER DEMO ---
+        // 5. Превентивная загрузка и оптимизация
+        function preloadAI() {
+            // Предзагрузка наиболее частых запросов в кэш
+            const commonQueries = [
+                'price', 'стоимость', 'hello', 'привет', 
+                'features', 'возможности', 'support', 'поддержка'
+            ];
+            
+            commonQueries.forEach(query => {
+                ['en', 'ru'].forEach(lang => {
+                    findBestResponse(query, lang);
+                });
+            });
+        }
+
+        // --- SCRAPER DEMO (без изменений) ---
         let scrapeInt;
         const scenarios = {
             amazon: { cmd: "amazon_monitor.py", logs: ["Checking ASIN: B08X...", "Price: $99.00 (No Change)", "Price: $85.00 (DROP DETECTED!)", "Sending Alert to Telegram..."] },
@@ -1129,33 +679,19 @@
 
         // --- ИНИЦИАЛИЗАЦИЯ ---
         (function init() {
-            // Render initial tables
+            // Рендер начальных таблиц
             ['ai', 'scraper', 'comm'].forEach(c => setTier(c, 'core'));
             startCommLog();
             setScrapeMode('amazon', document.querySelector('.term-btn'));
             
-            // Preload common AI responses
-            setTimeout(() => {
-                ['price', 'hello', 'delivery', 'payment'].forEach(query => {
-                    ['en', 'ru'].forEach(lang => {
-                        findBestResponse(query, lang);
-                    });
-                });
-            }, 100);
+            // Предзагрузка AI для быстрых ответов
+            setTimeout(preloadAI, 500);
             
-            // Close modal on outside click
-            document.getElementById('modal').addEventListener('click', function(e) {
-                if(e.target === this) closeModal();
+            // Оптимизация памяти
+            window.addEventListener('beforeunload', () => {
+                responseCache.clear();
+                if(scrapeInt) clearInterval(scrapeInt);
             });
-            
-            // Check bot status every 30 seconds if Telegram WebApp is available
-            if (tg) {
-                checkBotStatus();
-                setInterval(checkBotStatus, 30000);
-                
-                // Process any offline data on load
-                setTimeout(processOfflineData, 2000);
-            }
         })();
 
     </script>
