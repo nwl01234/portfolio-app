@@ -1200,32 +1200,37 @@
         }
 
         function generateResponse(text, isPro) {
+            const lang = detectLanguage(text);
             const lower = text.toLowerCase();
 
-            if (isPro) {
-                // Enterprise: Complex context-aware simulation
-                if (lower.includes('price') || lower.includes('cost')) {
-                    return `Based on your request, I've calculated two optimal packages. Most clients with your traffic volume choose the <strong>Growth Plan</strong> ($290). Shall I send the invoice link?`;
+            // 1. Check Knowledge Base
+            for (const pattern of aiKnowledge.patterns) {
+                const keywords = lang === 'ru' ? pattern.keywords_ru : pattern.keywords_en;
+                if (keywords.some(k => lower.includes(k))) {
+                    const responses = lang === 'ru' ? pattern.responses_ru : pattern.responses_en;
+                    return responses[Math.floor(Math.random() * responses.length)];
                 }
-                if (lower.includes('hello') || lower.includes('hi')) {
-                    return `Hello. I've accessed your profile. It's been 3 days since your last visit. Are you ready to finalize your custom agent setup?`;
-                }
-                if (lower.includes('custom') || lower.includes('change')) {
-                    return `Absolutely. My architecture is modular. We can modify my knowledge base, tone, and integration points. Customization is billed at $30/hour - would you like to schedule a consultation with a senior dev?`;
-                }
-                return `I understand you're interested in "${text}". I've cross-referenced this with our database. Here is the relevant data... [Showing Data Visual]. Would you like to proceed with a purchase?`;
-            } else {
-                // Standard: Professional, concise, grammar-perfect
-                if (lower.includes('price') || lower.includes('cost')) {
-                    return "The Standard license is $290 (one-time fee), while the Enterprise version is $890. Which option fits your current budget?";
-                }
-                if (lower.includes('hello') || lower.includes('hi')) {
-                    return "Hello! I am the Standard Nexus Agent. How may I assist you today?";
-                }
-                return "That is a specific inquiry. While I am designed for general support, I can connect you with a specialist to discuss the details. Would you like to proceed?";
             }
+
+            // 2. Fallback
+            const fallbacks = lang === 'ru' ? aiKnowledge.fallback_ru : aiKnowledge.fallback_en;
+            return fallbacks[Math.floor(Math.random() * fallbacks.length)];
         }
 
+        function detectLanguage(text) {
+            const ruRegex = /[а-яё]/i;
+            return ruRegex.test(text) ? 'ru' : 'en';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadReviews();
+
+            // Initialize Screens
+            setTier('ai', 'core');
+            setTier('scraper', 'core');
+            setTier('comm', 'core');
+        });
         function addToCart(cat) {
             const tier = activeTiers[cat];
             const product = products[cat][tier];
@@ -1427,8 +1432,13 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            // ... any other init ...
+            // Initialize Reviews
             loadReviews();
+
+            // Initialize UI Screens (Previews & Tables)
+            setTier('ai', 'core');
+            setTier('scraper', 'core');
+            setTier('comm', 'core');
         });
 
         function openReviewModal() {
