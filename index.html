@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NOVA SYSTEMS</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050507;
+            --card-bg: rgba(20, 20, 25, 0.6);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent: #2A85FF;
+            --accent-glow: rgba(42, 133, 255, 0.4);
+            --pro: #FFD60A;
+            --pro-glow: rgba(255, 214, 10, 0.25);
+            --success: #30D158;
+            --text: #FFFFFF;
+            --text-sec: #9898A0;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --blur: blur(20px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
+        body {
+            background: var(--bg);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(42, 133, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 214, 10, 0.05) 0%, transparent 40%);
+            color: var(--text);
+            font-family: var(--font);
+            padding-bottom: 120px;
+            min-height: 100vh;
+        }
+
+        /* HEADER & STATUS */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(5, 5, 7, 0.85);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border-bottom: 1px solid var(--card-border);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .status-badge {
+            font-size: 10px;
+            background: rgba(48, 209, 88, 0.15);
+            color: var(--success);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 5px var(--success);
+        }
+
+        /* SYSTEM STATUS MESSAGE */
+        .system-notice {
+            background: linear-gradient(135deg, rgba(0, 122, 255, 0.1) 0%, rgba(48, 209, 88, 0.1) 100%);
+            border: 1px solid rgba(0, 122, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 15px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            animation: pulseBorder 2s infinite;
+        }
+
+        @keyframes pulseBorder {
+
+            0%,
+            100% {
+                border-color: rgba(0, 122, 255, 0.2);
+            }
+
+            50% {
+                border-color: rgba(48, 209, 88, 0.4);
+            }
+        }
+
+        .system-notice i {
+            color: var(--success);
+            margin-top: 2px;
+        }
+
+        .system-notice-content {
+            flex: 1;
+        }
+
+        .system-notice-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .system-notice-text {
+            font-size: 11px;
+            color: var(--text-sec);
+            line-height: 1.4;
+        }
+
+        /* HERO STATS */
+        .trust-row {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 16px;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .stat-lbl {
+            font-size: 10px;
+            color: var(--text-sec);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* NAVIGATION */
+        .nav-scroll {
+            padding: 15px 0 5px 20px;
+            overflow-x: auto;
+            display: flex;
+            gap: 10px;
+            scrollbar-width: none;
+        }
+
+        .nav-btn {
+            padding: 8px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--text-sec);
+            white-space: nowrap;
+            transition: 0.3s;
+        }
+
+        .nav-btn.active {
+            background: var(--text);
+            color: black;
+            border-color: white;
+            font-weight: 600;
+        }
+
+        /* SECTIONS */
+        .section {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: var(--text-sec);
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        /* LIVE DEMOS */
+        .demo-container {
+            background: #000;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            position: relative;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .demo-header {
+            background: #1C1C1E;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .demo-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-sec);
+            text-transform: uppercase;
+        }
+
+        /* AI CHAT DEMO */
+        .chat-window {
+            height: 200px;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .msg {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            max-width: 85%;
+            line-height: 1.4;
+        }
+
+        .msg.bot {
+            background: #1C1C1E;
+            color: #E5E5EA;
+            align-self: flex-start;
+            border-left: 2px solid var(--accent);
+        }
+
+        .msg.user {
+            background: var(--accent);
+            color: white;
+            align-self: flex-end;
+        }
+
+        .chat-input-area {
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: #1C1C1E;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            color: white;
+            font-size: 13px;
+        }
+
+        .send-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* SCRAPER TERMINAL */
+        .terminal {
+            background: #080808;
+            padding: 15px;
+            height: 180px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: var(--success);
+            overflow-y: hidden;
+        }
+
+        .term-controls {
+            display: flex;
+            gap: 5px;
+            padding: 10px;
+            background: #111;
+            overflow-x: auto;
+        }
+
+        .term-btn {
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            color: #888;
+            background: transparent;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .term-btn.active {
+            border-color: var(--success);
+            color: var(--success);
+            background: rgba(48, 209, 88, 0.1);
+        }
+
+        /* COMMUNITY LOGS */
+        .activity-log {
+            height: 180px;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .log-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .log-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .log-icon.join {
+            background: rgba(0, 122, 255, 0.2);
+            color: var(--accent);
+        }
+
+        .log-icon.pay {
+            background: rgba(48, 209, 88, 0.2);
+            color: var(--success);
+        }
+
+        .log-icon.ban {
+            background: rgba(255, 59, 48, 0.2);
+            color: #FF3B30;
+        }
+
+        .log-text {
+            color: #ccc;
+        }
+
+        .log-time {
+            margin-left: auto;
+            color: #555;
+            font-size: 10px;
+        }
+
+        /* PRODUCT CARDS & PRICING */
+        .pricing-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 25px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-container {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 4px;
+            border-radius: 10px;
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #666;
+            border-radius: 8px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .toggle-btn.core-active {
+            background: #333;
+            color: white;
+        }
+
+        .toggle-btn.pro-active {
+            background: var(--pro);
+            color: black;
+            box-shadow: 0 0 15px var(--pro-glow);
+        }
+
+        .price-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .main-price {
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .price-label {
+            font-size: 12px;
+            color: var(--text-sec);
+            text-align: right;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .comparison-table td {
+            padding: 8px 0;
+            font-size: 13px;
+            color: var(--text-sec);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .comparison-table td:last-child {
+            text-align: right;
+            color: white;
+            font-weight: 500;
+        }
+
+        .comparison-table i {
+            color: var(--accent);
+            margin-right: 6px;
+        }
+
+        .buy-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .buy-btn.core {
+            background: white;
+            color: black;
+        }
+
+        .buy-btn.pro {
+            background: var(--pro);
+            color: black;
+            box-shadow: 0 5px 20px rgba(255, 214, 10, 0.2);
+        }
+
+        .buy-btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        /* FLOATING ACTIONS */
+        .bottom-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .contact-float {
+            width: 50px;
+            height: 50px;
+            background: #333;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+        }
+
+        .cart-float {
+            flex: 1;
+            background: var(--accent);
+            border-radius: 25px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 5px 20px var(--accent-glow);
+            cursor: pointer;
+        }
+
+        /* MODAL */
+        .modal-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: #16161a;
+            width: 100%;
+            max-width: 500px;
+            padding: 25px;
+            border-radius: 25px 25px 0 0;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.5);
+            border-top: 1px solid var(--card-border);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .cart-item-tier {
+            color: var(--text-sec);
+            font-size: 12px;
+        }
+
+        .cart-item-price {
+            color: var(--pro);
+            font-weight: 700;
+            font-size: 16px;
+            margin-left: 15px;
+        }
+
+        .cart-item-remove {
+            width: 28px;
+            height: 28px;
+            background: rgba(255, 59, 48, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FF3B30;
+            margin-left: 15px;
+            cursor: pointer;
+            border: none;
+            font-size: 12px;
+        }
+
+        /* WOW EFFECTS */
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 5px var(--accent-glow);
+            }
+
+            50% {
+                box-shadow: 0 0 20px var(--accent-glow);
+            }
+        }
+
+        .wow-glow {
+            animation: glow 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.5;
+            }
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            background: #FF3B30;
+            border-radius: 50%;
+            color: white;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* REVIEWS SECTION */
+        .review-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .reviewer-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .review-verify {
+            color: var(--success);
+            font-size: 10px;
+            background: rgba(48, 209, 88, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .review-text {
+            font-size: 12px;
+            color: var(--text-sec);
+            line-height: 1.4;
+        }
+
+        .write-review-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent);
+            border: 1px dashed var(--accent);
+            border-radius: 12px;
+            margin-top: 15px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logo">NOVA <span>SYSTEMS</span></div>
+        <div class="status-badge">
+            <div class="status-dot"></div> ONLINE
+        </div>
+    </div>
+
+    <!-- System Status Notice -->
+    <div class="system-notice">
+        <i class="fas fa-shield-check"></i>
+        <div class="system-notice-content">
+            <div class="system-notice-title">System Status: Active & Secure</div>
+            <div class="system-notice-text">Your requests and orders are always preserved. If you encounter any issues,
+                our system automatically saves all data for recovery.</div>
+        </div>
+    </div>
+
+    <div class="nav-scroll">
+        <div class="nav-btn active" onclick="setTab('ai', this)">AI Agents</div>
+        <div class="nav-btn" onclick="setTab('scraper', this)">Scrapers</div>
+        <div class="nav-btn" onclick="setTab('comm', this)">Community</div>
+        <div class="nav-btn" onclick="setTab('reviews', this)">Reviews</div>
+    </div>
+
+    <div id="ai" class="section active">
+        <h1>Intelligent Agents</h1>
+        <p class="subtitle">Automated sales & support staff. They don't sleep, don't ask for raises, and handle
+            thousands of clients simultaneously.</p>
+
+        <div class="demo-container wow-glow">
+            <div class="demo-header">
+                <span class="demo-title" id="ai-demo-title">STANDARD PREVIEW</span>
+                <i class="fas fa-robot" style="color:#666" id="ai-monitor-icon"></i>
+            </div>
+            <div class="chat-window" id="ai-chat">
+                <div class="msg bot" id="ai-intro-msg">Nexus Core Standard initialized. Ready to handle inquiries.</div>
+            </div>
+            <div class="chat-input-area" id="ai-input-area">
+                <input type="text" class="chat-input" id="ai-input" placeholder="Type a message to test awareness..."
+                    onkeypress="handleEnter(event)">
+                <div class="send-icon" onclick="sendAi()"><i class="fas fa-arrow-up" style="color:white"></i></div>
+            </div>
+        </div>
+
+        <div class="pricing-card">
+            <div class="toggle-container">
+                <div class="toggle-btn core-active" onclick="setTier('ai', 'core')" id="btn-ai-core">STANDARD</div>
+                <div class="toggle-btn" onclick="setTier('ai', 'pro')" id="btn-ai-pro">ENTERPRISE ⚡</div>
+            </div>
+
+            <div class="price-display">
+                <div class="main-price" id="price-ai">$290</div>
+                <div class="price-label">
+                    <div>One-time payment</div>
+                    <div id="ai-hourly" style="display:none; color:var(--pro); font-size:10px; margin-top:2px;">+ $30/hr
+                        customization</div>
+                </div>
+            </div>
+
+            <table class="comparison-table" id="table-ai"></table>
+
+            <button class="buy-btn core" id="buy-ai" onclick="addToCart('ai')">ADD TO CART</button>
+        </div>
+    </div>
+
+    <div id="scraper" class="section">
+        <h1>Data Extraction</h1>
+        <p class="subtitle">Get instant Telegram alerts when prices change, stocks drop, or competitors update their
+            inventory. Stay ahead of the market.</p>
+
+        <div class="demo-container wow-glow">
+            <div class="demo-header">
+                <span class="demo-title">REAL-TIME MONITOR</span>
+                <i class="fas fa-network-wired" style="color:#666"></i>
+            </div>
+            <div class="term-controls">
+                <button class="term-btn active" onclick="setScrapeMode('amazon', this)">Amazon</button>
+                <button class="term-btn" onclick="setScrapeMode('crypto', this)">Binance</button>
+                <button class="term-btn" onclick="setScrapeMode('ig', this)">Instagram</button>
+                <button class="term-btn" onclick="setScrapeMode('upwork', this)">Upwork</button>
+                <button class="term-btn" onclick="setScrapeMode('stocks', this)">Stocks</button>
+            </div>
+            <div class="terminal" id="terminal">
+                <span style="opacity:0.5">Select a target source above to start monitoring...</span>
+            </div>
+        </div>
+
+        <div class="pricing-card">
+            <div class="toggle-container">
+                <div class="toggle-btn core-active" onclick="setTier('scraper', 'core')" id="btn-scraper-core">STANDARD
+                </div>
+                <div class="toggle-btn" onclick="setTier('scraper', 'pro')" id="btn-scraper-pro">ENTERPRISE ⚡</div>
+            </div>
+
+            <div class="price-display">
+                <div class="main-price" id="price-scraper">$250</div>
+                <div class="price-label">One-time payment<br>Full Source Code</div>
+            </div>
+
+            <table class="comparison-table" id="table-scraper"></table>
+
+            <button class="buy-btn core" id="buy-scraper" onclick="addToCart('scraper')">ADD TO CART</button>
+        </div>
+    </div>
+
+    <div id="comm" class="section">
+        <h1>Community Empire</h1>
+        <p class="subtitle">Monetize your audience. Automatically manage paid subscriptions, kick non-payers, and
+            protect your content.</p>
+
+        <div class="demo-container wow-glow">
+            <div class="demo-header">
+                <span class="demo-title">GROUP ACTIVITY LOG</span>
+                <i class="fas fa-users" style="color:#666"></i>
+            </div>
+            <div class="activity-log" id="comm-log"></div>
+        </div>
+
+        <div class="pricing-card">
+            <div class="toggle-container">
+                <div class="toggle-btn core-active" onclick="setTier('comm', 'core')" id="btn-comm-core">STANDARD</div>
+                <div class="toggle-btn" onclick="setTier('comm', 'pro')" id="btn-comm-pro">ENTERPRISE ⚡</div>
+            </div>
+
+            <div class="price-display">
+                <div class="main-price" id="price-comm">$190</div>
+                <div class="price-label">One-time payment<br>Plugin & Play</div>
+            </div>
+
+            <table class="comparison-table" id="table-comm"></table>
+
+            <button class="buy-btn core" id="buy-comm" onclick="addToCart('comm')">ADD TO CART</button>
+        </div>
+    </div>
+
+    <div id="reviews" class="section">
+        <h1>Client Reviews</h1>
+        <p class="subtitle">Real feedback from business owners using our automated systems.</p>
+
+        <div class="pricing-card" style="padding: 0; background: transparent; border: none; box-shadow: none;">
+            <div id="reviews-list">
+                <!-- Mock Reviews will be injected here -->
+            </div>
+            <button class="write-review-btn" onclick="openReviewModal()">
+                <i class="fas fa-pen"></i> Write a Review
+            </button>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <div class="contact-float" onclick="contactDev()">
+            <i class="fas fa-comment-dots"></i>
+        </div>
+        <div class="cart-float" id="cart-float" onclick="openCheckout()">
+            <i class="fas fa-shopping-bag"></i>
+            <span id="cart-total">$0</span>
+            <div class="cart-badge" id="cart-badge" style="display: none;">0</div>
+        </div>
+    </div>
+
+    <div class="modal-bg" id="modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-weight:800;">Your Cart</h2>
+                <div onclick="closeModal()" style="color: var(--text-sec); font-size: 24px; cursor: pointer;">×</div>
+            </div>
+
+            <div id="order-items" style="margin-bottom: 25px; max-height: 300px; overflow-y: auto;"></div>
+
+            <div
+                style="background: #111; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #333;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <div style="color: var(--text-sec); font-size: 14px;">Subtotal</div>
+                    <div style="color: white; font-weight: bold; font-size: 18px;" id="cart-subtotal">$0</div>
+                </div>
+                <div style="color: #666; font-size: 12px; line-height: 1.4;">
+                    <i class="fas fa-bolt" style="color: var(--pro); margin-right: 5px;"></i>
+                    <span id="delivery-time">Delivery: 1 business day</span>
+                </div>
+            </div>
+
+            <button class="buy-btn pro" onclick="submitOrder()" style="margin-bottom: 15px;">PROCEED TO
+                CHECKOUT</button>
+
+            <div style="text-align: center; color: #666; font-size: 11px; line-height: 1.4;">
+                <div><i class="fas fa-lock"></i> Secure checkout via Telegram</div>
+                <div>Accepting USDT, TON, BTC, ETH</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REVIEW MODAL -->
+    <div class="modal-bg" id="review-modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-weight:800;">Write Review</h2>
+                <div onclick="closeReviewModal()" style="color: var(--text-sec); font-size: 24px; cursor: pointer;">×
+                </div>
+            </div>
+
+            <div id="review-step-1">
+                <p style="color: var(--text-sec); font-size: 13px; margin-bottom: 15px;">To ensure authenticity, please
+                    enter your Order ID found in your purchase confirmation.</p>
+                <input type="text" id="order-id-input" placeholder="Enter Order ID (e.g. NV-12345)"
+                    style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); border-radius: 8px; color: white; margin-bottom: 15px;">
+                <button class="buy-btn pro" onclick="verifyOrder()">VERIFY PURCHASE</button>
+            </div>
+
+            <div id="review-step-2" style="display: none;">
+                <input type="text" id="review-name" placeholder="Your Name"
+                    style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); border-radius: 8px; color: white; margin-bottom: 10px;">
+                <textarea id="review-text" placeholder="Share your experience..." rows="4"
+                    style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); border-radius: 8px; color: white; margin-bottom: 15px; font-family: inherit;"></textarea>
+                <button class="buy-btn core" onclick="submitReview()">SUBMIT REVIEW</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready(); tg.expand(); tg.setHeaderColor('#030304');
+
+        // --- PRODUCT DATA ---
+        const products = {
+            ai: {
+                core: {
+                    price: 290,
+                    name: "AI Support Standard",
+                    features: [
+                        ["Smart Auto-Reply", "Advanced Matching"],
+                        ["Languages", "English & Russian"],
+                        ["Integration", "Telegram + Websites"],
+                        ["Response Time", "< 0.5 seconds"],
+                        ["Support", "30 Days Included"],
+                        ["Updates", "Lifetime Bug Fixes"]
+                    ]
+                },
+                pro: {
+                    price: 890,
+                    name: "AI Agent Enterprise",
+                    features: [
+                        ["Intelligence", "Advanced Responses"],
+                        ["Customization", "Fully Customizable"],
+                        ["Languages", "Multi-Language"],
+                        ["Context Memory", "Unlimited History"],
+                        ["Integration", "All Platforms + API"],
+                        ["Priority Support", "24/7 Direct Access"]
+                    ]
+                }
+            },
+            scraper: {
+                core: {
+                    price: 250,
+                    name: "Data Scraper Standard",
+                    features: [
+                        ["Target Sites", "1 Platform"],
+                        ["Speed", "50+ pages/second"],
+                        ["Export Formats", "CSV/Excel/JSON"],
+                        ["Alerts", "Email Notifications"],
+                        ["Anti-Detect", "Basic Rotation"],
+                        ["Delivery", "Full Source Code"]
+                    ]
+                },
+                pro: {
+                    price: 750,
+                    name: "Enterprise Data Miner",
+                    features: [
+                        ["Target Sites", "Up to 5 Platforms"],
+                        ["Speed", "Real-time Monitoring"],
+                        ["Export", "API + Webhooks"],
+                        ["Alerts", "Telegram Instant"],
+                        ["Anti-Detect", "Advanced IP Rotation"],
+                        ["Proxy Support", "Built-in"]
+                    ]
+                }
+            },
+            comm: {
+                core: {
+                    price: 190,
+                    name: "Community Manager Standard",
+                    features: [
+                        ["Anti-Spam", "AI Filtering"],
+                        ["Welcome Messages", "Text + Images"],
+                        ["Payments", "Manual Verification"],
+                        ["User Management", "Basic Tools"],
+                        ["Security", "Standard Protection"],
+                        ["Setup Time", "Under 1 Hour"]
+                    ]
+                },
+                pro: {
+                    price: 590,
+                    name: "Subscription Empire Enterprise",
+                    features: [
+                        ["Anti-Spam", "Advanced AI"],
+                        ["Welcome", "Custom Media"],
+                        ["Payments", "Auto USDT/TON/Crypto"],
+                        ["Management", "Full Dashboard"],
+                        ["Security", "Advanced Encryption"],
+                        ["Auto-Kick", "Non-Payers Removed"]
+                    ]
+                }
+            }
+        };
+
+        let activeTiers = { ai: 'core', scraper: 'core', comm: 'core' };
+        let cart = [];
+
+        // --- NAVIGATION ---
+        function setTab(id, btn) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        // --- PRICING LOGIC ---
+        function setTier(cat, tier) {
+            activeTiers[cat] = tier;
+            const data = products[cat][tier];
+
+            // UI Toggle
+            const card = document.querySelector(`#${cat} .toggle-container`);
+            card.querySelectorAll('.toggle-btn').forEach(b => {
+                b.classList.remove('core-active', 'pro-active');
+            });
+            document.getElementById(`btn-${cat}-${tier}`).classList.add(tier + '-active');
+
+            // Price Update
+            const priceEl = document.getElementById(`price-${cat}`);
+            priceEl.innerText = '$' + data.price;
+            priceEl.style.color = tier === 'pro' ? 'var(--pro)' : 'white';
+
+            // Show hourly rate for Price
+            if (cat === 'ai') {
+                document.getElementById('ai-hourly').style.display = tier === 'pro' ? 'block' : 'none';
+            }
+
+            // Button Update
+            const btn = document.getElementById(`buy-${cat}`);
+            btn.className = `buy-btn ${tier}`;
+            btn.innerText = tier === 'pro' ? "GET ENTERPRISE VERSION" : "ADD TO CART";
+
+            // Table Update
+            const table = document.getElementById(`table-${cat}`);
+            table.innerHTML = data.features.map(f => `<tr><td><i class="fas fa-check-circle"></i> ${f[0]}</td><td>${f[1]}</td></tr>`).join('');
+
+            tg.HapticFeedback.selectionChanged();
+
+            // Switch AI Mode instead of replacing HTML
+            if (cat === 'ai') {
+                const title = document.getElementById('ai-demo-title');
+                const chat = document.getElementById('ai-chat');
+                const intro = document.getElementById('ai-intro-msg');
+                const icon = document.getElementById('ai-monitor-icon');
+
+                chat.innerHTML = ''; // Clear chat
+
+                if (tier === 'pro') {
+                    title.innerText = "ENTERPRISE NEURAL CORE";
+                    title.style.color = "var(--pro)";
+                    icon.style.color = "var(--pro)";
+                    chat.style.background = "radial-gradient(circle at 50% 50%, rgba(255, 214, 10, 0.05), transparent)";
+                    chat.innerHTML = '<div class="msg bot" style="border-left-color:var(--pro)"><strong>Nexus Enterprise Online.</strong><br>Loading contextual data... [CRM: Connected] [Shopify: Connected].<br>I am ready to close deals for you.</div>';
+                } else {
+                    title.innerText = "STANDARD PREVIEW";
+                    title.style.color = "var(--text-sec)";
+                    icon.style.color = "#666";
+                    chat.style.background = "";
+                    chat.innerHTML = '<div class="msg bot">Nexus Core Standard initialized. Ready to answer FAQs and simple queries.</div>';
+                }
+            } else {
+                updatePreview(cat, tier); // Use old logic for scraper/comm
+            }
+        }
+
+        // Preview configurations
+        const previews = {
+            scraper: {
+                core: `
+                    <div class="demo-header"><span class="demo-title">STANDARD MONITOR</span><i class="fas fa-network-wired" style="color:#666"></i></div>
+                    <div class="terminal" id="terminal">
+                        <div>> Connecting to Target A...</div>
+                        <div style="color:var(--success)">> [200 OK] Price: $19.99</div>
+                        <div>> Sleeping 10s...</div>
+                        <div>> Connecting to Target A...</div>
+                        <div style="color:var(--success)">> [200 OK] Price: $19.99</div>
+                    </div>
+                `,
+                pro: `
+                    <div class="demo-header"><span class="demo-title" style="color:var(--pro)">ENTERPRISE CLUSTER</span><i class="fas fa-project-diagram" style="color:var(--pro)"></i></div>
+                    <div class="terminal" id="terminal" style="font-size:10px">
+                        <div>> [NODE-1] Amazon... <span style="color:#FF3B30">CAPTCHA SOLVED (0.2s)</span></div>
+                        <div>> [NODE-2] eBay... <span style="color:var(--success)">Parsed 500 items</span></div>
+                        <div>> [NODE-3] StockX... <span style="color:var(--pro)">Analyzing trends...</span></div>
+                        <div style="color:var(--accent)">> WEBHOOK SENT: Payload { price_change: +5% }</div>
+                        <div>> Rotating Proxy Chain... <span style="color:var(--success)">DONE</span></div>
+                    </div>
+                `
+            },
+            comm: {
+                core: `
+                    <div class="demo-header"><span class="demo-title">GROUP ACTIVITY LOG</span><i class="fas fa-users" style="color:#666"></i></div>
+                    <div class="activity-log" id="comm-log">
+                        <div class="log-item"><div class="log-icon join"><i class="fas fa-user-plus"></i></div><div class="log-text">User joined</div><div class="log-time">Now</div></div>
+                        <div class="log-item"><div class="log-icon ban"><i class="fas fa-ban"></i></div><div class="log-text">Spam blocked</div><div class="log-time">2m</div></div>
+                    </div>
+                `,
+                pro: `
+                    <div class="demo-header"><span class="demo-title" style="color:var(--pro)">EMPIRE DASHBOARD</span><i class="fas fa-chart-line" style="color:var(--pro)"></i></div>
+                    <div class="activity-log" id="comm-log">
+                        <div class="log-item" style="background:rgba(255,255,255,0.05); padding:5px; border-radius:4px"><div class="log-icon pay"><i class="fas fa-coins"></i></div><div class="log-text" style="color:white; font-weight:bold">+ $49.99 Subscription Recurred</div><div class="log-time">Now</div></div>
+                        <div class="log-item"><div class="log-icon join"><i class="fas fa-user-plus"></i></div><div class="log-text">User verified via Wallet Connect</div><div class="log-time">1m</div></div>
+                        <div class="log-item"><div class="log-icon ban"><i class="fas fa-robot"></i></div><div class="log-text">AI Auto-Mod: Kicked 5 bots</div><div class="log-time">5m</div></div>
+                    </div>
+                `
+            }
+        };
+
+        function updatePreview(cat, tier) {
+            const container = document.querySelector(`#${cat} .demo-container`);
+            if (previews[cat] && previews[cat][tier]) {
+                container.innerHTML = previews[cat][tier];
+                container.classList.remove('wow-glow');
+                void container.offsetWidth; // trigger reflow
+                container.classList.add('wow-glow');
+            }
+        }
+
+        // Chat Logic
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendAi();
+        }
+
+        function sendAi() {
+            const input = document.getElementById('ai-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chat = document.getElementById('ai-chat');
+            const isPro = activeTiers.ai === 'pro';
+
+            // Render user message
+            chat.innerHTML += `<div class="msg user" style="animation: slideUp 0.3s ease">${text}</div>`;
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+
+            const typingTime = isPro ? 1200 : 600;
+            const typingId = 'typing-' + Date.now();
+
+            // Typing indicator
+            chat.innerHTML += `
+                <div class="msg bot" id="${typingId}" style="color:var(--text-sec); font-style:italic; animation: pulse 1s infinite">
+                   ${isPro ? '<i class="fas fa-circle-notch fa-spin"></i> Analyzing intent...' : 'Typing...'}
+                </div>`;
+            chat.scrollTop = chat.scrollHeight;
+
+            setTimeout(() => {
+                const typingEl = document.getElementById(typingId);
+                if (typingEl) typingEl.remove();
+
+                const response = generateResponse(text, isPro);
+                const style = isPro ? 'style="border-left-color:var(--pro)"' : '';
+
+                chat.innerHTML += `<div class="msg bot" ${style} style="animation: slideUp 0.3s ease">${response}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+                tg.HapticFeedback.notificationOccurred('success');
+            }, typingTime);
+        }
+
+        function generateResponse(text, isPro) {
+            const lower = text.toLowerCase();
+
+            if (isPro) {
+                // Enterprise: Complex context-aware simulation
+                if (lower.includes('price') || lower.includes('cost')) {
+                    return `Based on your request, I've calculated two optimal packages. Most clients with your traffic volume choose the <strong>Growth Plan</strong> ($290). Shall I send the invoice link?`;
+                }
+                if (lower.includes('hello') || lower.includes('hi')) {
+                    return `Hello. I've accessed your profile. It's been 3 days since your last visit. Are you ready to finalize your custom agent setup?`;
+                }
+                if (lower.includes('custom') || lower.includes('change')) {
+                    return `Absolutely. My architecture is modular. We can modify my knowledge base, tone, and integration points. Customization is billed at $30/hour - would you like to schedule a consultation with a senior dev?`;
+                }
+                return `I understand you're interested in "${text}". I've cross-referenced this with our database. Here is the relevant data... [Showing Data Visual]. Would you like to proceed with a purchase?`;
+            } else {
+                // Standard: Professional, concise, grammar-perfect
+                if (lower.includes('price') || lower.includes('cost')) {
+                    return "The Standard license is $290 (one-time fee), while the Enterprise version is $890. Which option fits your current budget?";
+                }
+                if (lower.includes('hello') || lower.includes('hi')) {
+                    return "Hello! I am the Standard Nexus Agent. How may I assist you today?";
+                }
+                return "That is a specific inquiry. While I am designed for general support, I can connect you with a specialist to discuss the details. Would you like to proceed?";
+            }
+        }
+
+        // --- CART SYSTEM WITH REMOVE ---
+        function addToCart(cat) {
+            const tier = activeTiers[cat];
+            const product = products[cat][tier];
+
+            // Check if already in cart
+            const existingIndex = cart.findIndex(item =>
+                item.name === product.name && item.tier === tier
+            );
+
+            if (existingIndex === -1) {
+                cart.push({
+                    ...product,
+                    tier,
+                    id: Date.now() + Math.random(),
+                    category: cat
+                });
+
+                // Animation effect
+                const button = document.getElementById(`buy-${cat}`);
+                button.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    button.style.transform = 'scale(1)';
+                }, 150);
+
+                tg.HapticFeedback.notificationOccurred('success');
+                updateCartUI();
+            } else {
+                // Already in cart - show message in chat
+                const chat = document.getElementById('ai-chat');
+                chat.innerHTML += `<div class="msg bot">This item is already in your cart. You can adjust quantity in the cart.</div>`;
+                chat.scrollTop = chat.scrollHeight;
+                tg.HapticFeedback.impactOccurred('warning');
+            }
+        }
+
+        function removeFromCart(itemId) {
+            const index = cart.findIndex(item => item.id === itemId);
+            if (index !== -1) {
+                cart.splice(index, 1);
+                updateCartUI();
+                tg.HapticFeedback.impactOccurred('light');
+            }
+        }
+
+        function updateCartUI() {
+            const total = cart.reduce((sum, i) => sum + i.price, 0);
+            const cartFloat = document.getElementById('cart-float');
+            const cartBadge = document.getElementById('cart-badge');
+
+            if (cart.length > 0) {
+                cartFloat.style.display = 'flex';
+                cartBadge.style.display = 'flex';
+                cartBadge.innerText = cart.length;
+                document.getElementById('cart-total').innerText = '$' + total;
+
+                // Add glow effect to cart
+                cartFloat.classList.add('wow-glow');
+            } else {
+                cartFloat.style.display = 'none';
+                cartBadge.style.display = 'none';
+                cartFloat.classList.remove('wow-glow');
+            }
+
+            // Update modal if open
+            if (document.getElementById('modal').style.display === 'flex') {
+                renderCartItems();
+            }
+
+            // Update delivery time
+            updateDeliveryTime();
+        }
+
+        function renderCartItems() {
+            const list = document.getElementById('order-items');
+            const subtotal = cart.reduce((sum, i) => sum + i.price, 0);
+
+            if (cart.length === 0) {
+                list.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: var(--text-sec);">
+                        <i class="fas fa-shopping-cart" style="font-size: 40px; margin-bottom: 15px; opacity: 0.3;"></i>
+                        <div>Your cart is empty</div>
+                    </div>
+                `;
+            } else {
+                list.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-tier">${item.tier.toUpperCase()} Version</div>
+                        </div>
+                        <div class="cart-item-price">$${item.price}</div>
+                        <button class="cart-item-remove" onclick="removeFromCart(${item.id})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('cart-subtotal').innerText = '$' + subtotal;
+        }
+
+        function updateDeliveryTime() {
+            const hasPro = cart.some(item => item.tier === 'pro');
+            const deliveryTime = document.getElementById('delivery-time');
+
+            if (hasPro) {
+                deliveryTime.innerHTML = 'Delivery: 1-3 business days (customization may extend)';
+            } else {
+                deliveryTime.innerHTML = 'Delivery: 1 business day';
+            }
+        }
+
+        function openCheckout() {
+            if (cart.length === 0) {
+                tg.HapticFeedback.impactOccurred('error');
+                return;
+            }
+
+            renderCartItems();
+            document.getElementById('modal').style.display = 'flex';
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function submitOrder() {
+            if (cart.length === 0) return;
+
+            const total = cart.reduce((sum, i) => sum + i.price, 0);
+            const orderData = {
+                type: 'order',
+                cart: cart.map(item => ({
+                    name: item.name,
+                    price: item.price,
+                    tier: item.tier,
+                    category: item.category
+                })),
+                total: total,
+                timestamp: Date.now()
+            };
+
+            tg.sendData(JSON.stringify(orderData));
+            tg.HapticFeedback.notificationOccurred('success');
+
+            // Show confirmation
+            const chat = document.getElementById('ai-chat');
+            chat.innerHTML += `<div class="msg bot">Order submitted! We'll contact you via Telegram within minutes to proceed with payment and setup.</div>`;
+            chat.scrollTop = chat.scrollHeight;
+
+            // Clear cart
+            cart = [];
+            updateCartUI();
+
+            closeModal();
+        }
+
+        function contactDev() {
+            tg.sendData(JSON.stringify({ type: 'contact' }));
+        }
+
+        // Reviews Logic
+        function loadReviews() {
+            fetch('reviews.data.json')
+                .then(response => response.json())
+                .then(data => {
+                    renderReviews(data);
+                })
+                .catch(err => console.error('Error loading reviews:', err));
+        }
+
+        function renderReviews(reviews) {
+            const list = document.getElementById('reviews-list');
+            list.innerHTML = reviews.map(r => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-name">${r.name} ${r.verified ? '<span class="review-verify"><i class="fas fa-check"></i> Verified Client</span>' : ''}</div>
+                        <div style="color:var(--pro); font-size:10px;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    </div>
+                    <div class="review-text">"${r.text}"</div>
+                </div>
+            `).join('');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // ... any other init ...
+            loadReviews();
+        });
+
+        function openReviewModal() {
+            // Check if user has "bought" something in this session (mock)
+            const hasBought = localStorage.getItem('nova_has_bought');
+
+            document.getElementById('review-modal').style.display = 'flex';
+            if (hasBought) {
+                document.getElementById('review-step-1').style.display = 'none';
+                document.getElementById('review-step-2').style.display = 'block';
+            } else {
+                document.getElementById('review-step-1').style.display = 'block';
+                document.getElementById('review-step-2').style.display = 'none';
+            }
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function closeReviewModal() {
+            document.getElementById('review-modal').style.display = 'none';
+        }
+
+        function verifyOrder() {
+            const id = document.getElementById('order-id-input').value;
+            if (id.length > 5 && (id.startsWith('NV-') || id.startsWith('nv-'))) {
+                tg.HapticFeedback.notificationOccurred('success');
+                document.getElementById('review-step-1').style.display = 'none';
+                document.getElementById('review-step-2').style.display = 'block';
+            } else {
+                tg.HapticFeedback.notificationOccurred('error');
+                const btn = document.querySelector('#review-step-1 button');
+                const originalText = btn.innerText;
+                btn.innerText = "INVALID ID";
+                btn.style.background = "#FF3B30";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = "";
+                }, 1500);
+            }
+        }
+
+        function submitReview() {
+            const name = document.getElementById('review-name').value;
+            const text = document.getElementById('review-text').value;
+
+            if (!name || !text) {
+                tg.HapticFeedback.notificationOccurred('warning');
+                return;
+            }
+
+            mockReviews.unshift({ name, text, verified: true });
+            renderReviews();
+            closeReviewModal();
+            tg.HapticFeedback.notificationOccurred('success');
+
+            // Scroll to reviews
+            setTab('reviews', document.querySelector('.nav-btn:last-child'));
+        }
+
+        // Init
+        renderReviews();
+
+        // --- AI AGENT (ENGLISH PRIMARY, RUSSIAN SECONDARY) ---
+
+        const aiKnowledge = {
+            patterns: [
+                {
+                    keywords_en: ['hello', 'hi', 'hey', 'start', 'good morning', 'wazzap'],
+                    keywords_ru: ['привет', 'здравствуйте', 'хай', 'добрый день', 'начать'],
+                    responses_en: [
+                        "Hello! I'm NOVA AI agent. Ready to automate your business? Ask me about pricing, features, or technical details.",
+                        "Hi there! Looking to scale your operations? I can tell you everything about our solutions."
+                    ],
+                    responses_ru: [
+                        "Привет! Я AI-агент NOVA. Готов автоматизировать ваш бизнес? Спрашивайте про цены, возможности или технические детали.",
+                        "Здравствуйте! Хотите масштабировать бизнес? Расскажу все о наших решениях."
+                    ]
+                },
+                {
+                    keywords_en: ['price', 'cost', 'how much', 'money', 'pricing'],
+                    keywords_ru: ['сколько стоит', 'цена', 'стоимость', 'прайс', 'стоит'],
+                    responses_en: [
+                        "**Our investment structure:**\n• AI Agents: $290 (Standard) / $890 (Enterprise)\n• Data Scrapers: $250 (Standard) / $750 (Enterprise)\n• Community Tools: $190 (Standard) / $590 (Enterprise)\n\nOne-time payment, lifetime license. Complete source code included.",
+                        "**Value for money:** Standard versions handle most needs. Enterprise adds unlimited customization and priority support."
+                    ],
+                    responses_ru: [
+                        "**Наши цены:**\n• AI агенты: $290 (Standard) / $890 (Enterprise)\n• Скраперы: $250 (Standard) / $750 (Enterprise)\n• Инструменты сообществ: $190 (Standard) / $590 (Enterprise)\n\nОдин платеж, пожизненная лицензия. Полный исходный код включен.",
+                        "**Соотношение цены и качества:** Standard версии покрывают большинство задач. Enterprise добавляет полную кастомизацию и приоритетную поддержку."
+                    ]
+                },
+                {
+                    keywords_en: ['delivery', 'when get', 'timeline', 'receive'],
+                    keywords_ru: ['доставка', 'когда получу', 'срок', 'получить'],
+                    responses_en: [
+                        "**Delivery timeline:**\n• Standard versions: 1 business day\n• Enterprise versions: 1-3 business days\n\nWe deliver via encrypted Telegram channel with full documentation.",
+                        "Speed matters. Standard solutions delivered in 24 hours. Enterprise versions take 1-3 days as we customize them to your exact needs."
+                    ],
+                    responses_ru: [
+                        "**Сроки доставки:**\n• Standard версии: 1 рабочий день\n• Enterprise версии: 1-3 рабочих дня\n\nДоставляем через зашифрованный Telegram канал с полной документацией.",
+                        "Скорость важна. Standard решения доставляем за 24 часа. Enterprise версии занимают 1-3 дня, так как настраиваем их под ваши задачи."
+                    ]
+                },
+                {
+                    keywords_en: ['payment', 'pay', 'crypto', 'usdt', 'ton', 'wallet'],
+                    keywords_ru: ['оплата', 'крипта', 'usdt', 'ton', 'кошелек', 'платеж'],
+                    responses_en: [
+                        "**We accept cryptocurrency only:** USDT (TRC20/ERC20), TON, Bitcoin, Ethereum.\n\n**Why crypto?**\n• Instant confirmation\n• No personal data required\n• Available worldwide\n• Lower fees\n• No chargebacks",
+                        "Crypto payments mean you get your solution faster. No bank delays, no paperwork. Just instant delivery of working code."
+                    ],
+                    responses_ru: [
+                        "**Принимаем только криптовалюту:** USDT (TRC20/ERC20), TON, Bitcoin, Ethereum.\n\n**Почему крипта?**\n• Мгновенное подтверждение\n• Не нужны ваши данные\n• Доступно по всему миру\n• Комиссии ниже\n• Никаких чарджбэков",
+                        "Оплата криптой = быстрое получение решения. Никаких задержек банков, никаких документов. Только мгновенная доставка рабочего кода."
+                    ]
+                },
+                {
+                    keywords_en: ['custom', 'customization', 'pro', 'enterprise', 'modify'],
+                    keywords_ru: ['кастом', 'настроить', 'индивидуальный', 'особый', 'изменить'],
+                    responses_en: [
+                        "**Enterprise versions are fully customizable.** We adapt the solution to your exact business needs, branding, and workflows. We adjust AI personality, integration points, and features to your requirements.",
+                        "With Enterprise, you get more than software - you get a solution molded to your business. We work directly with you to ensure perfect fit."
+                    ],
+                    responses_ru: [
+                        "**Enterprise версии полностью кастомизируемы.** Адаптируем решение под ваш бизнес, брендинг и процессы. Настраиваем личность AI, точки интеграции и функции под ваши задачи.",
+                        "С Enterprise вы получаете не просто софт, а решение, созданное под ваш бизнес. Работаем напрямую, чтобы решение идеально подошло."
+                    ]
+                },
+                {
+                    keywords_en: ['technical', 'requirements', 'server', 'vps', 'setup'],
+                    keywords_ru: ['технические', 'требования', 'сервер', 'хостинг', 'установка'],
+                    responses_en: [
+                        "**Technical:** Runs on any VPS with 1GB+ RAM. We provide installation scripts, configuration files, and setup assistance. No coding required for Standard versions.",
+                        "Simple setup: 1) Buy VPS, 2) Run our script, 3) Configure. We help with each step."
+                    ],
+                    responses_ru: [
+                        "**Технически:** Работает на любом VPS от 1GB RAM. Даем скрипты установки, файлы конфигурации и помощь в настройке. Для Standard версий не нужно знать программирование.",
+                        "Простая установка: 1) Купить VPS, 2) Запустить наш скрипт, 3) Настроить. Помогаем на каждом этапе."
+                    ]
+                },
+                {
+                    keywords_en: ['support', 'help', 'update', 'problem', 'issue'],
+                    keywords_ru: ['поддержка', 'помощь', 'обновление', 'проблема', 'ошибка'],
+                    responses_en: [
+                        "**Support & Updates:**\n\n30 days included support. Lifetime bug fixes. Enterprise adds priority 24/7 support and direct developer access.",
+                        "We stand behind our products. 30-day support included. If any issue arises, we fix it immediately."
+                    ],
+                    responses_ru: [
+                        "**Поддержка и обновления:**\n\n30 дней поддержки включено. Пожизненные исправления ошибок. Enterprise добавляет приоритетную поддержку 24/7 и прямой доступ к разработчикам.",
+                        "Мы отвечаем за качество. 30 дней поддержки включено. Любые проблемы решаем в приоритетном порядке."
+                    ]
+                }
+            ],
+
+            fallback_en: [
+                "I specialize in business automation. Could you rephrase about our solutions, prices, or delivery?",
+                "Ask me about pricing, delivery, customization, or technical details of our solutions.",
+                "For Enterprise versions, we offer complete customization to match your exact business needs. We can adjust AI personality, integration points, and features to your requirements."
+            ],
+
+            fallback_ru: [
+                "Я специализируюсь на автоматизации бизнеса. Можете перефразировать про наши решения, цены или доставку?",
+                "Спросите про цены, доставку, кастомизацию или технические детали наших решений.",
+                "Для Enterprise версий мы предлагаем полную кастомизацию под ваш бизнес. Мы можем настроить личность AI, точки интеграции и функции под ваши требования."
+            ]
+        };
+
+        function detectLanguage(text) {
+            const ruRegex = /[а-яё]/i;
+            return ruRegex.test(text) ? 'ru' : 'en';
+        }
+
+        function findBestResponse(query, language) {
+            const queryLower = query.toLowerCase();
+
+            for (const pattern of aiKnowledge.patterns) {
+                const keywords = language === 'ru' ? pattern.keywords_ru : pattern.keywords_en;
+                for (const keyword of keywords) {
+                    if (queryLower.includes(keyword)) {
+                        const responses = language === 'ru' ? pattern.responses_ru : pattern.responses_en;
+                        return responses[Math.floor(Math.random() * responses.length)];
+                    }
+                }
+            }
+
+            // If no match found, check the other language
+            const otherLanguage = language === 'ru' ? 'en' : 'ru';
+            for (const pattern of aiKnowledge.patterns) {
+                const keywords = otherLanguage === 'ru' ? pattern.keywords_ru : pattern.keywords_en;
+                for (const keyword of keywords) {
+                    if (queryLower.includes(keyword)) {
+                        const responses = otherLanguage === 'ru' ? pattern.responses_ru : pattern.responses_en;
+                        return responses[Math.floor(Math.random() * responses.length)];
+                    }
+                }
+            }
+
+            // Fallback
+            return language === 'ru'
+                ? aiKnowledge.fallback_ru[Math.floor(Math.random() * aiKnowledge.fallback_ru.length)]
+                : aiKnowledge.fallback_en[Math.floor(Math.random() * aiKnowledge.fallback_en.length)];
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendAi();
+        }
+
+        function sendAi() {
+            const input = document.getElementById('ai-input');
+            const query = input.value.trim();
+            if (!query) return;
+
+            const chat = document.getElementById('ai-chat');
+            chat.innerHTML += `<div class="msg user">${query}</div>`;
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+
+            setTimeout(() => {
+                const language = detectLanguage(query);
+                const response = findBestResponse(query, language);
+
+                chat.innerHTML += `<div class="msg bot">${response}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+                tg.HapticFeedback.impactOccurred('medium');
+            }, 300);
+        }
+
+        // --- SCRAPER DEMO ---
+        let scrapeInt;
+        const scenarios = {
+            amazon: { cmd: "amazon_monitor.py", logs: ["Checking ASIN: B08X...", "Price: $99.00 (No Change)", "Price: $85.00 (DROP DETECTED!)", "Sending Alert to Telegram..."] },
+            crypto: { cmd: "binance_ws.py", logs: ["Connecting to WebSocket...", "BTC/USDT: 64200", "BTC/USDT: 64205", "VOLUME SPIKE DETECTED", "Signal Sent."] },
+            ig: { cmd: "insta_leads.py", logs: ["Target: @competitor", "Parsing followers...", "Extracted: 50 usernames", "Extracted: 100 usernames", "Saving to leads.csv..."] },
+            upwork: { cmd: "job_feed.py", logs: ["Filter: 'Python Bot'", "New Job Found: 'Build me a scraper'", "Budget: $500", "Auto-Applying...", "Proposal Sent."] },
+            stocks: { cmd: "tesla_stock.py", logs: ["Market: OPEN", "TSLA: $240.50", "TSLA: $241.00", "Moving Avg Crossover", "BUY Signal Generated"] }
+        };
+
+        function setScrapeMode(mode, btn) {
+            clearInterval(scrapeInt);
+            document.querySelectorAll('.term-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const term = document.getElementById('terminal');
+            const scen = scenarios[mode];
+            term.innerHTML = `<div style='color:#fff'>root@nova:~# python3 ${scen.cmd}</div>`;
+
+            let i = 0;
+            scrapeInt = setInterval(() => {
+                if (i >= scen.logs.length) clearInterval(scrapeInt);
+                else {
+                    const color = scen.logs[i].includes("Sent") || scen.logs[i].includes("Saving") ? 'var(--pro)' : 'var(--success)';
+                    term.innerHTML += `<div style='color:${color}; margin-top:2px'>> ${scen.logs[i]}</div>`;
+                    term.scrollTop = term.scrollHeight;
+                    i++;
+                }
+            }, 800);
+        }
+
+        // --- COMMUNITY LOGS ---
+        function startCommLog() {
+            const logBox = document.getElementById('comm-log');
+            const actions = [
+                { i: 'join', t: '@alex_cr joined group' },
+                { i: 'pay', t: 'Incoming +50 USDT (TRC20)' },
+                { i: 'pay', t: 'Access Granted: 30 Days' },
+                { i: 'ban', t: 'Spam detected: @spambot' },
+                { i: 'ban', t: 'User banned' }
+            ];
+
+            let idx = 0;
+            setInterval(() => {
+                const act = actions[idx % actions.length];
+                const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const html = `
+                    <div class="log-item">
+                        <div class="log-icon ${act.i}"><i class="fas fa-${act.i === 'pay' ? 'wallet' : act.i === 'join' ? 'user-plus' : 'ban'}"></i></div>
+                        <div class="log-text">${act.t}</div>
+                        <div class="log-time">${time}</div>
+                    </div>`;
+                logBox.insertAdjacentHTML('afterbegin', html);
+                if (logBox.children.length > 6) logBox.lastElementChild.remove();
+                idx++;
+            }, 2000);
+        }
+
+        // --- INITIALIZATION ---
+        (function init() {
+            // Render initial tables
+            ['ai', 'scraper', 'comm'].forEach(c => setTier(c, 'core'));
+            startCommLog();
+            setScrapeMode('amazon', document.querySelector('.term-btn'));
+
+            // Preload common AI responses
+            setTimeout(() => {
+                ['price', 'hello', 'delivery', 'payment', 'custom'].forEach(query => {
+                    ['en', 'ru'].forEach(lang => {
+                        findBestResponse(query, lang);
+                    });
+                });
+            }, 100);
+
+            // Close modal on outside click
+            document.getElementById('modal').addEventListener('click', function (e) {
+                if (e.target === this) closeModal();
+            });
+        })();
+
+    </script>
+</body>
+
+</html>
