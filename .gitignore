@@ -1,1 +1,15 @@
+# System
+.DS_Store
+*.log
+__pycache__/
+
+# Environment & Secrets
 .env
+venv/
+*.db
+*.db-shm
+*.db-wal
+
+# Data (Privacy)
+backend_hidden/
+data/
