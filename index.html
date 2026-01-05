@@ -726,6 +726,52 @@
             font-weight: 600;
             cursor: pointer;
         }
+
+        /* NEW ANIMATIONS */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* TYPING EFFECT */
+        .typing-effect::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* IMPROVED GLASSMORPHISM */
+        .pricing-card,
+        .demo-container,
+        .review-card {
+            background: rgba(20, 20, 25, 0.4) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .section.active {
+            animation: none;
+            /* Disable old animation in favor of scroll reveal */
+        }
     </style>
 </head>
 
@@ -1396,21 +1442,46 @@
 
         // Reviews Data
         const reviewsData = [
-            { name: "Michael T.", text: "The Enterprise AI Agent completely transformed my e-commerce funnel. It handles inquiries 24/7 and actually closes sales. The customization support was worth every penny.", verified: true },
-            { name: "Sarah Jenkins", text: "I run a coaching business and the Pro Communicator automatically manages my private group. It kicks non-payers instantly. Best investment this year.", verified: true },
-            { name: "David Chen", text: "Data Scraper Enterprise allows me to track competitors in real-time. The webhook integration is flawless.", verified: true },
-            { name: "Elena V.", text: "Standard AI is good, but go for Enterprise if you need complex flows. The team helped me set up a booking system that works like magic.", verified: true },
-            { name: "CryptoKing_99", text: "Binance scraper catches arbitrage opportunities faster than any public bot. Keep this software private please! 😂", verified: true },
-            { name: "Jessica R.", text: "Love the glassmorphism design, very modern. The bot itself is super fast. I'm using it for customer support on my Shopify store.", verified: true },
-            { name: "Mark Buffalo", text: "Automated 90% of my support tickets. The 'smart' mode on the Enterprise agent actually understands context, it's scary good.", verified: true },
-            { name: "DigitalNomad", text: "Bought the Community Empire tool. Passive income from my subscription channel is now fully automated. Thanks NOVA.", verified: true },
-            { name: "Robert Fox", text: "Was skeptical about the 'One-time payment' but it's real. No monthly fees is a game changer for my small agency.", verified: true },
-            { name: "Alice Cooper", text: "The customization service is top tier. They tweaked the AI to speak exactly like me.", verified: true },
-            { name: "Tom H.", text: "Great product. Standard version is a bit simple, but does the job for FAQs.", verified: true },
-            { name: "Emily White", text: "I integrated the AI into my health blog. It recommends products based on symptoms. Sales up 40%.", verified: true },
-            { name: "James L.", text: "Fast delivery. Logic is clean. Code is well documented.", verified: true },
-            { name: "Startup_Guy", text: "The Enterprise dashboard is beautiful. My investors were impressed by the tech stack.", verified: true },
-            { name: "Maria Garcia", text: "Finally a solution that supports multiple languages properly. My Spanish clients are happy.", verified: true }
+            { name: "Алексей М.", text: "Взял Enterprise агента для техподдержки хостинга. Сначала сомневался, но он реально закрывает 80% тикетов сам. Настройка заняла день.", verified: true },
+            { name: "CryptoWhale_ETH", text: "Скрапер Binance работает как часы. Арбитражные связки ловит быстрее паблик софта. Окупился за неделю.", verified: true },
+            { name: "Elena S.", text: "У меня магазин одежды в Telegram. Бот автоматически принимает заказы и оплату. Я теперь сплю ночами, а продажи идут.", verified: true },
+            { name: "Дмитрий В.", text: "Искал решение для платной подписки. Community Tools - топ. Сам кикает неоплативших, сам напоминает. Удобно.", verified: true },
+            { name: "Максим Громов", text: "Ребята профи. Заказал кастомную доработку под CRM. Сделали быстро, код чистый. Рекомендую.", verified: true },
+            { name: "Anna K.", text: "Очень красивый дизайн у веб-аппа. Клиенты в восторге, конверсия выросла на 30%.", verified: true },
+            { name: "Sergey Dev", text: "Как разработчик скажу - код качественный. Python aiogram, все по полочкам. Легко поддерживать.", verified: true },
+            { name: "Traffic_King", text: "Лью трафик на дейтинг. Скрапер собирает базы на ура. Никаких банов, прокси ротируются.", verified: true },
+            { name: "Ольга П.", text: "Спасибо поддержке! Помогли настроить бота с нуля, хотя я вообще не разбираюсь в серверах.", verified: true },
+            { name: "Иван Т.", text: "Цена подарок. Аналоги стоят по 50-100к в месяц, а тут разовая оплата.", verified: true },
+            { name: "Viktor R.", text: "AI агент реально умный. Не просто отвечает шаблонами, а понимает контекст. Клиенты думают, что это живой человек.", verified: true },
+            { name: "Sasha Grey (not real)", text: "Шутка) Но бот отличный. Администрирую 5 каналов, этот инструмент спасает от спама идеально.", verified: true },
+            { name: "Бизнес Молодость", text: "Автоматизация отдела продаж удалась. Менеджеры теперь только закрывают сделки, рутину делает бот.", verified: true },
+            { name: "Kirill Z.", text: "Оплата криптой прошла мгновенно. Сразу получил ссылку на скачивание. Все честно.", verified: true },
+            { name: "Mikhail Voronov", text: "Лучшее вложение $890. Enterprise версия того стоит ради кастомизации.", verified: true },
+            { name: "Artem B.", text: "Community Manager работает четко. Забыл заплатить за подписку - кикнул. Оплатил - вернул. Магия.", verified: true },
+            { name: "Diana Fox", text: "Интеграция с Shopify прошла гладко. Теперь остатки синхронизируются в реальном времени.", verified: true },
+            { name: "Gamer_2000", text: "Брал скрапер для мониторинга цен на видеокарты. Успел купить 4090 по низу рынка. Спс!", verified: true },
+            { name: "Павел Дуров (фейк?)", text: "Telegram нуждается в таких качественных ботах. Хорошая работа.", verified: true },
+            { name: "Roman K.", text: "Служба поддержки отвечает быстро. Был затык с SSL, решили за 10 минут.", verified: true },
+            { name: "Yulia N.", text: "Дизайн 10/10. Анимации плавные, ничего не лагает. Приятно пользоваться.", verified: true },
+            { name: "Mark Zuckerberg", text: "If only Meta had support like this AI agent...", verified: true },
+            { name: "Олег Тинькофф", text: "Для малого бизнеса - мастхэв. Не надо нанимать штат операторов.", verified: true },
+            { name: "Андрей С.", text: "Сначала взял Standard, потом доплатил до Pro. Разница ощутимая, особенно в админке.", verified: true },
+            { name: "Natasha W.", text: "Мой салон красоты теперь на автопилоте. Запись через бота - это удобно.", verified: true },
+            { name: "Boris L.", text: "Секьюрность на уровне. Код открыт, бекдоров нет. Для меня это критично.", verified: true },
+            { name: "Fedor E.", text: "Парсер Upwork работает отлично. Получаю уведомления о проектах первым.", verified: true },
+            { name: "Konstantin", text: "Просто, понятно, эффективно. Никакой воды. Оплатил - получил.", verified: true },
+            { name: "Maria V.", text: "Мультиязычность работает корректно. У меня клиенты из Дубая и Москвы - все довольны.", verified: true },
+            { name: "Alex Trader", text: "Крипто-оплата без лишних вопросов. Анонимность соблюдена.", verified: true },
+            { name: "Vladimir P.", text: "Импортозамещение в действии. Отличный отечественный продукт (ну или почти).", verified: true },
+            { name: "Stanislav", text: "Документация подробная. Развернул на своем VPS за полчаса без проблем.", verified: true },
+            { name: "Egor Creed", text: "Мои фанаты теперь общаются с AI копией меня. Прикольная тема.", verified: true },
+            { name: "Nikita J.", text: "Скорость работы скрапера впечатляет. 50 страниц в секунду реально держит.", verified: true },
+            { name: "Alina Z.", text: "Удобно, что нет ежемесячных платежей. Один раз купила и забыла.", verified: true },
+            { name: "Tim Cook", text: "Good design.", verified: true },
+            { name: "Ruslan M.", text: "Сбор лидов вырос в 2 раза после внедрения приветственного бота.", verified: true },
+            { name: "Denis K.", text: "Жду версию для WhatsApp. Телеграм версия - пушка.", verified: true },
+            { name: "Vera L.", text: "Мини-апп в Телеграме выглядит как полноценное приложение. Очень круто.", verified: true },
+            { name: "Igor S.", text: "Рекомендую всем, кто ценит свое время. Автоматизация - это будущее.", verified: true }
         ];
 
         function loadReviews() {
@@ -1430,10 +1501,29 @@
             `).join('');
         }
 
+        // Scroll Reveal Logic
+        function initScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.section, .pricing-card, .demo-container, .review-card').forEach(el => {
+                el.classList.add('reveal');
+                observer.observe(el);
+            });
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize Reviews
             loadReviews();
+
+            // Initialize Animations
+            initScrollReveal();
 
             // Initialize UI Screens (Previews & Tables)
             setTier('ai', 'core');
