@@ -1165,23 +1165,16 @@
             comm: {
                 core: `
                     <div class="demo-header"><span class="demo-title">GROUP ACTIVITY LOG</span><i class="fas fa-users" style="color:#666"></i></div>
-                    <div class="activity-log" id="comm-log">
-                        <div class="log-item"><div class="log-icon join"><i class="fas fa-user-plus"></i></div><div class="log-text">User joined</div><div class="log-time">Now</div></div>
-                        <div class="log-item"><div class="log-icon ban"><i class="fas fa-ban"></i></div><div class="log-text">Spam blocked</div><div class="log-time">2m</div></div>
-                    </div>
+                    <div class="activity-log" id="comm-log-std"></div>
                 `,
                 pro: `
                     <div class="demo-header"><span class="demo-title" style="color:var(--pro)">EMPIRE DASHBOARD</span><i class="fas fa-chart-line" style="color:var(--pro)"></i></div>
-                    <div class="activity-log" id="comm-log">
-                        <div class="log-item" style="background:rgba(255,255,255,0.05); padding:5px; border-radius:4px"><div class="log-icon pay"><i class="fas fa-coins"></i></div><div class="log-text" style="color:white; font-weight:bold">+ $49.99 Subscription Recurred</div><div class="log-time">Now</div></div>
-                        <div class="log-item"><div class="log-icon join"><i class="fas fa-user-plus"></i></div><div class="log-text">User verified via Wallet Connect</div><div class="log-time">1m</div></div>
-                        <div class="log-item"><div class="log-icon ban"><i class="fas fa-robot"></i></div><div class="log-text">AI Auto-Mod: Kicked 5 bots</div><div class="log-time">5m</div></div>
-                    </div>
+                    <div class="activity-log" id="comm-log-pro"></div>
                 `
             }
         };
 
-        let scraperStdAnim;
+        let scraperStdAnim, commStdAnim, commProAnim;
         function updatePreview(cat, tier) {
             // SCENE SWITCHING
 
@@ -1233,6 +1226,57 @@
             } else if (cat === 'comm') {
                 const container = document.querySelector(`#${cat} .demo-container`);
                 container.innerHTML = previews.comm[tier];
+
+                // Animate Community
+                clearInterval(commStdAnim);
+                clearInterval(commProAnim);
+
+                if (tier === 'core') {
+                    const log = document.getElementById('comm-log-std');
+                    const actions = [
+                        { icon: 'join', iconClass: 'fa-user-plus', text: '@alice joined group', time: 'Now' },
+                        { icon: 'ban', iconClass: 'fa-ban', text: 'Spam message deleted', time: '1m' },
+                        { icon: 'join', iconClass: 'fa-user-plus', text: '@bob joined group', time: '2m' },
+                        { icon: 'ban', iconClass: 'fa-ban', text: '@spammer kicked', time: '3m' }
+                    ];
+                    let idx = 0;
+                    log.innerHTML = `<div class="log-item"><div class="log-icon ${actions[0].icon}"><i class="fas ${actions[0].iconClass}"></i></div><div class="log-text">${actions[0].text}</div><div class="log-time">${actions[0].time}</div></div>`;
+
+                    commStdAnim = setInterval(() => {
+                        idx++;
+                        if (idx >= actions.length) idx = 0;
+                        const a = actions[idx];
+                        const newLog = `<div class="log-item"><div class="log-icon ${a.icon}"><i class="fas ${a.iconClass}"></i></div><div class="log-text">${a.text}</div><div class="log-time">${a.time}</div></div>`;
+                        log.insertAdjacentHTML('afterbegin', newLog);
+                        if (log.children.length > 4) log.removeChild(log.lastChild);
+                    }, 2000);
+                } else {
+                    const log = document.getElementById('comm-log-pro');
+                    const actions = [
+                        { icon: 'pay', iconClass: 'fa-coins', text: '+ $49.99 Subscription Recurred', time: 'Now', highlight: true },
+                        { icon: 'join', iconClass: 'fa-user-plus', text: 'User verified via Wallet', time: '30s', highlight: false },
+                        { icon: 'ban', iconClass: 'fa-robot', text: 'AI Auto-Mod: Kicked 3 bots', time: '1m', highlight: false },
+                        { icon: 'pay', iconClass: 'fa-dollar-sign', text: '+ $29.99 New subscriber', time: '2m', highlight: true },
+                        { icon: 'join', iconClass: 'fa-shield-alt', text: 'Premium tier upgraded', time: '3m', highlight: false }
+                    ];
+                    let idx = 0;
+                    const a = actions[0];
+                    const style = a.highlight ? 'style="background:rgba(255,255,255,0.05); padding:5px; border-radius:4px"' : '';
+                    const textStyle = a.highlight ? 'style="color:white; font-weight:bold"' : '';
+                    log.innerHTML = `<div class="log-item" ${style}><div class="log-icon ${a.icon}"><i class="fas ${a.iconClass}"></i></div><div class="log-text" ${textStyle}>${a.text}</div><div class="log-time">${a.time}</div></div>`;
+
+                    commProAnim = setInterval(() => {
+                        idx++;
+                        if (idx >= actions.length) idx = 0;
+                        const a = actions[idx];
+                        const style = a.highlight ? 'style="background:rgba(255,255,255,0.05); padding:5px; border-radius:4px"' : '';
+                        const textStyle = a.highlight ? 'style="color:white; font-weight:bold"' : '';
+                        const newLog = `<div class="log-item" ${style}><div class="log-icon ${a.icon}"><i class="fas ${a.iconClass}"></i></div><div class="log-text" ${textStyle}>${a.text}</div><div class="log-time">${a.time}</div></div>`;
+                        log.insertAdjacentHTML('afterbegin', newLog);
+                        if (log.children.length > 4) log.removeChild(log.lastChild);
+                    }, 2500);
+                }
+
                 container.classList.remove('wow-glow');
                 void container.offsetWidth;
                 container.classList.add('wow-glow');
@@ -1372,31 +1416,52 @@
             if (cart.length === 0) return;
 
             const total = cart.reduce((sum, i) => sum + i.price, 0);
-            const orderData = {
-                type: 'order',
-                cart: cart.map(item => ({
-                    name: item.name,
-                    price: item.price,
-                    tier: item.tier,
-                    category: item.category
-                })),
-                total: total,
-                timestamp: Date.now()
-            };
 
-            tg.sendData(JSON.stringify(orderData));
-            tg.HapticFeedback.notificationOccurred('success');
+            // Prepare invoice for TON payment
+            const invoiceTitle = cart.length === 1
+                ? cart[0].name
+                : `NOVA Solutions (${cart.length} items)`;
 
-            // Show confirmation
-            const chat = document.getElementById('ai-chat');
-            chat.innerHTML += `<div class="msg bot">Order submitted! We'll contact you via Telegram within minutes to proceed with payment and setup.</div>`;
-            chat.scrollTop = chat.scrollHeight;
+            const description = cart.map(item =>
+                `${item.name} (${item.tier.toUpperCase()})`
+            ).join(', ');
 
-            // Clear cart
-            cart = [];
-            updateCartUI();
+            // Open Telegram Invoice (TON payment)
+            tg.openInvoice(
+                // Invoice URL will be generated by your bot
+                // For now, send data to bot to generate invoice
+                {
+                    title: invoiceTitle,
+                    description: description,
+                    payload: JSON.stringify({
+                        cart: cart.map(item => ({
+                            name: item.name,
+                            price: item.price,
+                            tier: item.tier,
+                            category: item.category
+                        })),
+                        total: total,
+                        timestamp: Date.now()
+                    }),
+                    provider_token: '', // TON payments don't need provider token
+                    currency: 'XTR', // Telegram Stars (can be converted to TON)
+                    prices: [{ label: 'Total', amount: total * 100 }] // amount in smallest currency unit
+                },
+                (status) => {
+                    if (status === 'paid') {
+                        tg.HapticFeedback.notificationOccurred('success');
+                        const chat = document.getElementById('ai-chat');
+                        chat.innerHTML += `<div class="msg bot">Payment successful! We'll deliver your solutions within 24-72 hours via Telegram.</div>`;
+                        chat.scrollTop = chat.scrollHeight;
 
-            closeModal();
+                        cart = [];
+                        updateCartUI();
+                        closeModal();
+                    } else if (status === 'cancelled') {
+                        tg.HapticFeedback.notificationOccurred('error');
+                    }
+                }
+            );
         }
 
         function contactDev() {
