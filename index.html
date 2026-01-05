@@ -645,20 +645,6 @@
             animation: glow 2s infinite;
         }
 
-        @keyframes pulse {
-            0% {
-                opacity: 0.5;
-            }
-
-            50% {
-                opacity: 1;
-            }
-
-            100% {
-                opacity: 0.5;
-            }
-        }
-
         .cart-badge {
             position: absolute;
             top: -8px;
@@ -727,50 +713,39 @@
             cursor: pointer;
         }
 
-        /* NEW ANIMATIONS */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        /* NICHES GRID */
+        .niches-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
         }
 
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
+        .niche-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            padding: 15px 5px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-sec);
+            transition: 0.3s;
+            cursor: default;
         }
 
-        /* TYPING EFFECT */
-        .typing-effect::after {
-            content: '|';
-            animation: blink 1s infinite;
+        .niche-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-3px);
+            color: white;
+            border-color: var(--accent);
         }
 
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0;
-            }
-        }
-
-        /* IMPROVED GLASSMORPHISM */
-        .pricing-card,
-        .demo-container,
-        .review-card {
-            background: rgba(20, 20, 25, 0.4) !important;
-            backdrop-filter: blur(20px) !important;
-            -webkit-backdrop-filter: blur(20px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
-        }
-
-        .section.active {
-            animation: none;
-            /* Disable old animation in favor of scroll reveal */
+        .niche-card i {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--accent);
         }
     </style>
 </head>
@@ -808,16 +783,33 @@
 
         <div class="demo-container wow-glow">
             <div class="demo-header">
-                <span class="demo-title" id="ai-demo-title">STANDARD PREVIEW</span>
-                <i class="fas fa-robot" style="color:#666" id="ai-monitor-icon"></i>
+                <span class="demo-title">LIVE PREVIEW</span>
+                <i class="fas fa-robot" style="color:#666"></i>
             </div>
             <div class="chat-window" id="ai-chat">
-                <div class="msg bot" id="ai-intro-msg">Nexus Core Standard initialized. Ready to handle inquiries.</div>
+                <div class="msg bot">Nexus Core initialized. I can answer questions in English and Russian about our
+                    solutions, pricing, and implementation. How can I assist your business today?</div>
             </div>
-            <div class="chat-input-area" id="ai-input-area">
-                <input type="text" class="chat-input" id="ai-input" placeholder="Type a message to test awareness..."
-                    onkeypress="handleEnter(event)">
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" id="ai-input"
+                    placeholder="Ask about pricing, features, delivery..." onkeypress="handleEnter(event)">
                 <div class="send-icon" onclick="sendAi()"><i class="fas fa-arrow-up" style="color:white"></i></div>
+            </div>
+        </div>
+
+        <!-- POPULAR NICHES -->
+        <div class="niches-grid">
+            <div class="niche-card"><i class="fas fa-home"></i>
+                <div>Real Estate</div>
+            </div>
+            <div class="niche-card"><i class="fas fa-shopping-cart"></i>
+                <div>E-commerce</div>
+            </div>
+            <div class="niche-card"><i class="fas fa-hand-holding-usd"></i>
+                <div>High Ticket</div>
+            </div>
+            <div class="niche-card"><i class="fas fa-user-graduate"></i>
+                <div>Coaching</div>
             </div>
         </div>
 
@@ -830,9 +822,8 @@
             <div class="price-display">
                 <div class="main-price" id="price-ai">$290</div>
                 <div class="price-label">
-                    <div>One-time payment</div>
-                    <div id="ai-hourly" style="display:none; color:var(--pro); font-size:10px; margin-top:2px;">+ $30/hr
-                        customization</div>
+                    One-time payment<br>
+                    Lifetime License
                 </div>
             </div>
 
@@ -873,7 +864,10 @@
 
             <div class="price-display">
                 <div class="main-price" id="price-scraper">$250</div>
-                <div class="price-label">One-time payment<br>Full Source Code</div>
+                <div class="price-label">
+                    One-time payment<br>
+                    Full Source Code
+                </div>
             </div>
 
             <table class="comparison-table" id="table-scraper"></table>
@@ -903,7 +897,10 @@
 
             <div class="price-display">
                 <div class="main-price" id="price-comm">$190</div>
-                <div class="price-label">One-time payment<br>Plugin & Play</div>
+                <div class="price-label">
+                    One-time payment<br>
+                    Plugin & Play
+                </div>
             </div>
 
             <table class="comparison-table" id="table-comm"></table>
@@ -1110,9 +1107,15 @@
             priceEl.innerText = '$' + data.price;
             priceEl.style.color = tier === 'pro' ? 'var(--pro)' : 'white';
 
-            // Show hourly rate for Price
-            if (cat === 'ai') {
-                document.getElementById('ai-hourly').style.display = tier === 'pro' ? 'block' : 'none';
+            // Add custom dev fee text ONLY for Pro
+            const labelEl = priceEl.nextElementSibling;
+            if (tier === 'pro') {
+                labelEl.innerHTML = 'One-time payment<br><span style="color:var(--pro); font-size:10px; font-weight:bold;">+ $30/hr custom dev</span>';
+            } else {
+                // Standard versions - no hourly rate
+                if (cat === 'ai') labelEl.innerHTML = 'One-time payment<br>Lifetime License';
+                else if (cat === 'scraper') labelEl.innerHTML = 'One-time payment<br>Full Source Code';
+                else labelEl.innerHTML = 'One-time payment<br>Plugin & Play';
             }
 
             // Button Update
@@ -1125,45 +1128,28 @@
             table.innerHTML = data.features.map(f => `<tr><td><i class="fas fa-check-circle"></i> ${f[0]}</td><td>${f[1]}</td></tr>`).join('');
 
             tg.HapticFeedback.selectionChanged();
-
-            // Switch AI Mode instead of replacing HTML
-            if (cat === 'ai') {
-                const title = document.getElementById('ai-demo-title');
-                const chat = document.getElementById('ai-chat');
-                const intro = document.getElementById('ai-intro-msg');
-                const icon = document.getElementById('ai-monitor-icon');
-
-                chat.innerHTML = ''; // Clear chat
-
-                if (tier === 'pro') {
-                    title.innerText = "ENTERPRISE NEURAL CORE";
-                    title.style.color = "var(--pro)";
-                    icon.style.color = "var(--pro)";
-                    chat.style.background = "radial-gradient(circle at 50% 50%, rgba(255, 214, 10, 0.05), transparent)";
-                    chat.innerHTML = '<div class="msg bot" style="border-left-color:var(--pro)"><strong>Nexus Enterprise Online.</strong><br>Loading contextual data... [CRM: Connected] [Shopify: Connected].<br>I am ready to close deals for you.</div>';
-                } else {
-                    title.innerText = "STANDARD PREVIEW";
-                    title.style.color = "var(--text-sec)";
-                    icon.style.color = "#666";
-                    chat.style.background = "";
-                    chat.innerHTML = '<div class="msg bot">Nexus Core Standard initialized. Ready to answer FAQs and simple queries.</div>';
-                }
-            } else {
-                updatePreview(cat, tier); // Use old logic for scraper/comm
-            }
+            updatePreview(cat, tier);
         }
 
+        // --- DYNAMIC PREVIEWS ---
         const previews = {
+            ai: {
+                core: {
+                    style: "",
+                    header: '<span class="demo-title">STANDARD PREVIEW</span><i class="fas fa-robot" style="color:#666"></i>',
+                    msg: "Nexus Core Standard initialized. I can handle basic queries and defined flows."
+                },
+                pro: {
+                    style: "background:radial-gradient(circle at 50% 50%, rgba(42, 133, 255, 0.1), transparent);",
+                    header: '<span class="demo-title" style="color:var(--pro)">ENTERPRISE PREVIEW</span><i class="fas fa-brain" style="color:var(--pro)"></i>',
+                    msg: "Nexus Enterprise loaded. Memory loaded. Context: CRM connected. Ask me anything about your business."
+                }
+            },
+
             scraper: {
                 core: `
                     <div class="demo-header"><span class="demo-title">STANDARD MONITOR</span><i class="fas fa-network-wired" style="color:#666"></i></div>
-                    <div class="terminal" id="terminal">
-                        <div>> Connecting to Target A...</div>
-                        <div style="color:var(--success)">> [200 OK] Price: $19.99</div>
-                        <div>> Sleeping 10s...</div>
-                        <div>> Connecting to Target A...</div>
-                        <div style="color:var(--success)">> [200 OK] Price: $19.99</div>
-                    </div>
+                    <div class="terminal" id="terminal-scraper"></div>
                 `,
                 pro: `
                     <div class="demo-header"><span class="demo-title" style="color:var(--pro)">ENTERPRISE CLUSTER</span><i class="fas fa-project-diagram" style="color:var(--pro)"></i></div>
@@ -1172,10 +1158,10 @@
                         <div>> [NODE-2] eBay... <span style="color:var(--success)">Parsed 500 items</span></div>
                         <div>> [NODE-3] StockX... <span style="color:var(--pro)">Analyzing trends...</span></div>
                         <div style="color:var(--accent)">> WEBHOOK SENT: Payload { price_change: +5% }</div>
-                        <div>> Rotating Proxy Chain... <span style="color:var(--success)">DONE</span></div>
                     </div>
                 `
             },
+
             comm: {
                 core: `
                     <div class="demo-header"><span class="demo-title">GROUP ACTIVITY LOG</span><i class="fas fa-users" style="color:#666"></i></div>
@@ -1195,88 +1181,65 @@
             }
         };
 
+        let scraperStdAnim;
         function updatePreview(cat, tier) {
-            const container = document.querySelector(`#${cat} .demo-container`);
-            if (previews[cat] && previews[cat][tier]) {
-                container.innerHTML = previews[cat][tier];
+            // SCENE SWITCHING
+
+            if (cat === 'ai') {
+                const data = previews.ai[tier];
+                const chat = document.getElementById('ai-chat');
+                const header = document.querySelector('#ai .demo-header');
+
+                header.innerHTML = data.header;
+                chat.style = data.style;
+                chat.innerHTML = `<div class="msg bot" ${tier === 'pro' ? 'style="border-left-color:var(--pro)"' : ''}>${data.msg}</div>`;
+
+                chat.parentElement.classList.remove('wow-glow');
+                void chat.parentElement.offsetWidth;
+                chat.parentElement.classList.add('wow-glow');
+
+            } else if (cat === 'scraper') {
+                const container = document.querySelector(`#${cat} .demo-container`);
+                container.innerHTML = previews.scraper[tier];
+
+                // Animate Standard scraper
+                if (tier === 'core') {
+                    clearInterval(scraperStdAnim);
+                    const term = document.getElementById('terminal-scraper');
+                    const logs = [
+                        '<div>> Connecting to target...</div>',
+                        '<div style="color:var(--success)"> [200 OK] Price: $19.99</div>',
+                        '<div>> Sleeping 10s...</div>',
+                        '<div>> Reconnecting...</div>',
+                        '<div style="color:var(--success)"> [200 OK] Price: $18.50</div>',
+                        '<div style="color:var(--pro)">⚡ ALERT: Price Drop!</div>'
+                    ];
+                    let idx = 0;
+                    term.innerHTML = logs[0];
+                    scraperStdAnim = setInterval(() => {
+                        idx++;
+                        if (idx >= logs.length) idx = 0;
+                        term.innerHTML += logs[idx];
+                        if (term.children.length > 6) term.removeChild(term.firstChild);
+                    }, 1500);
+                } else {
+                    clearInterval(scraperStdAnim);
+                }
+
                 container.classList.remove('wow-glow');
-                void container.offsetWidth; // trigger reflow
+                void container.offsetWidth;
+                container.classList.add('wow-glow');
+
+            } else if (cat === 'comm') {
+                const container = document.querySelector(`#${cat} .demo-container`);
+                container.innerHTML = previews.comm[tier];
+                container.classList.remove('wow-glow');
+                void container.offsetWidth;
                 container.classList.add('wow-glow');
             }
         }
 
-        function handleEnter(e) {
-            if (e.key === 'Enter') sendAi();
-        }
-
-        function sendAi() {
-            const input = document.getElementById('ai-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const chat = document.getElementById('ai-chat');
-            const isPro = activeTiers.ai === 'pro';
-
-            // Render user message
-            chat.innerHTML += `<div class="msg user" style="animation: slideUp 0.3s ease">${text}</div>`;
-            input.value = '';
-            chat.scrollTop = chat.scrollHeight;
-
-            const typingTime = isPro ? 1200 : 600;
-            const typingId = 'typing-' + Date.now();
-
-            // Typing indicator
-            chat.innerHTML += `
-                <div class="msg bot" id="${typingId}" style="color:var(--text-sec); font-style:italic; animation: pulse 1s infinite">
-                   ${isPro ? '<i class="fas fa-circle-notch fa-spin"></i> Analyzing intent...' : 'Typing...'}
-                </div>`;
-            chat.scrollTop = chat.scrollHeight;
-
-            setTimeout(() => {
-                const typingEl = document.getElementById(typingId);
-                if (typingEl) typingEl.remove();
-
-                const response = generateResponse(text, isPro);
-                const style = isPro ? 'style="border-left-color:var(--pro)"' : '';
-
-                chat.innerHTML += `<div class="msg bot" ${style} style="animation: slideUp 0.3s ease">${response}</div>`;
-                chat.scrollTop = chat.scrollHeight;
-                tg.HapticFeedback.notificationOccurred('success');
-            }, typingTime);
-        }
-
-        function generateResponse(text, isPro) {
-            const lang = detectLanguage(text);
-            const lower = text.toLowerCase();
-
-            // 1. Check Knowledge Base
-            for (const pattern of aiKnowledge.patterns) {
-                const keywords = lang === 'ru' ? pattern.keywords_ru : pattern.keywords_en;
-                if (keywords.some(k => lower.includes(k))) {
-                    const responses = lang === 'ru' ? pattern.responses_ru : pattern.responses_en;
-                    return responses[Math.floor(Math.random() * responses.length)];
-                }
-            }
-
-            // 2. Fallback
-            const fallbacks = lang === 'ru' ? aiKnowledge.fallback_ru : aiKnowledge.fallback_en;
-            return fallbacks[Math.floor(Math.random() * fallbacks.length)];
-        }
-
-        function detectLanguage(text) {
-            const ruRegex = /[а-яё]/i;
-            return ruRegex.test(text) ? 'ru' : 'en';
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            loadReviews();
-
-            // Initialize Screens
-            setTier('ai', 'core');
-            setTier('scraper', 'core');
-            setTier('comm', 'core');
-        });
+        // --- CART SYSTEM WITH REMOVE ---
         function addToCart(cat) {
             const tier = activeTiers[cat];
             const product = products[cat][tier];
@@ -1440,96 +1403,67 @@
             tg.sendData(JSON.stringify({ type: 'contact' }));
         }
 
-        // Reviews Data
-        const reviewsData = [
-            { name: "Алексей М.", text: "Взял Enterprise агента для техподдержки хостинга. Сначала сомневался, но он реально закрывает 80% тикетов сам. Настройка заняла день.", verified: true },
-            { name: "CryptoWhale_ETH", text: "Скрапер Binance работает как часы. Арбитражные связки ловит быстрее паблик софта. Окупился за неделю.", verified: true },
-            { name: "Elena S.", text: "У меня магазин одежды в Telegram. Бот автоматически принимает заказы и оплату. Я теперь сплю ночами, а продажи идут.", verified: true },
-            { name: "Дмитрий В.", text: "Искал решение для платной подписки. Community Tools - топ. Сам кикает неоплативших, сам напоминает. Удобно.", verified: true },
-            { name: "Максим Громов", text: "Ребята профи. Заказал кастомную доработку под CRM. Сделали быстро, код чистый. Рекомендую.", verified: true },
-            { name: "Anna K.", text: "Очень красивый дизайн у веб-аппа. Клиенты в восторге, конверсия выросла на 30%.", verified: true },
-            { name: "Sergey Dev", text: "Как разработчик скажу - код качественный. Python aiogram, все по полочкам. Легко поддерживать.", verified: true },
-            { name: "Traffic_King", text: "Лью трафик на дейтинг. Скрапер собирает базы на ура. Никаких банов, прокси ротируются.", verified: true },
-            { name: "Ольга П.", text: "Спасибо поддержке! Помогли настроить бота с нуля, хотя я вообще не разбираюсь в серверах.", verified: true },
-            { name: "Иван Т.", text: "Цена подарок. Аналоги стоят по 50-100к в месяц, а тут разовая оплата.", verified: true },
-            { name: "Viktor R.", text: "AI агент реально умный. Не просто отвечает шаблонами, а понимает контекст. Клиенты думают, что это живой человек.", verified: true },
-            { name: "Sasha Grey (not real)", text: "Шутка) Но бот отличный. Администрирую 5 каналов, этот инструмент спасает от спама идеально.", verified: true },
-            { name: "Бизнес Молодость", text: "Автоматизация отдела продаж удалась. Менеджеры теперь только закрывают сделки, рутину делает бот.", verified: true },
-            { name: "Kirill Z.", text: "Оплата криптой прошла мгновенно. Сразу получил ссылку на скачивание. Все честно.", verified: true },
-            { name: "Mikhail Voronov", text: "Лучшее вложение $890. Enterprise версия того стоит ради кастомизации.", verified: true },
-            { name: "Artem B.", text: "Community Manager работает четко. Забыл заплатить за подписку - кикнул. Оплатил - вернул. Магия.", verified: true },
-            { name: "Diana Fox", text: "Интеграция с Shopify прошла гладко. Теперь остатки синхронизируются в реальном времени.", verified: true },
-            { name: "Gamer_2000", text: "Брал скрапер для мониторинга цен на видеокарты. Успел купить 4090 по низу рынка. Спс!", verified: true },
-            { name: "Павел Дуров (фейк?)", text: "Telegram нуждается в таких качественных ботах. Хорошая работа.", verified: true },
-            { name: "Roman K.", text: "Служба поддержки отвечает быстро. Был затык с SSL, решили за 10 минут.", verified: true },
-            { name: "Yulia N.", text: "Дизайн 10/10. Анимации плавные, ничего не лагает. Приятно пользоваться.", verified: true },
-            { name: "Mark Zuckerberg", text: "If only Meta had support like this AI agent...", verified: true },
-            { name: "Олег Тинькофф", text: "Для малого бизнеса - мастхэв. Не надо нанимать штат операторов.", verified: true },
-            { name: "Андрей С.", text: "Сначала взял Standard, потом доплатил до Pro. Разница ощутимая, особенно в админке.", verified: true },
-            { name: "Natasha W.", text: "Мой салон красоты теперь на автопилоте. Запись через бота - это удобно.", verified: true },
-            { name: "Boris L.", text: "Секьюрность на уровне. Код открыт, бекдоров нет. Для меня это критично.", verified: true },
-            { name: "Fedor E.", text: "Парсер Upwork работает отлично. Получаю уведомления о проектах первым.", verified: true },
-            { name: "Konstantin", text: "Просто, понятно, эффективно. Никакой воды. Оплатил - получил.", verified: true },
-            { name: "Maria V.", text: "Мультиязычность работает корректно. У меня клиенты из Дубая и Москвы - все довольны.", verified: true },
-            { name: "Alex Trader", text: "Крипто-оплата без лишних вопросов. Анонимность соблюдена.", verified: true },
-            { name: "Vladimir P.", text: "Импортозамещение в действии. Отличный отечественный продукт (ну или почти).", verified: true },
-            { name: "Stanislav", text: "Документация подробная. Развернул на своем VPS за полчаса без проблем.", verified: true },
-            { name: "Egor Creed", text: "Мои фанаты теперь общаются с AI копией меня. Прикольная тема.", verified: true },
-            { name: "Nikita J.", text: "Скорость работы скрапера впечатляет. 50 страниц в секунду реально держит.", verified: true },
-            { name: "Alina Z.", text: "Удобно, что нет ежемесячных платежей. Один раз купила и забыла.", verified: true },
-            { name: "Tim Cook", text: "Good design.", verified: true },
-            { name: "Ruslan M.", text: "Сбор лидов вырос в 2 раза после внедрения приветственного бота.", verified: true },
-            { name: "Denis K.", text: "Жду версию для WhatsApp. Телеграм версия - пушка.", verified: true },
-            { name: "Vera L.", text: "Мини-апп в Телеграме выглядит как полноценное приложение. Очень круто.", verified: true },
-            { name: "Igor S.", text: "Рекомендую всем, кто ценит свое время. Автоматизация - это будущее.", verified: true }
-        ];
+        // --- REVIEWS SYSTEM ---
+        let mockReviews = [];
 
-        function loadReviews() {
-            renderReviews(reviewsData);
-        }
+        // Load reviews from external file
+        fetch('reviews.data.json')
+            .then(res => res.json())
+            .then(data => {
+                mockReviews = data.map(r => ({
+                    name: r.name,
+                    role: r.role,
+                    text: r.comment,
+                    verified: r.verified,
+                    stars: r.rating,
+                    date: (() => {
+                        const d = new Date(r.date);
+                        const now = new Date();
+                        const diff = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+                        if (diff === 0) return 'Today';
+                        if (diff === 1) return 'Yesterday';
+                        if (diff < 7) return `${diff} days ago`;
+                        if (diff < 30) return `${Math.floor(diff / 7)} weeks ago`;
+                        if (diff < 60) return '1 month ago';
+                        return `${Math.floor(diff / 30)} months ago`;
+                    })(),
+                    tier: r.product
+                }));
+                renderReviews();
+            })
+            .catch(err => {
+                console.error('Failed to load reviews:', err);
+                // Fallback to one default review
+                mockReviews = [{ name: "Alex K.", role: "Entrepreneur", text: "Great service!", verified: true, stars: 5, date: "1 week ago", tier: "Standard" }];
+                renderReviews();
+            });
 
-        function renderReviews(reviews) {
+        function renderReviews() {
             const list = document.getElementById('reviews-list');
-            list.innerHTML = reviews.map(r => `
+            list.innerHTML = mockReviews.map(r => `
                 <div class="review-card">
                     <div class="review-header">
-                        <div class="reviewer-name">${r.name} ${r.verified ? '<span class="review-verify"><i class="fas fa-check"></i> Verified Client</span>' : ''}</div>
-                        <div style="color:var(--pro); font-size:10px;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        <div>
+                            <div class="reviewer-name">
+                                ${r.name} 
+                                ${r.verified ? '<span class="review-verify"><i class="fas fa-check"></i> Verified Owner</span>' : ''}
+                            </div>
+                            <div style="font-size: 11px; color: var(--accent); margin-top: 2px;">${r.role}</div>
+                        </div>
+                        <div style="text-align: right;">
+                             <div style="color:var(--pro); font-size:10px; margin-bottom: 2px;">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                             </div>
+                             <div style="font-size: 10px; color: var(--text-sec);">${r.date}</div>
+                        </div>
                     </div>
-                    <div class="review-text">"${r.text}"</div>
+                    <div class="review-text" style="margin-bottom: 8px;">"${r.text}"</div>
+                    <div style="font-size: 10px; color: rgba(255,255,255,0.3); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 5px;">
+                        Solution: <span style="color: #ccc;">${r.tier}</span>
+                    </div>
                 </div>
             `).join('');
         }
-
-        // Scroll Reveal Logic
-        function initScrollReveal() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            document.querySelectorAll('.section, .pricing-card, .demo-container, .review-card').forEach(el => {
-                el.classList.add('reveal');
-                observer.observe(el);
-            });
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize Reviews
-            loadReviews();
-
-            // Initialize Animations
-            initScrollReveal();
-
-            // Initialize UI Screens (Previews & Tables)
-            setTier('ai', 'core');
-            setTier('scraper', 'core');
-            setTier('comm', 'core');
-        });
 
         function openReviewModal() {
             // Check if user has "bought" something in this session (mock)
@@ -1590,167 +1524,131 @@
         // Init
         renderReviews();
 
-        // --- AI AGENT (ENGLISH PRIMARY, RUSSIAN SECONDARY) ---
-
-        const aiKnowledge = {
-            patterns: [
-                {
-                    keywords_en: ['hello', 'hi', 'hey', 'start', 'good morning', 'wazzap'],
-                    keywords_ru: ['привет', 'здравствуйте', 'хай', 'добрый день', 'начать'],
-                    responses_en: [
-                        "Hello! I'm NOVA AI agent. Ready to automate your business? Ask me about pricing, features, or technical details.",
-                        "Hi there! Looking to scale your operations? I can tell you everything about our solutions."
-                    ],
-                    responses_ru: [
-                        "Привет! Я AI-агент NOVA. Готов автоматизировать ваш бизнес? Спрашивайте про цены, возможности или технические детали.",
-                        "Здравствуйте! Хотите масштабировать бизнес? Расскажу все о наших решениях."
-                    ]
-                },
-                {
-                    keywords_en: ['price', 'cost', 'how much', 'money', 'pricing'],
-                    keywords_ru: ['сколько стоит', 'цена', 'стоимость', 'прайс', 'стоит'],
-                    responses_en: [
-                        "**Our investment structure:**\n• AI Agents: $290 (Standard) / $890 (Enterprise)\n• Data Scrapers: $250 (Standard) / $750 (Enterprise)\n• Community Tools: $190 (Standard) / $590 (Enterprise)\n\nOne-time payment, lifetime license. Complete source code included.",
-                        "**Value for money:** Standard versions handle most needs. Enterprise adds unlimited customization and priority support."
-                    ],
-                    responses_ru: [
-                        "**Наши цены:**\n• AI агенты: $290 (Standard) / $890 (Enterprise)\n• Скраперы: $250 (Standard) / $750 (Enterprise)\n• Инструменты сообществ: $190 (Standard) / $590 (Enterprise)\n\nОдин платеж, пожизненная лицензия. Полный исходный код включен.",
-                        "**Соотношение цены и качества:** Standard версии покрывают большинство задач. Enterprise добавляет полную кастомизацию и приоритетную поддержку."
-                    ]
-                },
-                {
-                    keywords_en: ['delivery', 'when get', 'timeline', 'receive'],
-                    keywords_ru: ['доставка', 'когда получу', 'срок', 'получить'],
-                    responses_en: [
-                        "**Delivery timeline:**\n• Standard versions: 1 business day\n• Enterprise versions: 1-3 business days\n\nWe deliver via encrypted Telegram channel with full documentation.",
-                        "Speed matters. Standard solutions delivered in 24 hours. Enterprise versions take 1-3 days as we customize them to your exact needs."
-                    ],
-                    responses_ru: [
-                        "**Сроки доставки:**\n• Standard версии: 1 рабочий день\n• Enterprise версии: 1-3 рабочих дня\n\nДоставляем через зашифрованный Telegram канал с полной документацией.",
-                        "Скорость важна. Standard решения доставляем за 24 часа. Enterprise версии занимают 1-3 дня, так как настраиваем их под ваши задачи."
-                    ]
-                },
-                {
-                    keywords_en: ['payment', 'pay', 'crypto', 'usdt', 'ton', 'wallet'],
-                    keywords_ru: ['оплата', 'крипта', 'usdt', 'ton', 'кошелек', 'платеж'],
-                    responses_en: [
-                        "**We accept cryptocurrency only:** USDT (TRC20/ERC20), TON, Bitcoin, Ethereum.\n\n**Why crypto?**\n• Instant confirmation\n• No personal data required\n• Available worldwide\n• Lower fees\n• No chargebacks",
-                        "Crypto payments mean you get your solution faster. No bank delays, no paperwork. Just instant delivery of working code."
-                    ],
-                    responses_ru: [
-                        "**Принимаем только криптовалюту:** USDT (TRC20/ERC20), TON, Bitcoin, Ethereum.\n\n**Почему крипта?**\n• Мгновенное подтверждение\n• Не нужны ваши данные\n• Доступно по всему миру\n• Комиссии ниже\n• Никаких чарджбэков",
-                        "Оплата криптой = быстрое получение решения. Никаких задержек банков, никаких документов. Только мгновенная доставка рабочего кода."
-                    ]
-                },
-                {
-                    keywords_en: ['custom', 'customization', 'pro', 'enterprise', 'modify'],
-                    keywords_ru: ['кастом', 'настроить', 'индивидуальный', 'особый', 'изменить'],
-                    responses_en: [
-                        "**Enterprise versions are fully customizable.** We adapt the solution to your exact business needs, branding, and workflows. We adjust AI personality, integration points, and features to your requirements.",
-                        "With Enterprise, you get more than software - you get a solution molded to your business. We work directly with you to ensure perfect fit."
-                    ],
-                    responses_ru: [
-                        "**Enterprise версии полностью кастомизируемы.** Адаптируем решение под ваш бизнес, брендинг и процессы. Настраиваем личность AI, точки интеграции и функции под ваши задачи.",
-                        "С Enterprise вы получаете не просто софт, а решение, созданное под ваш бизнес. Работаем напрямую, чтобы решение идеально подошло."
-                    ]
-                },
-                {
-                    keywords_en: ['technical', 'requirements', 'server', 'vps', 'setup'],
-                    keywords_ru: ['технические', 'требования', 'сервер', 'хостинг', 'установка'],
-                    responses_en: [
-                        "**Technical:** Runs on any VPS with 1GB+ RAM. We provide installation scripts, configuration files, and setup assistance. No coding required for Standard versions.",
-                        "Simple setup: 1) Buy VPS, 2) Run our script, 3) Configure. We help with each step."
-                    ],
-                    responses_ru: [
-                        "**Технически:** Работает на любом VPS от 1GB RAM. Даем скрипты установки, файлы конфигурации и помощь в настройке. Для Standard версий не нужно знать программирование.",
-                        "Простая установка: 1) Купить VPS, 2) Запустить наш скрипт, 3) Настроить. Помогаем на каждом этапе."
-                    ]
-                },
-                {
-                    keywords_en: ['support', 'help', 'update', 'problem', 'issue'],
-                    keywords_ru: ['поддержка', 'помощь', 'обновление', 'проблема', 'ошибка'],
-                    responses_en: [
-                        "**Support & Updates:**\n\n30 days included support. Lifetime bug fixes. Enterprise adds priority 24/7 support and direct developer access.",
-                        "We stand behind our products. 30-day support included. If any issue arises, we fix it immediately."
-                    ],
-                    responses_ru: [
-                        "**Поддержка и обновления:**\n\n30 дней поддержки включено. Пожизненные исправления ошибок. Enterprise добавляет приоритетную поддержку 24/7 и прямой доступ к разработчикам.",
-                        "Мы отвечаем за качество. 30 дней поддержки включено. Любые проблемы решаем в приоритетном порядке."
-                    ]
-                }
-            ],
-
-            fallback_en: [
-                "I specialize in business automation. Could you rephrase about our solutions, prices, or delivery?",
-                "Ask me about pricing, delivery, customization, or technical details of our solutions.",
-                "For Enterprise versions, we offer complete customization to match your exact business needs. We can adjust AI personality, integration points, and features to your requirements."
-            ],
-
-            fallback_ru: [
-                "Я специализируюсь на автоматизации бизнеса. Можете перефразировать про наши решения, цены или доставку?",
-                "Спросите про цены, доставку, кастомизацию или технические детали наших решений.",
-                "Для Enterprise версий мы предлагаем полную кастомизацию под ваш бизнес. Мы можем настроить личность AI, точки интеграции и функции под ваши требования."
-            ]
-        };
-
-        function detectLanguage(text) {
-            const ruRegex = /[а-яё]/i;
-            return ruRegex.test(text) ? 'ru' : 'en';
-        }
-
-        function findBestResponse(query, language) {
-            const queryLower = query.toLowerCase();
-
-            for (const pattern of aiKnowledge.patterns) {
-                const keywords = language === 'ru' ? pattern.keywords_ru : pattern.keywords_en;
-                for (const keyword of keywords) {
-                    if (queryLower.includes(keyword)) {
-                        const responses = language === 'ru' ? pattern.responses_ru : pattern.responses_en;
-                        return responses[Math.floor(Math.random() * responses.length)];
-                    }
-                }
-            }
-
-            // If no match found, check the other language
-            const otherLanguage = language === 'ru' ? 'en' : 'ru';
-            for (const pattern of aiKnowledge.patterns) {
-                const keywords = otherLanguage === 'ru' ? pattern.keywords_ru : pattern.keywords_en;
-                for (const keyword of keywords) {
-                    if (queryLower.includes(keyword)) {
-                        const responses = otherLanguage === 'ru' ? pattern.responses_ru : pattern.responses_en;
-                        return responses[Math.floor(Math.random() * responses.length)];
-                    }
-                }
-            }
-
-            // Fallback
-            return language === 'ru'
-                ? aiKnowledge.fallback_ru[Math.floor(Math.random() * aiKnowledge.fallback_ru.length)]
-                : aiKnowledge.fallback_en[Math.floor(Math.random() * aiKnowledge.fallback_en.length)];
-        }
-
+        // --- CHAT LOGIC ---
         function handleEnter(e) {
             if (e.key === 'Enter') sendAi();
         }
 
         function sendAi() {
             const input = document.getElementById('ai-input');
-            const query = input.value.trim();
-            if (!query) return;
+            const text = input.value.trim();
+            if (!text) return;
 
+            // User Message
             const chat = document.getElementById('ai-chat');
-            chat.innerHTML += `<div class="msg user">${query}</div>`;
+            chat.innerHTML += `<div class="msg user">${text}</div>`;
             input.value = '';
             chat.scrollTop = chat.scrollHeight;
 
+            // Bot Typing Indicator (Fake)
+            const typingId = 'typing-' + Date.now();
             setTimeout(() => {
-                const language = detectLanguage(query);
-                const response = findBestResponse(query, language);
-
-                chat.innerHTML += `<div class="msg bot">${response}</div>`;
+                chat.innerHTML += `<div class="msg bot" id="${typingId}">...</div>`;
                 chat.scrollTop = chat.scrollHeight;
-                tg.HapticFeedback.impactOccurred('medium');
             }, 300);
+
+            // Bot Response Delay
+            setTimeout(() => {
+                const typingEl = document.getElementById(typingId);
+                if (typingEl) typingEl.remove();
+
+                const response = getAiResponse(text);
+                const isPro = activeTiers.ai === 'pro';
+                const style = isPro ? 'style="border-left-color:var(--pro); box-shadow: 0 0 10px rgba(255, 214, 10, 0.1);"' : '';
+
+                chat.innerHTML += `<div class="msg bot" ${style}>${response}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+                tg.HapticFeedback.notificationOccurred('success');
+            }, 1200);
+        }
+
+        // AI Knowledge Base
+        const aiKnowledge = {
+            patterns: [
+                {
+                    kw_en: ['hello', 'hi', 'hey', 'greetings'],
+                    kw_ru: ['привет', 'здравствуй', 'хай', 'приветствую'],
+                    resp_en_std: "Hello! I'm Nexus Standard AI. I can answer basic questions about our services. Ask me about pricing or features!",
+                    resp_ru_std: "Привет! Я Nexus Standard AI. Отвечу на базовые вопросы о наших услугах. Спрашивайте про цены или функции!",
+                    resp_en_pro: "Hello! I'm Nexus Enterprise with advanced NLP. I can handle complex queries, qualify leads, and integrate with your CRM. What's your business challenge?",
+                    resp_ru_pro: "Здравствуйте! Я Nexus Enterprise с продвинутым NLP. Могу обрабатывать сложные запросы, квалифицировать лиды и интегрироваться с вашей CRM. Какая у вас задача?"
+                },
+                {
+                    kw_en: ['price', 'cost', 'how much', 'pricing'],
+                    kw_ru: ['цена', 'стоимость', 'сколько', 'прайс'],
+                    resp_en_std: "Standard is $290 one-time. Enterprise is $890. Both include full source code and 30 days support.",
+                    resp_ru_std: "Standard стоит $290 разово. Enterprise $890. Оба включают исходный код и 30 дней поддержки.",
+                    resp_en_pro: "For Enterprise, pricing is $890 base + custom integration. Given your volume, we can discuss a tailored package. How many users do you serve daily?",
+                    resp_ru_pro: "Для Enterprise цена $890 базовая + кастомная интеграция. Учитывая ваши объемы, можем обсудить индивидуальный пакет. Сколько пользователей вы обслуживаете в день?"
+                },
+                {
+                    kw_en: ['delivery', 'when', 'timeline', 'how long'],
+                    kw_ru: ['доставка', 'когда', 'сроки', 'как долго'],
+                    resp_en_std: "Standard versions: 24 hours. Enterprise: 1-3 days (includes customization).",
+                    resp_ru_std: "Standard версии: 24 часа. Enterprise: 1-3 дня (включая кастомизацию).",
+                    resp_en_pro: "For Enterprise, we deliver in 1-3 business days with full customization. We'll integrate with your existing stack. What CRM are you using?",
+                    resp_ru_pro: "Enterprise поставляем за 1-3 рабочих дня с полной кастомизацией. Интегрируем с вашей инфраструктурой. Какую CRM используете?"
+                },
+                {
+                    kw_en: ['integration', 'api', 'connect', 'crm'],
+                    kw_ru: ['интеграция', 'апи', 'подключить', 'црм'],
+                    resp_en_std: "Standard has Telegram integration. For advanced integrations (CRM, Zapier), check Enterprise.",
+                    resp_ru_std: "Standard имеет интеграцию с Telegram. Для продвинутых интеграций (CRM, Zapier) смотрите Enterprise.",
+                    resp_en_pro: "I integrate with Salesforce, HubSpot, Pipedrive, Zapier—any REST API. I can pull customer data in real-time. What's your current tech stack?",
+                    resp_ru_pro: "Интегрируюсь с Salesforce, HubSpot, Pipedrive, Zapier—любой REST API. Могу тянуть данные клиентов в реальном времени. Какой у вас стек?"
+                },
+                {
+                    kw_en: ['support', 'help', 'problem', 'issue'],
+                    kw_ru: ['поддержка', 'помощь', 'проблема', 'вопрос'],
+                    resp_en_std: "30-day support included. Lifetime bug fixes. Need help? Contact via Telegram.",
+                    resp_ru_std: "30 дней поддержки включено. Пожизненные исправления багов. Нужна помощь? Пишите в Telegram.",
+                    resp_en_pro: "Enterprise includes 24/7 priority support with direct developer access. Any issue is resolved within hours, not days.",
+                    resp_ru_pro: "Enterprise включает приоритетную поддержку 24/7 с прямым доступом к разработчикам. Любая проблема решается за часы, не дни."
+                },
+                {
+                    kw_en: ['expensive', 'too much', 'cheaper'],
+                    kw_ru: ['дорого', 'много', 'дешевле'],
+                    resp_en_std: "Compared to monthly SaaS ($50-200/mo), our one-time $290 pays for itself in 2-3 months. No recurring fees.",
+                    resp_ru_std: "По сравнению с месячными SaaS ($50-200/мес), наши разовые $290 окупаются за 2-3 месяца. Без подписок.",
+                    resp_en_pro: "I replace a full-time support agent ($3k/month). ROI is typically 2 weeks. Plus, you own the code forever. Want to see a case study?",
+                    resp_ru_pro: "Я заменяю штатного саппорта ($3k/месяц). ROI обычно 2 недели. Плюс, код навсегда ваш. Показать кейс?"
+                }
+            ],
+            fallback_en_std: "I handle FAQs about our solutions. For complex questions, try asking about pricing, delivery, or features!",
+            fallback_ru_std: "Я отвечаю на частые вопросы о наших решениях. Для сложных вопросов спросите про цены, сроки или функции!",
+            fallback_en_pro: "Interesting question! Let me contextualize: our solutions automate business workflows. Can you describe your specific use case so I can tailor my response?",
+            fallback_ru_pro: "Интересный вопрос! Позвольте пояснить: наши решения автоматизируют бизнес-процессы. Опишите ваш конкретный кейс, чтобы я мог дать точный ответ?"
+        };
+
+        function detectLanguage(text) {
+            return /[а-яё]/i.test(text) ? 'ru' : 'en';
+        }
+
+        function getAiResponse(input) {
+            const isPro = activeTiers.ai === 'pro';
+            const lang = detectLanguage(input);
+            const lower = input.toLowerCase();
+
+            // Pattern matching
+            for (const pattern of aiKnowledge.patterns) {
+                const keywords = lang === 'ru' ? pattern.kw_ru : pattern.kw_en;
+                for (const kw of keywords) {
+                    if (lower.includes(kw)) {
+                        if (isPro) {
+                            return lang === 'ru' ? pattern.resp_ru_pro : pattern.resp_en_pro;
+                        } else {
+                            return lang === 'ru' ? pattern.resp_ru_std : pattern.resp_en_std;
+                        }
+                    }
+                }
+            }
+
+            // Fallback
+            if (isPro) {
+                return lang === 'ru' ? aiKnowledge.fallback_ru_pro : aiKnowledge.fallback_en_pro;
+            } else {
+                return lang === 'ru' ? aiKnowledge.fallback_ru_std : aiKnowledge.fallback_en_std;
+            }
         }
 
         // --- SCRAPER DEMO ---
@@ -1820,11 +1718,7 @@
 
             // Preload common AI responses
             setTimeout(() => {
-                ['price', 'hello', 'delivery', 'payment', 'custom'].forEach(query => {
-                    ['en', 'ru'].forEach(lang => {
-                        findBestResponse(query, lang);
-                    });
-                });
+                // Initialize something else if needed
             }, 100);
 
             // Close modal on outside click
