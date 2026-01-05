@@ -12,4 +12,5 @@ venv/
 
 # Data (Privacy)
 backend_hidden/
+
 data/
