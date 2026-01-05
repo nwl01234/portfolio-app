@@ -12,4 +12,4 @@ venv/
 
 # Data (Privacy)
 backend_hidden/
-data/
+bot.py

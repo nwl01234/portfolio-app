@@ -1428,8 +1428,7 @@
                 timestamp: Date.now(),
                 user: {
                     id: tg.initDataUnsafe?.user?.id || 'unknown',
-                    username: tg.initDataUnsafe?.user?.username || 'unknown',
-                    first_name: tg.initDataUnsafe?.user?.first_name || 'Customer'
+                    username: tg.initDataUnsafe?.user?.username || 'unknown'
                 }
             };
 
@@ -1601,62 +1600,53 @@
             }, 1200);
         }
 
-        // AI Knowledge Base
         const aiKnowledge = {
             patterns: [
                 {
                     kw_en: ['hello', 'hi', 'hey', 'start'],
-                    kw_ru: ['привет', 'здравствуй', 'хай', 'начать'],
-                    resp_en_std: "Hello! I'm your Standard Assistant. I can help with FAQs about our AI Agents, Scrapers, and Community tools. What are you interested in?",
-                    resp_ru_std: "Привет! Я Стандартный Ассистент. Помогу с вопросами по AI Агентам, Парсерам и Комьюнити. Что вас интересует?",
-                    resp_en_pro: "Greetings. I am Nexus Enterprise. My systems are online. I analyze business needs and propose optimal automation architectures. How can I optimize your operations today?",
-                    resp_ru_pro: "Приветствую. Я Nexus Enterprise. Системы в норме. Я анализирую бизнес-потребности и предлагаю оптимальную архитектуру автоматизации. Как я могу оптимизировать ваши операции сегодня?"
+                    kw_ru: ['привет', 'здравствуй', 'начать'],
+                    resp_en_std: "Hello! I am Nexus Standard. I can help you automate routine tasks like answering FAQs, booking appointments, and filtering spam. How can I assist you today?",
+                    resp_ru_std: "Привет! Я Nexus Standard. Я помогаю автоматизировать рутину: ответы на FAQ, запись клиентов, фильтрация спама. Чем могу помочь?",
+                    resp_en_pro: "Greetings. I am Nexus Enterprise, a fully autonomous AI capable of replacing a human employee. I handle sales, negotiations, complex problem-solving, and CRM management. Let's discuss your business strategy.",
+                    resp_ru_pro: "Приветствую. Я Nexus Enterprise, полностью автономный ИИ, способный заменить сотрудника. Я веду продажи, переговоры, решаю сложные задачи и управляю CRM. Давайте обсудим стратегию вашего бизнеса."
                 },
                 {
-                    kw_en: ['price', 'cost', 'how much', 'pay'],
-                    kw_ru: ['цена', 'стоимость', 'сколько', 'оплата'],
-                    resp_en_std: "AI Agent: $290. Scraper: $250. Community: $190. All include source code.",
-                    resp_ru_std: "AI Агент: $290. Парсер: $250. Комьюнити: $190. Все включают исходный код.",
-                    resp_en_pro: "Our Enterprise solutions are investments with high ROI. $890 for AI Enterprise includes 2h of custom dev. We also offer hourly customization at $30/hr. Shall we calculate your potential savings?",
-                    resp_ru_pro: "Наши Enterprise решения — это инвестиции с высоким ROI. $890 за AI Enterprise включает 2 часа разработки. Доработки: $30/час. Рассчитаем вашу потенциальную экономию?"
+                    kw_en: ['price', 'cost', 'money', 'pay'],
+                    kw_ru: ['цена', 'стоимость', 'деньги', 'оплата'],
+                    resp_en_std: "Standard versions are affordable one-time payments: Agent ($290), Scraper ($250), Community ($190). Perfect for small businesses.",
+                    resp_ru_std: "Standard версии доступны по разовой оплате: Агент ($290), Скрепер ($250), Сообщество ($190). Идеально для малого бизнеса.",
+                    resp_en_pro: "Enterprise solutions are investments with high ROI. Pricing includes development ($890 base + $30/hr customization). I can calculate your projected savings if you provide your current operational costs.",
+                    resp_ru_pro: "Enterprise решения — это инвестиции с высоким ROI. Цена включает разработку ($890 база + $30/час доработки). Я могу рассчитать вашу экономию, если вы укажете текущие операционные расходы."
                 },
                 {
-                    kw_en: ['scraper', 'data', 'parse'],
-                    kw_ru: ['парсер', 'скрепер', 'данные', 'сбор'],
-                    resp_en_std: "Our Scraper collects data from any site. Standard version is great for monitoring prices.",
-                    resp_ru_std: "Наш Парсер собирает данные с любых сайтов. Стандартная версия отлично подходит для мониторинга цен.",
-                    resp_en_pro: "Enterprise Scraper Cluster runs on multiple nodes, bypassing CAPTCHAs and fingerprints. It handles millions of requests daily. What data source constitutes your bottleneck?",
-                    resp_ru_pro: "Enterprise Скрепер Кластер работает на множестве нод, обходя CAPTCHA и фингерпринты. Обрабатывает миллионы запросов. Какой источник данных является вашим узким местом?"
+                    kw_en: ['feature', 'what can you do', 'skills'],
+                    kw_ru: ['функции', 'что умеешь', 'навыки'],
+                    resp_en_std: "I can answer predefined questions, route users to correct links, and manage basic schedules. I'm designed to save you 2-3 hours of manual work daily.",
+                    resp_ru_std: "Я отвечаю на заданные вопросы, направляю пользователей и управляю базовым расписанием. Я создан, чтобы экономить вам 2-3 часа ручной работы в день.",
+                    resp_en_pro: "My capabilities include: natural language understanding (like GPT), sentiment analysis, dynamic sales funnels, objection handling, and real-time database integrations. I don't just 'assist' — I execute.",
+                    resp_ru_pro: "Мои возможности включают: понимание естественного языка (как GPT), анализ настроений, динамические воронки продаж, работа с возражениями и интеграция с базами данных. Я не просто 'помогаю' — я исполняю."
                 },
                 {
-                    kw_en: ['community', 'group', 'chat', 'admin'],
-                    kw_ru: ['комьюнити', 'группа', 'чат', 'админ'],
-                    resp_en_std: "Community tools auto-kick spammers and welcome new users. Keeps your chat clean.",
-                    resp_ru_std: "Комьюнити инструменты авто-кикают спамеров и приветствуют новых юзеров. Держит чат в чистоте.",
-                    resp_en_pro: "Empire Dashboard gives you full analytics, subscription management, and AI moderation. Turn your community into a revenue stream. Interested in monetization features?",
-                    resp_ru_pro: "Empire Dashboard дает полную аналитику, управление подписками и AI модерацию. Превратите комьюнити в источник дохода. Интересны функции монетизации?"
+                    kw_en: ['scraper', 'data'],
+                    kw_ru: ['скрепер', 'парсинг', 'данные'],
+                    resp_en_std: "Our Standard Scraper monitors specific pages for changes (prices, stock) and alerts you via Telegram. Simple and effective.",
+                    resp_ru_std: "Наш Standard Скрепер мониторит конкретные страницы на изменения (цены, наличие) и уведомляет в Telegram. Просто и эффективно.",
+                    resp_en_pro: "The Enterprise Scraper is a distributed cluster. It analyzes market trends, predicts price movements, and can even execute actions based on data. It requires zero supervision.",
+                    resp_ru_pro: "Enterprise Скрепер — это распределенный кластер. Он анализирует тренды, предсказывает цены и может совершать действия на основе данных. Не требует контроля."
                 },
                 {
-                    kw_en: ['agent', 'ai', 'bot'],
-                    kw_ru: ['агент', 'ии', 'бот'],
-                    resp_en_std: "Standard AI replies to FAQs. It's simple, fast, and 24/7.",
-                    resp_ru_std: "Стандартный AI отвечает на частые вопросы. Простой, быстрый, 24/7.",
-                    resp_en_pro: "Enterprise AI is a Sales Expert. It qualifies leads, handles objections, and closes deals. It integrates with your CRM to automate the entire funnel. Ready to automate sales?",
-                    resp_ru_pro: "Enterprise AI — это Эксперт по Продажам. Квалифицирует лиды, отрабатывает возражения и закрывает сделки. Интегрируется с CRM для полной автоматизации воронки. Готовы автоматизировать продажи?"
-                },
-                {
-                    kw_en: ['custom', 'change', 'edit', 'feature'],
-                    kw_ru: ['кастом', 'изменить', 'правки', 'функция'],
-                    resp_en_std: "You get full source code, so you can change anything yourself.",
-                    resp_ru_std: "Вы получаете полный исходный код, так что можете менять что угодно сами.",
-                    resp_en_pro: "We offer professional customization at $30/hr. We can integrate specific APIs, adjust logic, or build unique features for your business case.",
-                    resp_ru_pro: "Мы предлагаем профессиональную доработку за $30/час. Можем интегрировать API, настроить логику или создать уникальные функции под ваш бизнес-кейс."
+                    kw_en: ['community', 'group', 'chat'],
+                    kw_ru: ['сообщество', 'группа', 'чат'],
+                    resp_en_std: "Community Standard keeps your chat clean. It welcomes users and auto-deletes spam. A verified safe space.",
+                    resp_ru_std: "Community Standard держит чат в чистоте. Приветствует людей и удаляет спам. Безопасное пространство.",
+                    resp_en_pro: "Community Empire Pro monetizes your audience. It manages subscriptions, verifies crypto payments, and uses AI to nurture engagement and growth automaically.",
+                    resp_ru_pro: "Community Empire Pro монетизирует аудиторию. Управляет подписками, проверяет крипто-платежи и использует ИИ для роста вовлеченности."
                 }
             ],
-            fallback_en_std: "I can help with questions about AI, Scrapers, or Community tools. Ask me about pricing or features!",
-            fallback_ru_std: "Я могу помочь с вопросами про AI, Парсеры или Комьюнити. Спросите про цены или функции!",
-            fallback_en_pro: "I analyze complex business environments. Could you elaborate on your specific operational challenge? I can propose a tailored automation strategy.",
-            fallback_ru_pro: "Я анализирую сложные бизнес-среды. Можете подробнее описать вашу операционную задачу? Я предложу стратегию автоматизации."
+            fallback_en_std: "I can help with standard automation tasks. For complex inquiries or custom development, please check our Enterprise solutions.",
+            fallback_ru_std: "Я могу помочь со стандартной автоматизацией. Для сложных запросов или кастомной разработки, пожалуйста, изучите наши Enterprise решения.",
+            fallback_en_pro: "I analyze every input to provide the optimal business solution. If you have a specific complex scenario, describe it — I will generate an implementation strategy.",
+            fallback_ru_pro: "Я анализирую каждый запрос для поиска оптимального бизнес-решения. Если у вас есть сложный сценарий, опишите его — я сгенерирую стратегию реализации."
         };
 
         function detectLanguage(text) {
