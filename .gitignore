@@ -11,4 +11,5 @@ venv/
 *.db-wal
 
 # Data (Privacy)
+backend_hidden/
 data/

@@ -1107,7 +1107,6 @@
             }
         }
 
-        // Preview configurations
         const previews = {
             scraper: {
                 core: `
@@ -1160,7 +1159,6 @@
             }
         }
 
-        // Chat Logic
         function handleEnter(e) {
             if (e.key === 'Enter') sendAi();
         }
@@ -1228,7 +1226,6 @@
             }
         }
 
-        // --- CART SYSTEM WITH REMOVE ---
         function addToCart(cat) {
             const tier = activeTiers[cat];
             const product = products[cat][tier];
@@ -1392,7 +1389,6 @@
             tg.sendData(JSON.stringify({ type: 'contact' }));
         }
 
-        // Reviews Logic
         function loadReviews() {
             fetch('reviews.data.json')
                 .then(response => response.json())
